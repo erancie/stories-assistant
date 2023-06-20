@@ -3,9 +3,6 @@
 import React, { useEffect, useState } from 'react'
 import OpenAI from 'openai-api';
 import {} from 'dotenv/config';
-import Response from './Components/Response';
-import Text from './Components/Text';
-import Button from './Components/Button';
 
 //OpenAI GPT-3
 const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
@@ -29,7 +26,6 @@ export default function App() {
   const [completion, setCompletion ] = useState('placeholder')
 
   //effects
-
   useEffect(()=>{
     //recognition
     recognition.onstart = () => console.log('recognition.onstart()')
@@ -45,22 +41,22 @@ export default function App() {
   }, [])
 
   useEffect(()=>{
-      //putting here saves defining on every render, will see transcript is isListening stops
-      const handleListen = () => {
-        if(isListening){                                   
-          recognition.start(); console.log('start listening event');
-          recognition.onend = () => {                       
-            console.log('onend callback')
-            recognition.start(); console.log('restart listening');
-          }
-        }else {
-          recognition.stop(); console.log('stop listening event'); 
-          recognition.onend =()=> {console.log('onend callback')
-            setText(currText => currText +' '+ transcript)
-            setTranscript('')
-          }
+    //putting here saves defining on every render, will see latest transcript when isListening stops
+    const handleListen = () => {
+      if(isListening){                                   
+        recognition.start(); console.log('start listening event');
+        recognition.onend = () => {                       
+          console.log('onend callback')
+          recognition.start(); console.log('restart listening');
+        }
+      }else {
+        recognition.stop(); console.log('stop listening event'); 
+        recognition.onend =()=> {console.log('onend callback')
+          setText(currText => currText +' '+ transcript)
+          setTranscript('')
         }
       }
+    }
     handleListen(); console.log('handleListen()');
   }, [isListening])
 
@@ -99,7 +95,6 @@ export default function App() {
       <div className='row justify-content-center align-items-center px-3 mt-5'>
 
         <div className='box-bg text-box col-10 col-lg-5'>
-          
           <div className='interim-text p-4 m-auto' style={{height: '100px'}}>
             {isListening ? <p>{transcript}</p> : null}
           </div>
@@ -111,8 +106,6 @@ export default function App() {
             onChange={handleTextChange} 
             value={text}>
           </textarea>
-
-
         </div>
         
         <div className='request-box col-10 col-lg-2 row'>
@@ -120,6 +113,7 @@ export default function App() {
                       onClick={sendPrompt} >
             Complete
           </button>
+
           <button className={`button btn col-6 col-lg-12 btn-lg my-3`}
                   onClick={()=>setText(prev=>prev+' '+completion)} >
             Add
@@ -127,17 +121,10 @@ export default function App() {
         </div>
 
         <div className='box-bg completion-box col-10 col-lg-5'>
-
-
-          {/* <Response completion={completion} /> */}
           <div className='container'>
-            {/* <h2>Completion </h2> */}
             <div className='completion'>{completion}</div>
           </div>
-
-
         </div>  
-
 
       </div>
     </div>
