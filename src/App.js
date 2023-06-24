@@ -76,8 +76,11 @@ export default function App() {
   return (
     <div className="App">
 
-      <h1 className='mt-5 title'>Clever Clive</h1>
-      <h1 className='mt-3 pb-3 sub-title'>Speak or Type to have Clive complete your sentence..</h1>
+      <h1 className='mt-5 title'>
+        <span className='clever'><span className='c'>C</span>lever</span> 
+        <span className='clive'> <span className='c2'>C</span>live</span>
+      </h1>
+      <h1 className='mt-3 pb-3 sub-title'>Speak or Type to have Clive complete your sentence.</h1>
       
       <div className='listen-buttons m-auto row align-items-center mt-5 justify-content-center'>
         <div className='mb-2 col-12 col-lg-6 '>
@@ -111,12 +114,18 @@ export default function App() {
         <div className='request-box col-10 col-lg-2 row'>
           <button className={`button btn col-6 col-lg-12 btn-lg my-3`}
                       onClick={sendPrompt} >
-            Complete
+            <span className='complete'>Complete</span>
+            <svg className='arrow-down' viewBox="0 0 111 64"  xmlns="http://www.w3.org/2000/svg">
+              <path d="M70.3108 38.7437L53.0209 48.8676C52.3736 49.2493 51.8982 49.9063 51.7702 50.7135C51.5391 52.173 52.534 53.576 53.9925 53.8411L107.499 63.6031L107.933 63.6434C109.409 63.6698 110.602 62.4857 110.594 61.0049L110.324 7.74414C110.311 6.983 109.987 6.22221 109.363 5.6809C108.234 4.70735 106.55 4.82067 105.607 5.93164L94.5697 18.9379C91.9781 16.4117 88.8184 13.9286 85.237 11.643C75.8954 5.67494 63.5404 0.970783 50.6487 0.305464C37.63 -0.367087 24.0668 3.05459 12.4624 13.3808C8.23308 17.1387 4.27422 21.8145 0.715106 27.5326C0.0854835 28.3931 0.0212279 29.6027 0.64341 30.5742C1.45171 31.8354 3.11115 32.2228 4.34587 31.4387C21.0039 20.909 34.6722 19.7105 45.8103 22.9346C55.7666 25.815 63.862 32.2537 70.3108 38.7437Z" />
+            </svg>
           </button>
 
           <button className={`button btn col-6 col-lg-12 btn-lg my-3`}
                   onClick={()=>setText(prev=>prev+' '+completion)} >
-            Add
+            <svg className='arrow-up' viewBox="0 0 111 65"  xmlns="http://www.w3.org/2000/svg">
+              <path d="M40.3047 25.7226L57.5949 15.5991C58.2422 15.2174 58.7176 14.5604 58.8457 13.7533C59.0768 12.2938 58.0819 10.8907 56.6234 10.6257L3.11703 0.862392L2.68275 0.822057C1.20727 0.795623 0.0140855 1.9797 0.0224695 3.46048L0.290625 56.7212C0.304196 57.4824 0.627958 58.2432 1.25197 58.7845C2.38059 59.7581 4.065 59.6448 5.00747 58.5339L16.0454 45.5278C18.6369 48.0541 21.7965 50.5373 25.3779 52.823C34.7193 58.7913 47.0742 63.4957 59.9659 64.1613C72.9846 64.8342 86.5479 61.4128 98.1525 51.0869C102.382 47.3292 106.341 42.6534 109.9 36.9354C110.53 36.0749 110.594 34.8653 109.972 33.8937C109.164 32.6326 107.504 32.2451 106.269 33.0292C89.6112 43.5585 75.9429 44.7567 64.8048 41.5323C54.8487 38.6516 46.7534 32.2128 40.3047 25.7226Z" />
+            </svg>
+            <span className='add'>Add</span>
           </button>
         </div>
 
@@ -125,8 +134,6 @@ export default function App() {
             <div className='completion'>{completion}</div>
           </div>
         </div>
-
-        <h1> -commit test- </h1>
         
       </div>
     </div>
