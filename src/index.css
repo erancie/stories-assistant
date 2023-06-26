@@ -1,8 +1,13 @@
+
 :root {
   --buttons: #fbae7e ;
   --purple: #945ace ;
   --light-purple: #b69afd;
   --tan: #bcbaa4 ;
+  --btn-text: rgb(170, 177, 254);
+  --text: rgb(173, 176, 203);
+  /* --text-bg:  #34395b; */
+  --text-bg:  rgb(34, 34, 54);
 }
 body {
   text-align: center;
@@ -17,117 +22,93 @@ body {
 i, b {
   font-size: 1.2rem;
 }
+
+.header {
+  text-align: left;
+  margin-left: 4rem;
+  margin-top: 5rem;
+}
 .title {
   font-size: 6rem;
   font-weight: 800;
-  color: #ffffff;
-  /* color: #d6d4bc; */
-  color: #a380ff;
-
-}
-.c, .c2 {
-  /* color: #d6d4bc; */
-  color: #8250ff;
-
-}
-.clever {
-
-}
-.c2 {
-  /* color: #56ff7a; */
-}
-.clive {
-  /* color: #86cf96; */
+  color: var(--buttons);
 }
 
 .sub-title {
-  /* font-weight:; */
-  width: 80%;
-  font-size: 1.5rem;
-  font-weight: 400;
-  margin: auto;
+  /* width: 80%; */
+  font-size: 2rem;
+  font-weight: 100;
+  /* margin: auto; */
+  color: rgb(170, 177, 254);
+}
 
-  color: #9181ba;
-  /* color: var(--buttons); */
-
-
-
+.listen-buttons-bg {
+  background: rgb(34, 34, 54);
+  box-shadow: 0px 0px 4px rgba(255, 255, 255, 0.03);
+  width: 90%;
+  border: 1px solid #454a6b;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
 }
 .listen-buttons {
-  width: 26%;
+  width: 84%;
 }
 .listen-buttons button {
-  color: #ffffff;
-  color: #bdc9d2;
-
+  color: var(--buttons);
+  color: var(--btn-text);
   padding: 1rem;
-
+  width: 100%;
 }
 .listening {
   color: #5e6591 ;
 }
+
 .interim-text {
   width: 90%;
-  min-height: 100px;
+  min-height: 140px;
   text-align: left;
   font-size: 1.4rem;
-  color: white;
-  color: #bdc9d2;
-
-  border-radius: 5px 5px 0 0;
-  /* border: 0.5px solid rgba(255, 255, 255, 0.295); */
-  background: #34395b;
-  border: 2px solid #454a6b;
+  color: var(--text);
+  /* border-radius: 5px 5px 0 0; */
+  background: var(--text-bg);
+  border: 1px solid #454a6b;
   border-bottom: none;
-
+  border-top: none;
 }
 .text {
   font-size: 1.4rem;
   color: white;
-  /* color: #bdc9d2; */
   width: 90%;
-  height: 200px;
+  height: 300px;
   border-radius: 0 0 5px 5px;
   border: none;
-  /* box-shadow: 0px 0px 2px rgba(255, 255, 255, 0.813); */
-  background: #34395b;
-  border: 2px solid #454a6b;
+  background: var(--text-bg);
+  border: 1px solid #454a6b;
   border-top: 1px solid #454a6b;
 }
 .text:focus{
   outline: 0;
 }
 .completion {
-  /* color: var(--tan); */
-  /* color: #fff; */
-  color: #bdc9d2;
-
+  color: var(--text);
   min-height: 300px;
   border-radius: 5px;
   font-size: 1.4rem;
-  background: #34395b;
-  border: 2px solid #454a6b;
-  /* box-shadow: 0px 0px 2px rgba(120, 96, 118, 0.813); */
+  background: var(--text-bg);
+  border: 1px solid #454a6b;
 }
-.button {
-  background: #34395b;
-  /* color: white; */
-  color: #bdc9d2;
-  transition: all .3s ease;
 
+.button {
+  background: #40466d;
+  color: var(--buttons);
+  color: var(--btn-text);
+  border: 1px solid #40466d;
 }
 .button:hover {
-  background: var(--buttons);
-  /* background: var(--purple); */
-  background: var(--tan);
-  background: #d6d4bc ;
-  background: #767eb2;
-  background: #40466d;
   font-weight: 400;
-  color: #34395b;
-  color: #fff;
+  background: none;
   color: var(--buttons);
-  box-shadow: 0 0 8px #ffffff11;
+  border: 1px solid var(--buttons);
 }
 .button:focus {
   box-shadow: none;
@@ -138,50 +119,32 @@ i, b {
 .complete, .add {
   width: 40%;
 }
-.complete {
-  /* text-align: left; */
-  /* margin-left: 0; */
-}
 
 .arrow-down, .arrow-up {
-  fill: var(--tan);
-  fill: white;
+  /* fill: white; */
+  /* fill: var(--buttons); */
+  fill: var(--btn-text);
   transition: all .3s ease;
   width: 30px;
   display: inline;
   position: absolute;
 }
-
 .arrow-down {
   top: 20%;
-  right: 0;
-  /* transform: translateX(-50%); */
+  right: 6px;
 }
 .arrow-up {
   bottom: 20%;
-  left: 0;
-  /* transform: translateX(-50%); */
-  /* margin: 0 10px 0 0; */
+  left: 6px;
 }
-
 .button:hover .arrow-down {
-  fill: #fff;
+  /* fill: #fff; */
   fill: var(--buttons);
-  transform: rotate(10deg) translateX(30%);
+  transform: rotate(4deg) scale(1.3) translateX(5%);
 }
 .button:hover .arrow-up {
   
-  fill: #fff;
+  /* fill: #fff; */
   fill: var(--buttons);
-
-  transform: rotate(10deg) translateX(-30%);
-}
-.text-box{
-
-}
-.request-box {
-  
-}
-.box-bg{
-  /* background: #34395B; */
+  transform: rotate(4deg) scale(1.25)  translateX(-5%);
 }

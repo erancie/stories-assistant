@@ -76,28 +76,55 @@ export default function App() {
   return (
     <div className="App">
 
-      <h1 className='mt-5 title'>
-        <span className='clever'><span className='c'>C</span>lever</span> 
-        <span className='clive'> <span className='c2'>C</span>live</span>
-      </h1>
-      <h1 className='mt-3 pb-3 sub-title'>Speak or Type to have Clive complete your sentence.</h1>
-      
-      <div className='listen-buttons m-auto row align-items-center mt-5 justify-content-center'>
-        <div className='mb-2 col-12 col-lg-6 '>
-          <button className={`button btn  btn-lg px-4`}
-                  onClick = {()=> setIsListening(latest => !latest)} >
-            {!isListening ? 'Listen' : 'Stop'} 
-          </button>
-        </div>
+    <div className='header row '>
+      <div className=' col-12 col-lg-8'>
+        <h1 className='mt-5 title '>
+          <span className='clever'><span className='c'>C</span>lever</span> 
+          <span className='clive'> <span className='c2'>C</span>live</span>
+        </h1>
+        <h1 className='mt-3 pb-3 sub-title'>Speak or Type to have Clive complete your sentence.</h1>
+      </div>
 
-        <div className='listening mb-2 col-12 col-lg-6 '>
-          {isListening ? <i>Listening</i> : <i>Not Listening</i>}
+      <div className=' col-12 col-lg-3 col-xxl-2'>
+        <div className='mascot'>
+
+        <svg  viewBox="0 0 588 706" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M255.792 601.104C253.595 650.209 194.654 687.458 124.145 684.303C53.6352 681.148 -1.7429 638.783 0.454363 589.679C2.65163 540.575 61.5922 503.325 132.102 506.481C283.909 513.273 257.989 552 255.792 601.104Z" fill="#667278"/>
+        <path d="M359.767 180.585C334.76 284.396 279.737 384.848 348.479 376.74C385.494 372.375 402.742 300.772 427.749 196.961C769.76 244.916 457.81 5.32711 439.037 0.805009C420.264 -3.71709 384.774 76.773 359.767 180.585Z" fill="#879196"/>
+        <path d="M418 402.416C418 518.948 349.407 577 178.43 577C7.45331 577 95.8389 482.532 95.8389 366C95.8389 249.468 7.45331 155 178.43 155C349.407 155 418 285.884 418 402.416Z" fill="#FBAE7E"/>
+        <path d="M375 414.827C375 523.075 314.956 577 165.29 577C15.6229 577 92.9923 489.248 92.9923 381C92.9923 272.752 15.6229 185 165.29 185C314.956 185 375 306.58 375 414.827Z" fill="#FF9F63"/>
+        <path d="M261 434.272C261 529.541 223.622 577 130.452 577C37.2818 577 85.4455 499.769 85.4455 404.5C85.4455 309.231 37.2818 232 130.452 232C223.622 232 261 339.002 261 434.272Z" fill="#FF9655"/>
+        <path d="M328 324C328 388.617 254.575 441 164 441C73.4253 441 0 388.617 0 324C0 259.383 73.4253 207 164 207C254.575 207 328 259.383 328 324Z" fill="#7B909B"/>
+        <ellipse cx="149" cy="318.5" rx="149" ry="105.5" fill="#FAFAFA"/>
+        <path d="M460.178 611.255C457.684 666.98 390.942 709.258 311.104 705.685C231.266 702.113 168.567 654.043 171.06 598.318C173.554 542.593 240.296 500.315 320.134 503.887C492.025 511.579 462.671 555.53 460.178 611.255Z" fill="#7B909B"/>
+        <path d="M97.077 248.708L141.777 334.383L39.0619 325.989L97.077 248.708Z" fill="#FBAE7E"/>
+        <path d="M210.083 258.586L254.783 344.261L152.068 335.868L210.083 258.586Z" fill="#FBAE7E"/>
+        </svg>
+
         </div>
       </div>
+    </div>
+
 
       <div className='row justify-content-center align-items-center px-3 mt-5'>
 
-        <div className='box-bg text-box col-10 col-lg-5'>
+        <div className='box-bg text-box col-10 col-lg-6'>
+
+          <div className='listen-buttons-bg mt-5 pb-2 pt-3 m-auto row '>
+            <div className='listen-buttons m-auto row align-items-center justify-content-center'>
+              <div className='mb-2 col-12 col-lg-6 '>
+                <button className={`button btn  btn-lg px-4`}
+                        onClick = {()=> setIsListening(latest => !latest)} >
+                  {!isListening ? 'Listen' : 'Stop'} 
+                </button>
+              </div>
+            
+              <div className='listening mb-2 col-12 col-lg-6 '>
+                {isListening ? <i style={{color: 'rgb(170, 177, 254)'}}>Listening</i> : <i>Not Listening</i>}
+              </div>
+            </div>
+          </div>
+
           <div className='interim-text p-4 m-auto' style={{height: '100px'}}>
             {isListening ? <p>{transcript}</p> : null}
           </div>
@@ -129,7 +156,7 @@ export default function App() {
           </button>
         </div>
 
-        <div className='box-bg completion-box col-10 col-lg-5'>
+        <div className='box-bg completion-box col-10 col-lg-4'>
           <div className='container'>
             <div className='completion'>{completion}</div>
           </div>
