@@ -11,6 +11,9 @@
 # production
 /build
 
+#firebase cloud functions
+functions/node_modules
+
 # misc
 .DS_Store
 .env.local
