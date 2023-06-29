@@ -25,7 +25,8 @@ export default function App() {
   const [isListening, setIsListening ] = useState(false)
   const [text, setText ] = useState('')
   const [transcript, setTranscript ] = useState(null)
-  const [completion, setCompletion ] = useState('placeholder')
+  // const [completion, setCompletion ] = useState('placeholder')
+
 
   //effects
   useEffect(()=>{
@@ -65,12 +66,19 @@ export default function App() {
   // //TODO: move this to a firebase serverless function
   async function sendPrompt() {
     const requestBody = { text }; 
-    const response = await axios.post(
-      'http://127.0.0.1:5001/functions/chatGPTFunction',
+    let response = await axios.post(
+      // emulator endpoint
+      // 'http://127.0.0.1:5001/functions/chatGPTFunction',
+      // production endpoint
+      'https://us-central1-quickstories.cloudfunctions.net/chatGPTFunction',
       requestBody
     );
-    setCompletion(response.data.result);
-    //   console.log(`gpt: ${gptResponse.data.choices[0].text}`)
+    // setCompletion(response.data.result);
+    // setText(prev=>prev+' '+completion);
+    response += ' heeeeeeee';
+    console.log('response: ' + response)
+    //concat completion response straight onto text
+    setText(prev=>prev+' '+response.data.result); //setup cors in cloud funcitons and test again
   }
 
   const handleTextChange = e => setText(e.target.value)
@@ -159,20 +167,22 @@ export default function App() {
             </svg>
           </button>
 
-          <button className={`button btn col-6 col-lg-12 btn-lg my-3`}
+          {/* <button className={`button btn col-6 col-lg-12 btn-lg my-3`}
                   onClick={()=>setText(prev=>prev+' '+completion)} >
             <svg className='arrow-up' viewBox="0 0 111 65"  xmlns="http://www.w3.org/2000/svg">
               <path d="M40.3047 25.7226L57.5949 15.5991C58.2422 15.2174 58.7176 14.5604 58.8457 13.7533C59.0768 12.2938 58.0819 10.8907 56.6234 10.6257L3.11703 0.862392L2.68275 0.822057C1.20727 0.795623 0.0140855 1.9797 0.0224695 3.46048L0.290625 56.7212C0.304196 57.4824 0.627958 58.2432 1.25197 58.7845C2.38059 59.7581 4.065 59.6448 5.00747 58.5339L16.0454 45.5278C18.6369 48.0541 21.7965 50.5373 25.3779 52.823C34.7193 58.7913 47.0742 63.4957 59.9659 64.1613C72.9846 64.8342 86.5479 61.4128 98.1525 51.0869C102.382 47.3292 106.341 42.6534 109.9 36.9354C110.53 36.0749 110.594 34.8653 109.972 33.8937C109.164 32.6326 107.504 32.2451 106.269 33.0292C89.6112 43.5585 75.9429 44.7567 64.8048 41.5323C54.8487 38.6516 46.7534 32.2128 40.3047 25.7226Z" />
             </svg>
             <span className='add'>Add</span>
-          </button>
+          </button> */}
         </div>
 
-        <div className='box-bg completion-box col-10 col-lg-4'>
+        {/* <div className='box-bg completion-box col-10 col-lg-4'>
           <div className='container'>
             <div className='completion'>{completion}</div>
           </div>
-        </div>
+        </div> */}
+        
+        {/* <button onClick={testVoice}>Voice</button> */}
         
       </div>
     </div>
