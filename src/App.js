@@ -1,19 +1,8 @@
 //shout out to Darwin Tech (https://www.youtube.com/watch?v=U2g--_TDYj4)
 //and Mohan Raj for inspo with this component (https://www.section.io/engineering-education/speech-recognition-in-javascript/)
 import React, { useEffect, useState } from 'react'
-// import OpenAI from 'openai-api';
 import {} from 'dotenv/config';
 import axios from 'axios';
-
-// const OpenAI = require('openai-api');
-
-// const OPENAI_API_KEY = functions.config().openai.api_key;
-
-// const openai = new OpenAI(OPENAI_API_KEY);
-
-// //OpenAI GPT-3
-// const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
-// const openai = new OpenAI(OPENAI_API_KEY);
 
 //Speech Rec.
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -69,40 +58,26 @@ export default function App() {
   }, [isListening])
 
   async function sendPrompt() {
-    const requestBody = { text }; 
-    let response = await axios.post(
-      // emulator endpoint
-      // 'http://127.0.0.1:5001/functions/chatGPTFunction',
-      // production endpoint
-      'https://us-central1-quickstories.cloudfunctions.net/chatGPTFunction',
-      requestBody
-    );
-    // setCompletion(response.data.result);
-    // setText(prev=>prev+' '+completion);
-    response += ' heeeeeeee';
-    console.log('response: ' + response)
-    //concat completion response straight onto text
-    setText(prev=>prev+' '+response.data.result); //setup cors in cloud funcitons and test again
-  }
+    try {
+      const requestBody = { text }; 
+      let response = await axios.post(
+        // emulator endpoint
+        // 'http://127.0.0.1:5001/functions/chatGPTFunction',
+        // production endpoint
+        'https://us-central1-quickstories.cloudfunctions.net/chatGPTFunction',
+        requestBody
+      );
+      // setCompletion(response.data.result);
+      // setText(prev=>prev+' '+completion);
+      response += 'random response from sendPrompt()';
+      console.log('response: ' + response)
+      //concat completion response straight onto text
+      setText(prev=>prev+' '+response.data.result); //setup cors in cloud funcitons and test again
+    } catch (error) {
+      console.log(error)
+    }
 
-  // async function sendPrompt2() {
-  //   try {
-  //     // console.log('Executing: chatGPTFunction');
-  //     const { inputText } = req.body; // Assuming the client sends a JSON object with the 'text' field
-  //     const gptResponse = await openai.complete({
-  //         engine: 'ada', //davinci-instruct-beta
-  //         maxTokens: 64,
-  //         prompt: inputText
-  //     });
-  //     // Extract text from response
-  //     const responseText = gptResponse.data.choices[0].text;
-  //     // Send the text back to the client
-  //     res.status(200).json({ result: responseText }); 
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({ error: 'An error occurred.' });
-  //   }
-  // }
+  }
 
   const handleTextChange = e => setText(e.target.value)
 
