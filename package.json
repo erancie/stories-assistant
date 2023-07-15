@@ -14,7 +14,7 @@
     "dotenv": "^16.0.0",
     "dotenv-config": "^0.1.1",
     "dotenv-webpack": "^8.0.1",
-    "firebase": "^9.6.7",
+    "firebase": "^8.6.8",
     "firebase-admin": "^11.9.0",
     "firebase-functions": "^4.4.1",
     "openai-api": "^1.2.6",
@@ -23,7 +23,7 @@
     "path-browserify": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-scripts": "^4.0.3",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

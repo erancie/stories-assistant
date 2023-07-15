@@ -5,6 +5,11 @@ import React, { useEffect, useState } from 'react'
 import {} from 'dotenv/config';
 import axios from 'axios';
 
+// const OpenAI = require('openai-api');
+
+// const OPENAI_API_KEY = functions.config().openai.api_key;
+
+// const openai = new OpenAI(OPENAI_API_KEY);
 
 // //OpenAI GPT-3
 // const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY;
@@ -63,7 +68,6 @@ export default function App() {
     handleListen(); console.log('handleListen()');
   }, [isListening])
 
-  // //TODO: move this to a firebase serverless function
   async function sendPrompt() {
     const requestBody = { text }; 
     let response = await axios.post(
@@ -80,6 +84,25 @@ export default function App() {
     //concat completion response straight onto text
     setText(prev=>prev+' '+response.data.result); //setup cors in cloud funcitons and test again
   }
+
+  // async function sendPrompt2() {
+  //   try {
+  //     // console.log('Executing: chatGPTFunction');
+  //     const { inputText } = req.body; // Assuming the client sends a JSON object with the 'text' field
+  //     const gptResponse = await openai.complete({
+  //         engine: 'ada', //davinci-instruct-beta
+  //         maxTokens: 64,
+  //         prompt: inputText
+  //     });
+  //     // Extract text from response
+  //     const responseText = gptResponse.data.choices[0].text;
+  //     // Send the text back to the client
+  //     res.status(200).json({ result: responseText }); 
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).json({ error: 'An error occurred.' });
+  //   }
+  // }
 
   const handleTextChange = e => setText(e.target.value)
 
