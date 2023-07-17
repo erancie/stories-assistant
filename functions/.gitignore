@@ -1,1 +1,5 @@
-functions/
+# functions/
+.env
+.env.dev
+.env.prod
+.runtimeconfig.json

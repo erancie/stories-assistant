@@ -6,9 +6,9 @@ import axios from 'axios';
 
 //Speech Rec.
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-console.log(SpeechRecognition)
+// console.log(SpeechRecognition)
 const recognition = new SpeechRecognition()
-console.log(recognition)
+// console.log(recognition)
 recognition.continuous = true
 recognition.interimResults = true
 recognition.lang = 'en-US'
@@ -19,36 +19,33 @@ export default function App() {
   const [isListening, setIsListening ] = useState(false)
   const [text, setText ] = useState('')
   const [transcript, setTranscript ] = useState(null)
-  // const [completion, setCompletion ] = useState('placeholder')
-
 
   //effects
   useEffect(()=>{
     //recognition
     recognition.onstart = () => console.log('recognition.onstart()')
-    //onresult resolves transcript value while listening - before onend  
+    //onresult sets transcript while listening - before onend  
     recognition.onresult = event => { 
       const transcript = Array.from(event.results)
       .map(result => result[0])
       .map(result => result.transcript)
       .join('')
-      setTranscript(transcript); console.log(transcript);
+      setTranscript(transcript);
       recognition.onerror = event => console.log(event.error) 
     }
   }, [])
 
   useEffect(()=>{
-    //putting here saves defining on every render, will see latest transcript when isListening stops
     const handleListen = () => {
       if(isListening){                                   
-        recognition.start(); console.log('start listening event');
+        recognition.start(); 
         recognition.onend = () => {                       
-          console.log('onend callback')
-          recognition.start(); console.log('restart listening');
+          recognition.start(); 
         }
       }else {
-        recognition.stop(); console.log('stop listening event'); 
-        recognition.onend =()=> {console.log('onend callback')
+        recognition.stop();  
+        //onend when stopped adds transcript from listening to text
+        recognition.onend =()=> { 
           setText(currText => currText +' '+ transcript)
           setTranscript('')
         }
@@ -60,23 +57,20 @@ export default function App() {
   async function sendPrompt() {
     try {
       const requestBody = { text }; 
-      let response = await axios.post(
-        // emulator endpoint
-        // 'http://127.0.0.1:5001/functions/chatGPTFunction',
-        // production endpoint
-        'https://us-central1-quickstories.cloudfunctions.net/chatGPTFunction',
-        requestBody
-      );
-      // setCompletion(response.data.result);
-      // setText(prev=>prev+' '+completion);
-      response += 'random response from sendPrompt()';
-      console.log('response: ' + response)
-      //concat completion response straight onto text
-      setText(prev=>prev+' '+response.data.result); //setup cors in cloud funcitons and test again
+      let postURL ='https://us-central1-quickstories.cloudfunctions.net/chatgpt' 
+      if (process.env.NODE_ENV === 'development') {  //functions emulator endpoint with client development
+       postURL ='http://127.0.0.1:5001/quickstories/us-central1/chatgpt' 
+      }
+      // console.log('process.env.NODE_ENV-------'+process.env.NODE_ENV) 
+      // console.log('postURL:' + postURL)
+      let response = await axios.post( postURL, requestBody );
+      const result = response.data.result;
+      // const engine = response.data.engine;
+      // console.log('engine: '+engine)
+      setText(prev=>prev+' '+result); 
     } catch (error) {
       console.log(error)
     }
-
   }
 
   const handleTextChange = e => setText(e.target.value)
