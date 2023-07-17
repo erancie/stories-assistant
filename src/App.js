@@ -85,6 +85,7 @@ export default function App() {
           <span className='clive'> <span className='c2'>C</span>live</span>
         </h1>
         <h1 className='mt-3 pb-3 sub-title'>Speak or Type to have Clive complete your sentence.</h1>
+        <h1 className='mt-3 pb-3 sub-title'>{process.env.REACT_APP_TEST}</h1>
       </div>
 
       <div className=' col-12 col-lg-3 col-xxl-2'>

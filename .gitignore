@@ -11,15 +11,16 @@
 # production
 /build
 
+#firebase
+firebase-debug.log
+.runtimeconfig.json
+
 #firebase cloud functions
 functions/node_modules
 functions/.env
 
-firebase-debug.log
-
-.runtimeconfig.json
-
 # misc
+.env
 .DS_Store
 .env.local
 .env.development.local
