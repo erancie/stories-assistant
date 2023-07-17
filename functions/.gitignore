@@ -3,3 +3,5 @@
 .env.dev
 .env.prod
 .runtimeconfig.json
+
+#gitignore files in subdirectories will apply files to parent packages
