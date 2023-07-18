@@ -3,5 +3,6 @@
 .env.dev
 .env.prod
 .runtimeconfig.json
+ui-debug.log
 
 #gitignore files in subdirectories will apply files to parent packages

@@ -23,7 +23,9 @@
 // Allow an origin without cors by passing in the requst origin 
 // to the response header 'Access-Control-Allow-Origin' 
       //setting this allows cross-origin
-// res.set('Access-Control-Allow-Origin', req.headers.origin); 
+// res.set('Access-Control-Allow-Origin', req.headers.origin);
+//OR 
+// res.set('Access-Control-Allow-Origin', '*'); 
 // res.set('Access-Control-Allow-Methods', 'GET, POST');
 // res.set('Access-Control-Allow-Headers', '*');
 
