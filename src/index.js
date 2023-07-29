@@ -7,6 +7,11 @@ import App from './App';
 import { initializeApp } from "firebase/app";
 import { getApps } from 'firebase/app';
 
+// import { getDatabase, ref, onValue, off } from 'firebase/database';
+
+// import 'firebase/database';
+
+
 //Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBzw3g21pF-6zluwehcH9BSphmh6vpcpR8",
@@ -26,9 +31,6 @@ const firebaseApp = getApps()[0];
 //render React App
 ReactDOM.render(
   <React.StrictMode>
-      {/* <code>
-        <pre>{JSON.stringify(firebaseApp.options, null, 2)}</pre>
-      </code> */}
     <App />
   </React.StrictMode>,
   document.getElementById('root')
