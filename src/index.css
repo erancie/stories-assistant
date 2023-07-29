@@ -9,7 +9,7 @@ body,html {
 :root {
   /* --buttons: #fbae7e ; */
   --buttons: #44da79 ;
-  --svg-inactive: #fff ;
+  --svg-inactive: #c1ccda ;
 
   --purple: #945ace ;
   --light-purple: #b69afd;
@@ -127,14 +127,7 @@ i, b {
 }
 
 /* // Controls // */
-.controls {
-  transition: all 1s ease;
-  position: fixed;
-  right: .8rem;
-  top: 57%;
-  width: 45px;
-  z-index: 1;
-}
+
 .controls-secondary {
   transition: all 1s ease;
   position: fixed;
@@ -165,6 +158,7 @@ i, b {
   box-shadow: none;
 }
 .controls svg {
+  transition: all .5s ease;
   fill:var(--svg-inactive);
 }
 .controls-secondary svg {
@@ -172,17 +166,12 @@ i, b {
 }
 
 .speak svg {
-  transition: all .3s ease;
-  display: inline;
   width: 120%;
   transform: translateX(-5%);
 }
 .think svg {
-  transition: all .3s ease;
-  display: inline;
   width: 150%;
   transform: translateX(-15%);
-  margin-bottom: 8rem;
 }
 .undo svg {
   transition: all .1s ease;
@@ -205,6 +194,10 @@ i, b {
   width: 100%;
   height: 100vh;
   z-index: 2;
+  z-index: 1;
+  
+  transition: all 1s ease;
+  top: 0;
 }
 .popup {
   position: absolute;
@@ -212,11 +205,12 @@ i, b {
   width: 280px;
   height: 420px;
   left: 50%;
-  left: 0%;
-  top: 25%;
+  /* left: 0%; */
+  top: 200px;
   /* bottom: 40%; */
-  /* transform: translateX(-50%) translateY(0%);  */
+  transform: translateX(-50%) translateY(0%); 
   border-radius: 5px 45px 45px 5px;
+  border-radius: 25px;
   /* box-shadow: 0px 0px 70px 0px rgba(255, 255, 255, 0.233); */
   box-shadow: 2px 2px 15px 0px rgba(255, 255, 255, 0.082);
 } 
@@ -231,11 +225,100 @@ i, b {
   width: 100px;
   padding: .5rem .5rem .7rem;
   margin: 2rem auto;
+  position: relative;
+  /* z-index: 4; */
 }
 
-.popup-mic {
-  animation: micAnim 5s ease 0s infinite;
+                                                                
+
+/* ////// controls ////// */
+ .controls {
+  /* transition: transform .3s ease;
+  transition: right .3s ease;
+  transition: top .3s ease; */
+  transition: all .5s ease;
+  position: fixed;
+  right: .8rem;
+  top: 57%;
+  width: 45px;
+  z-index: 2;
 }
+
+ /* button state classes */
+.listening {
+  fill: var(--buttons) !important;
+}
+.thinking {
+  fill: var(--buttons) !important;
+}
+
+.controls-popup-active {
+  top: 330px; 
+  transform: translateX(50%);
+  right: 50%;
+  /* transition: all 1s ease; */
+}
+
+.prompt-1 .speak {
+  width: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(2);
+  transition: all 1s ease;
+}
+.prompt-2 .speak {
+  width: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(150%, -10%) scale(.8);
+  transition: all 1s ease;
+}
+.prompt-2 .speak svg {
+  fill: #4a5057 ;
+}
+.prompt-1 .speak svg {
+  animation: micAnim 5s ease 0s infinite ;
+}
+
+
+.prompt-1 .think {
+  width: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(125%, -50%) scale(.8);
+  transition: all 1s ease;
+}
+.prompt-2 .think {
+  width: 50px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 0%) scale(2);
+  transition: all 1s ease;
+}
+.prompt-1 .think svg {
+  fill: #4a5057 ;
+}
+.prompt-2 .think svg {
+  animation: bubbleAnim 4s ease 0s ;
+  fill: var(--buttons) ;
+}
+
+
+
+
+
+
+
+/* ANIMATIONS */
+
+/* .popup-mic {
+  animation: micAnim 5s ease 0s infinite;
+} */
+
 @keyframes micAnim {
 	0%, 40%, 100% {
     fill:var(--svg-inactive);
@@ -246,9 +329,10 @@ i, b {
 	}
 }
 
-.popup-bubble {
+/* .popup-bubble {
   animation: bubbleAnim 4s ease 0s;
-}
+} */
+
 @keyframes bubbleAnim {
 	0%, 40%{
     fill:var(--svg-inactive);
@@ -257,29 +341,4 @@ i, b {
 		/* fill: #fbae7e; */
 		fill: var(--buttons) ;
 	}
-}
-
-/* button state classes */
-.controls-popup-active {
-  z-index: 2; 
-  top: 42%; 
-  transform: scale(1.3);
-  right: 1.6rem;
-  /* left: 50%; */
-}
-.listening {
-  /* fill: #fbae7e !important; */
-  fill: var(--buttons) !important;
-}
-.prompt-1 {
-  animation: micAnim 5s ease 0s infinite ;
-}
-.thinking {
-  /* fill: #fbae7e !important; */
-  fill: var(--buttons) !important;
-}
-.think .prompt-2 {
-  animation: bubbleAnim 4s ease 0s ;
-  /* fill: #fbae7e ; */
-  fill: var(--buttons) ;
 }
