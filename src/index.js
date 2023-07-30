@@ -6,7 +6,7 @@ import App from './App';
 //Firebase
 import { initializeApp } from "firebase/app";
 import { getApps } from 'firebase/app';
-
+import { getAnalytics } from "firebase/analytics";
 
 
 // Firebase config
@@ -37,6 +37,7 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 const firebaseApp = getApps()[0];
+const analytics = getAnalytics(firebaseApp);
 
 //render React App
 ReactDOM.render(

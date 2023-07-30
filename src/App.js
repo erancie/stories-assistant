@@ -1,6 +1,6 @@
 //shout out to Darwin Tech (https://www.youtube.com/watch?v=U2g--_TDYj4)
 //and Mohan Raj for inspo with this component (https://www.section.io/engineering-education/speech-recognition-in-javascript/)
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import {} from 'dotenv/config';
 import axios from 'axios';
 
@@ -26,39 +26,30 @@ export default function App() {
   const dbRef = useRef(null); 
   const sharedTextRef = useRef(null); 
 
+  const countRef = useRef(0); 
+
   useEffect(() => {
-    // Get a reference to the 'sharedText' node in the database
+    // Get reference to db and the 'sharedText' node in the db
     dbRef.current = getDatabase(); 
     sharedTextRef.current = ref(dbRef.current, 'sharedText'); 
-
     // Listen for changes in the 'sharedText' node
-    const callback = (snapshot) => {
-      // The snapshot contains the latest data in the 'sharedText' node
+    onValue(sharedTextRef.current, updateTextFromDB);
+    function updateTextFromDB (snapshot) { //runs everytime server sends update 
       const data = snapshot.val();
-      console.log('data from DB: '+ data)
-      //set text from db initially on load
       setText(data)
-      // sharedTextRef.set(data);
     };
-
-    onValue(sharedTextRef.current, callback);
-
-    // Clean up the listener when the component unmounts
-    return () => {
+    return () => { 
       console.log('Cleaning up listener');
-      off(sharedTextRef.current, 'value', callback);
+      off(sharedTextRef.current, 'value', updateTextFromDB);
     };
   }, []);
 
-  const handleTextChange = (e) => {
-    setText(e.target.value)
+  const handleTextChange = useCallback((e) => {//pure? sets all in react world (render flow)? //auto memoized if used as onclick reference?  worth memoizing with useCallback then? how to see instances of references. alot because text is changing a lot. useCallback = one reference. - works.
     setPreviousText(e.target.value);
-
-    // sharedTextRef.current.set(e.target.value);
-
     set(ref(dbRef.current, 'sharedText'), e.target.value);
-    // set(sharedTextRef(dbRef.current, 'sharedText'), e.target.value);
-  }
+    // setText(e.target.value)
+    console.log()
+  }, [])
 
   useEffect(()=>{
     //recognition
@@ -70,6 +61,8 @@ export default function App() {
       .map(result => result.transcript)
       .join('')
       setTranscript(' '+transcript);
+
+      //super expensive update db from here? =D
 
       //does this onerror need to be in onresult?
       recognition.onerror = event => console.log(event.error) 
@@ -88,19 +81,17 @@ export default function App() {
         recognition.stop();  
         //onend when stopped adds transcript from listening to text
         recognition.onend =()=> { 
-          setText(currText =>{
-            setPreviousText(currText)
-            const newText = currText + transcript
-            return newText.trim()
-          } )
+          setPreviousText(text) //text set everytime mic clicked
+          const newText = text + transcript
+          set(ref(dbRef.current, 'sharedText'), newText);
           setTranscript('')
         }
       }
     }
-    handleListen(); console.log('handleListen()');
+    handleListen(); 
   }, [isListening])
 
-  async function sendPrompt() {
+  async function getAnswer() {
     try {
       setIsThinking(true)
       const requestBody = { text }; 
@@ -110,11 +101,24 @@ export default function App() {
       }
       let response = await axios.post( postURL, requestBody );
       const result = response.data.result;
-      setText((prev) => {
-        setPreviousText(prev);
-        setIsThinking(false)
-        return prev + ' ' + result;
-      });
+
+      setPreviousText(text);
+      const newText = text + ' ' + result;
+      set(ref(dbRef.current, 'sharedText'), newText);
+      setIsThinking(false)
+
+      //use this instead of setText because chnages to db will be pushed to all clients triggering update of text
+      //saves updating text after every client action
+      //will only update on db listener ^^^
+
+      // setText((prev) => {
+      //   setPreviousText(prev);
+      //   setIsThinking(false)
+      //   const newText = prev + ' ' + result;
+      //   set(ref(dbRef.current, 'sharedText'), newText);
+      //   return newText;
+      // });
+
     } catch (error) {
       console.log(error)
       setIsThinking(false)
@@ -127,6 +131,7 @@ export default function App() {
     setTimeout(() => {
       setHighlight(false);
     }, 300);
+    set(ref(dbRef.current, 'sharedText'), previousText);
     setText(previousText);
   };
 
@@ -309,7 +314,7 @@ export default function App() {
         </button>
 
         <button className={`think button col-12`} 
-                onClick={ (promptNo!==3) ? ()=>setPromptNo(2) : sendPrompt} 
+                onClick={ (promptNo!==3) ? ()=>setPromptNo(2) : getAnswer} 
                 disabled={isThinking || isListening} >
           <svg className={`${isThinking && 'thinking'}`} viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
             <path d="M19.86 5.62457C17.898 4.57039 15.718 4.01619 13.5 4.01619C6.05597 4.01619 0 10.0963 0 17.57C0 25.0436 6.05597 31.1237 13.5 31.1237H13.616C14.828 34.1557 17.706 36.1436 21 36.1436C24.048 36.1436 26.814 34.3746 28.148 31.6578C29.406 31.969 30.698 32.1276 32 32.1276C40.8219 32.1276 48 24.9211 48 16.0639C48 1.33982 29.1671 -5.31918 19.86 5.62457Z" />
