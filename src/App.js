@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react'
 import {} from 'dotenv/config';
 import axios from 'axios';
 
-import { getDatabase, ref, onValue, set, off } from 'firebase/database';
+import { getDatabase, ref, onValue, set, off, get, child, push, update, remove, addListenerForSingleValueEvent } from 'firebase/database';
 
 //Speech Rec.
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -17,40 +17,161 @@ export default function App() {
 
   const [isListening, setIsListening ] = useState(false)
   const [isThinking, setIsThinking ] = useState(false)
+  const [title, setTitle ] = useState('')
   const [text, setText ] = useState('')
   const [transcript, setTranscript ] = useState('')
   const [previousText, setPreviousText] = useState('');
   const [highlight, setHighlight] = useState(false);
   const [promptNo, setPromptNo] = useState(1);
 
-  const dbRef = useRef(null); 
-  const sharedTextRef = useRef(null); 
+  const [newSessionTitle, setNewSessionTitle] = useState('');
 
-  const countRef = useRef(0); 
+    
+  const [user, setUser] = useState({})
+  const [publicSessions, setPublicSessions] = useState([])  //later - filter public sessions from all
+  const [currentSession, setCurrentSession] = useState()
+  //bring in owned sessions
+  // const [userOwnedSessions, setUserOwnedSessions] = useState([])
+  //then bring in other connected sessions
+  // const [connectedSessions, setConnectedSessions] = useState([])
 
-  useEffect(() => {
-    // Get reference to db and the 'sharedText' node in the db
-    dbRef.current = getDatabase(); 
-    sharedTextRef.current = ref(dbRef.current, 'sharedText'); 
-    // Listen for changes in the 'sharedText' node
-    onValue(sharedTextRef.current, updateTextFromDB);
-    function updateTextFromDB (snapshot) { //runs everytime server sends update 
-      const data = snapshot.val();
-      setText(data)
+  //db paths
+  const dbRef = useRef(getDatabase()); 
+
+      
+      //Next Func
+  
+      //Owned Sessions/////////
+      /////////////////////////////
+      //create owned session list on user
+      //link session owner and session on creation of session
+      
+      //(Later)
+      //create other connected sessions list on user
+
+
+
+  const createUser = (username = 'New User')=> {
+    const userData = {
+      username: username,
     };
-    return () => { 
-      console.log('Cleaning up listener');
-      off(sharedTextRef.current, 'value', updateTextFromDB);
-    };
-  }, []);
+    // Push new User and generate key/id.
+    const newPostKey = push(child(ref(dbRef.current), 'users')).key;
+    // Write the new post's data 
+    const updates = {};
+    updates['/users/' + newPostKey] = userData;
+    return update(ref(dbRef.current), updates);
+  }
+  // useEffect(()=> {
+  //   // createUser('Patrick Dangerfield')
+  // }, [])
+  //get user
 
-  const handleTextChange = useCallback((e) => {//pure? sets all in react world (render flow)? //auto memoized if used as onclick reference?  worth memoizing with useCallback then? how to see instances of references. alot because text is changing a lot. useCallback = one reference. - works.
-    setPreviousText(e.target.value);
-    set(ref(dbRef.current, 'sharedText'), e.target.value);
-    // setText(e.target.value)
-    console.log()
+  //load user
+  useEffect(()=>{
+    const userId = '-Nal3cg_16xkVyRu-L8i'; //change this w/ uid from login
+    onValue(ref(dbRef.current, `users/${userId}`), (snapshot) => {
+      const user = snapshot.val();
+      console.log(user)
+      setUser(user)
+    },
+    { onlyOnce: true }
+    );
   }, [])
 
+  //create session
+  const createSession = useCallback((uid, username, title, text = null)=> {
+    const sessionData = {
+      // owner: username,
+      // uid: uid,
+      text: text,
+      title: title,
+    };
+    const newSessionKey = push(child(ref(dbRef.current), 'sessions')).key;
+    //After - Write the new post's data simultaneously in the sessions list and the users owned sessions list.
+    const updates = {};
+    updates['/sessions/' + newSessionKey] = sessionData;
+    // updates['/users/' + uid + '/ownedSessions/' + newSessionKey] = sessionData;
+    update(ref(dbRef.current), updates)
+    .then(() => {
+      console.log('session created')
+      setCurrentSession(newSessionKey)
+    })
+    .catch((error) => {
+      console.log('failed to create session')
+    });
+  },[])
+
+  //get public sessions -//later - filter public sessions from all 
+  useEffect(()=>{ // How to load just titles and id? (not all text data)
+    onValue(ref(dbRef.current, `sessions`), (snapshot) => {
+      const sessions = snapshot.val();
+      console.log('SESSIONS FROM DB')
+      console.log(sessions)
+      setPublicSessions(sessions)
+    },
+    // { onlyOnce: true }
+    );
+  }, [])
+
+  //delete session
+  const deleteSession = useCallback((sessionId)=>{
+    console.log('removing session')
+    console.log(sessionId)
+    const remRef = ref(dbRef.current, `sessions/${sessionId}`)
+    remove(remRef)
+    .then(()=> {
+      console.log("Remove succeeded.")
+    })
+    .catch((e)=> {
+      console.log("Remove failed: " + e.message)
+    });
+    // set(ref(dbRef.current, `sessions/${sessionId}`), null); //other way to delete - make null
+    setCurrentSession(null)
+  },[]) 
+
+  //setup title listener whenever session changes
+  useEffect(() => {
+    const db = dbRef.current;
+    // Listen for changes in the '/title' node
+    onValue(ref(dbRef.current, `sessions/${currentSession}/title`), updateTitleFromDB);
+    function updateTitleFromDB (snapshot) {  
+      const data = snapshot.val();
+      if(data === null) setCurrentSession(null)
+      else setTitle(data)
+    };
+    return () => { 
+      console.log('Cleaning up title listener');
+      off(ref(db, `sessions/${currentSession}/title`), 'value', updateTitleFromDB);
+    };
+  }, [currentSession]);
+
+  //setup text listener whenever session changes
+  useEffect(() => {
+    const db = dbRef.current;
+    // Listen for changes in the '/text' node
+    onValue(ref(dbRef.current, `sessions/${currentSession}/text`), updateTextFromDB);
+    function updateTextFromDB (snapshot) { 
+      const data = snapshot.val();
+      //fix wiping shared Text when brand new client hits undo
+      // setPreviousText(data) //fixes, breaks undo VVVVVVV
+      if(data === null) setCurrentSession(null) 
+          //check if deleted (made null) by other clients - if so wipe session so cant set() new val in handleTextChange with sessionId and reinstate node
+      else setText(data)
+    };
+    return () => { 
+      console.log('Cleaning up text listener');
+      off(ref(db, `sessions/${currentSession}/text`), 'value', updateTextFromDB);
+    };
+  }, [currentSession]);
+
+  //Redeclares new node to write text to eveytime current Session changes
+  const handleTextChange = useCallback((e) => {
+    setPreviousText(e.target.value);
+    set(ref(dbRef.current, `sessions/${currentSession}/text`), e.target.value);
+  }, [currentSession])
+
+  //rec setup 
   useEffect(()=>{
     //recognition
     recognition.onstart = () => console.log('recognition.onstart()')
@@ -61,9 +182,7 @@ export default function App() {
       .map(result => result.transcript)
       .join('')
       setTranscript(' '+transcript);
-
       //super expensive update db from here? =D
-
       //does this onerror need to be in onresult?
       recognition.onerror = event => console.log(event.error) 
     }
@@ -83,7 +202,7 @@ export default function App() {
         recognition.onend =()=> { 
           setPreviousText(text) //text set everytime mic clicked
           const newText = text + transcript
-          set(ref(dbRef.current, 'sharedText'), newText);
+          set(ref(dbRef.current, `sessions/${currentSession}/text`), newText);
           setTranscript('')
         }
       }
@@ -104,38 +223,24 @@ export default function App() {
 
       setPreviousText(text);
       const newText = text + ' ' + result;
-      set(ref(dbRef.current, 'sharedText'), newText);
+      set(ref(dbRef.current, `sessions/${currentSession}/text`), newText);
       setIsThinking(false)
-
-      //use this instead of setText because chnages to db will be pushed to all clients triggering update of text
-      //saves updating text after every client action
-      //will only update on db listener ^^^
-
-      // setText((prev) => {
-      //   setPreviousText(prev);
-      //   setIsThinking(false)
-      //   const newText = prev + ' ' + result;
-      //   set(ref(dbRef.current, 'sharedText'), newText);
-      //   return newText;
-      // });
 
     } catch (error) {
       console.log(error)
       setIsThinking(false)
     }
   }
+  
 
   //clear function to undo last setText from speech and completion
-  const undo = () => {
+  const undo = () => { //broken 
     setHighlight(true);
     setTimeout(() => {
       setHighlight(false);
     }, 300);
-    set(ref(dbRef.current, 'sharedText'), previousText);
-    setText(previousText);
+    set(ref(dbRef.current, `sessions/${currentSession}/text`), previousText);
   };
-
-
 
   const mascot = ()=> {
     return (
@@ -264,29 +369,67 @@ export default function App() {
   }
 
   return (
-    <div className="App ">
+    <div className="App ">   {/* Factor into comps - push exclusive state down to them and pass in other needed state as props */}
 
       {/* Popups */}
       <Popups />
 
-      {/* Factor rest of these into comps - push exclusive state down to them and pass in other needed state as props */}
       
       {/* Header */}
-      <div className='header row mx-0'
-           style={promptNo!==3?{zIndex: 4}:null}
-      >
-        
-        <div className=' col-8 '>
+      <div className='header row mx-0' style={promptNo!==3?{zIndex: 4}:null} >
+        <div className=' col-7 '>
           <h1 className='title'>
             <div className='clever'><span className='c'>C</span>lever</div> 
             <div className='clive'> <span className='c2'>C</span>live</div>
           </h1>
         </div>
-
-        <div className='mascot-container position-relative col-4 mt-2'>
+        <div className='mascot-container position-relative col-3 mt-2'>
           {mascot()}
         </div>
+
+        <div className='profile-container col-2'>
+          <div className='profile-icon m-auto'>
+
+            {user.username && user.username.charAt(0)}
+          </div>
+        </div>
       </div>
+
+
+      {/* Public Sessions */}
+      <div className='public-sessions-container row'>
+        <h2>Text Pads</h2>
+        {(()=>{
+          let sessions = []
+          for (const sessionId in publicSessions) {
+            const session = publicSessions[sessionId]
+            sessions.push(
+            <div key={sessionId} className='session col-3'>
+              <p>{session.title}</p>
+              <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
+            </div>
+            )
+          }
+          return sessions
+        })()}
+
+        <div className='create-session col-1'>
+          <input  placeholder={`Sesson Title`}
+                  className='new-session-title' 
+                  type="text" 
+                  name='new-session-title' 
+                  onChange={(e)=>setNewSessionTitle(e.target.value)}
+                  value={ newSessionTitle }
+                  // disabled={}
+                  >
+          </input>
+          <button onClick={()=>{createSession(null, null, newSessionTitle, ''); setNewSessionTitle('')}}>
+            Create
+          </button>
+        </div>
+
+      </div>
+
 
       {/* Controls  */}
       <div className='controls-secondary' >
@@ -325,22 +468,76 @@ export default function App() {
       </div>
 
 
-      {/* Text */}
-      <textarea
-        placeholder={`Speak or type to start making something cool with Clive!`}
-        className='text' 
-        type="text" 
-        name='text' 
-        onChange={handleTextChange} 
-        // value={ (text || transcript) ? text + transcript : instructions() }
-        value={ text + transcript  }
-        disabled={isThinking || isListening}
-      >
-      </textarea>
+      {currentSession 
+        ?<>
+            <div className='session-title'>{title}</div>
+            <button className='delete-session' onClick={(e)=>deleteSession(currentSession)}>
+              Delete
+            </button>
+
+            <textarea
+              placeholder={ `Speak or type to start making somehing cool with Clive!` }
+              className='text' 
+              type="text" 
+              name='text' 
+              onChange={handleTextChange} 
+              value={ text + transcript } 
+              disabled={isThinking || isListening || currentSession===null}
+            >      
+            </textarea>
+         </>
+        :<p className='p-5' style={{color: 'rgb(95, 166, 134)'}}>Join a session to chat with Clive</p>
+      }
+
+
+
 
     </div>
   )
 }
+
+
+
+
+      //Future Func
+
+
+      // //// //User ///////////////
+      /////////////////////////////
+      // Login/Sign up 
+
+
+      // Friends //////////////
+      /////////////////
+
+      // {/* friends list */}
+
+      // Send friend request
+
+      // Accept friend request
+
+      // {/* invite using link */}
+      
+      // {/* invite using contacts from 3rd party API */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //- does removing popup from dom effect buttons transition?
 

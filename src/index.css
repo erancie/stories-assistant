@@ -7,21 +7,11 @@ body,html {
   box-sizing: border-box;
 }
 :root {
-  /* --buttons: #fbae7e ; */
   --buttons: #44da79 ;
   --svg-inactive: #c1ccda ;
 
-  --purple: #945ace ;
-  --light-purple: #b69afd;
-  --tan: #bcbaa4 ;
-  --btn-text: rgb(170, 177, 254);
-  --text: rgb(173, 176, 203);
-  /* --text-bg:  #34395b; */
-  --text-bg:  rgb(34, 34, 54);
-  /* background: #1E2134;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background: radial-gradient(at 10% 10%, rgb(41, 44, 76) 0%, rgb(28 24 38) 100%); */
+  --header-height: 112px;
+ 
 }
 body {
   text-align: center;
@@ -47,7 +37,7 @@ i, b {
 /* // Header // */
 
 .header {
-  height: 112px;
+  height: var(--header-height);
   /* border-bottom: 1px solid #181b2d; */
   /* box-shadow: 0px 6px 6px 0px #7a84be; */
   width: 100%;
@@ -339,4 +329,47 @@ i, b {
 		/* fill: #fbae7e; */
 		fill: var(--buttons) ;
 	}
+}
+
+/* Profile */
+.profile-icon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  /* background: ##4a5c79 */
+  border: 1px solid #4a5c79;
+  border-radius: 20px;
+  top: 50%;
+  transform: translate(0%, -50%);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #4a5c79;
+  /* box-shadow: 0 2px 5px #ffffff77; */
+}
+
+
+/* sessions */
+
+.public-sessions-container, .owned-sessions-container {
+  /* height: 100px; */
+  border: 1px solid grey;
+  padding: 4px;
+  text-align: left;
+}
+
+.session {
+  text-align: center;
+  border: 1px solid lightgrey
+}
+
+.create-session {
+  border: 1px solid rgb(70, 113, 148);
+}
+
+
+.delete-session {
+  /* z-index: 2; */
+  /* position: absolute; */
+  /* top: 0;
+  right: 0; */
 }
