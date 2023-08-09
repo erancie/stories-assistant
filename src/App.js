@@ -3,8 +3,13 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import {} from 'dotenv/config';
 import axios from 'axios';
+import { getDatabase, ref, onValue, set, off, query, child, push, update, orderByChild, equalTo } from 'firebase/database';
+import { getAuth } from "firebase/auth";
 
-import { getDatabase, ref, onValue, set, off, get, child, push, update, remove, addListenerForSingleValueEvent } from 'firebase/database';
+
+import SignIn from './Components/SignIn';
+import Signup from './Components/Signup';
+
 
 //Speech Rec.
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -24,113 +29,166 @@ export default function App() {
   const [highlight, setHighlight] = useState(false);
   const [promptNo, setPromptNo] = useState(1);
 
-  const [newSessionTitle, setNewSessionTitle] = useState('');
-
-    
-  const [user, setUser] = useState({})
-  const [publicSessions, setPublicSessions] = useState([])  //later - filter public sessions from all
-  const [currentSession, setCurrentSession] = useState()
-  //bring in owned sessions
-  // const [userOwnedSessions, setUserOwnedSessions] = useState([])
-  //then bring in other connected sessions
-  // const [connectedSessions, setConnectedSessions] = useState([])
-
   //db paths
   const dbRef = useRef(getDatabase()); 
 
-      
-      //Next Func
-  
-      //Owned Sessions/////////
-      /////////////////////////////
-      //create owned session list on user
-      //link session owner and session on creation of session
-      
-      //(Later)
-      //create other connected sessions list on user
+  const [newSessionTitle, setNewSessionTitle] = useState('');
+  const [publicSessions, setPublicSessions] = useState()  //later - filter public sessions from all
+  const [currentSession, setCurrentSession] = useState()
+  const [userOwnedSessions, setUserOwnedSessions] = useState()
+
+  const [onlineUsers, setOnlineUsers] = useState() //
+
+  const [userData, setUserData] = useState() //
+
+  // const [connectedSessions, setConnectedSessions] = useState([]) //sessionHistory ?
+
+      //        >---- Next Func --->
+
+      //FIX: session created by one user being owned by another
+
+      // Profile comp 
+        // Change displayName
+        // Add Logout 
+     
+      // Session - Show Joined Users
+
+      // Add Security Rules - users & sessions? //https://medium.com/@juliomacr/10-firebase-realtime-database-rule-templates-d4894a118a98
 
 
 
-  const createUser = (username = 'New User')=> {
-    const userData = {
-      username: username,
-    };
-    // Push new User and generate key/id.
-    const newPostKey = push(child(ref(dbRef.current), 'users')).key;
-    // Write the new post's data 
-    const updates = {};
-    updates['/users/' + newPostKey] = userData;
-    return update(ref(dbRef.current), updates);
-  }
-  // useEffect(()=> {
-  //   // createUser('Patrick Dangerfield')
-  // }, [])
-  //get user
-
-  //load user
   useEffect(()=>{
-    const userId = '-Nal3cg_16xkVyRu-L8i'; //change this w/ uid from login
-    onValue(ref(dbRef.current, `users/${userId}`), (snapshot) => {
-      const user = snapshot.val();
-      console.log(user)
-      setUser(user)
-    },
-    { onlyOnce: true }
-    );
+    console.log(`userData`)
+    console.log(userData)
+  },[userData])
+
+
+  //Utilities
+  const checkIsSessionOwned = useCallback(()=> {
+    let isSessionOwned;
+    for (let key in userOwnedSessions) {
+      console.log('key:')
+      console.log(key)
+      if( key === currentSession){
+        isSessionOwned = true;
+      }
+    }
+    return isSessionOwned
+  }, [userOwnedSessions, currentSession])
+
+
+  //////      Actions      ///////////////////////
+
+  // Get Online Users
+  useEffect(()=>{ 
+    const db = dbRef.current;
+    const usersRef = ref(db, 'users');
+    const onlineUsersQuery = query(usersRef, orderByChild('online'), equalTo(true));
+
+    onValue(onlineUsersQuery, getUsers );
+    function getUsers(snapshot) {
+      const users = snapshot.val();
+      console.log('Online Users Listener')
+      console.log(users)
+      setOnlineUsers(users)
+    }
+    return ()=> {
+      console.log('cleaning Online Users listener');
+      off(ref(db, `users`), 'value', getUsers );
+    }
   }, [])
 
-  //create session
-  const createSession = useCallback((uid, username, title, text = null)=> {
-    const sessionData = {
-      // owner: username,
-      // uid: uid,
-      text: text,
-      title: title,
-    };
-    const newSessionKey = push(child(ref(dbRef.current), 'sessions')).key;
-    //After - Write the new post's data simultaneously in the sessions list and the users owned sessions list.
-    const updates = {};
-    updates['/sessions/' + newSessionKey] = sessionData;
-    // updates['/users/' + uid + '/ownedSessions/' + newSessionKey] = sessionData;
-    update(ref(dbRef.current), updates)
-    .then(() => {
-      console.log('session created')
-      setCurrentSession(newSessionKey)
-    })
-    .catch((error) => {
-      console.log('failed to create session')
-    });
-  },[])
-
-  //get public sessions -//later - filter public sessions from all 
-  useEffect(()=>{ // How to load just titles and id? (not all text data)
-    onValue(ref(dbRef.current, `sessions`), (snapshot) => {
+  // Get Public Sessions
+  useEffect(()=>{ 
+    const db = dbRef.current;
+    onValue(ref(db, `sessions`), getSessions );
+    function getSessions(snapshot) {
       const sessions = snapshot.val();
-      console.log('SESSIONS FROM DB')
+      console.log('Public Sessions Listener')
       console.log(sessions)
       setPublicSessions(sessions)
-    },
-    // { onlyOnce: true }
-    );
+    }
+    return ()=> {
+      console.log('cleaning Public Sessions listener');
+      off(ref(db, `sessions`), 'value', getSessions );
+    }
   }, [])
+     //later - filter public sessions from all 
+     // How to load just titles and id? (not all text data).
+     // FIX: avoid dl all session data on every change in session
+     // Get list of just session IDs
+     // How to listen to just session creation.
 
-  //delete session
-  const deleteSession = useCallback((sessionId)=>{
-    console.log('removing session')
-    console.log(sessionId)
-    const remRef = ref(dbRef.current, `sessions/${sessionId}`)
-    remove(remRef)
-    .then(()=> {
-      console.log("Remove succeeded.")
-    })
-    .catch((e)=> {
-      console.log("Remove failed: " + e.message)
-    });
-    // set(ref(dbRef.current, `sessions/${sessionId}`), null); //other way to delete - make null
-    setCurrentSession(null)
-  },[]) 
 
-  //setup title listener whenever session changes
+  //Get Your Sessions
+  useEffect(()=>{ 
+    const db = dbRef.current;
+    onValue(ref(db, `users/${userData && userData.uid}/ownedSessions`), getYourSessions );
+    function getYourSessions (snapshot) {
+      const ownedSessions = snapshot.val();
+      setUserOwnedSessions(ownedSessions)
+    }
+    return ()=> off(ref(db, `users/${userData && userData.uid}/ownedSessions`), 'value', getYourSessions );
+  }, [userData])
+        // How to load just titles and id? (not all text data). - only write id in owned sessions list when creating session. 
+
+
+  //Create Session
+  const createSession = useCallback(( title, text = null)=> {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    console.log('Create Session - User: ')
+    console.log(user)
+    if (user) {
+      const uid = user.uid;
+      const sessionData = {
+        ownerId: uid,
+        text: text,
+        title: title,
+      };
+      const sessionId = push(child(ref(dbRef.current), 'sessions')).key;
+      const updates = {};
+      updates['/sessions/' + sessionId] = sessionData;
+      updates['/users/' + uid + '/ownedSessions/'+ sessionId ] = true; //connect to owner
+      update(ref(dbRef.current), updates)
+      .then(() => {
+        console.log('session created')
+        setCurrentSession(sessionId)
+      })
+      .catch((error) => {
+        console.log('failed to create session')
+      });
+    } else {
+      console.log('User is not authenticated');
+    }
+  },[])
+
+
+  //Delete Session 
+  const deleteSession = useCallback((sessionId, uid)=>{
+    //permission - check if session is currently owned (put this check in backend?)
+    if( checkIsSessionOwned() ){
+      console.log('currentSession IS in ownedSessions')
+      const updates = {};
+      updates['/sessions/' + sessionId] = null; //delete
+      updates['/users/' + uid + '/ownedSessions/' + sessionId] = null; 
+      update(ref(dbRef.current), updates)
+      .then(()=> {
+        console.log("Remove succeeded.")
+        console.log(sessionId)
+      })
+      .catch((e)=> {
+        console.log("Remove failed: " + e.message)
+      });
+      // set(ref(dbRef.current, `sessions/${sessionId}`), null); //other way to delete - make null
+      setCurrentSession(null)
+    }else{
+      console.log('currentSession IS NOT in ownedSessions')
+    }
+  },[ checkIsSessionOwned ]) 
+
+
+  //Setup title listener when session changes
   useEffect(() => {
     const db = dbRef.current;
     // Listen for changes in the '/title' node
@@ -146,7 +204,7 @@ export default function App() {
     };
   }, [currentSession]);
 
-  //setup text listener whenever session changes
+  //Setup text listener when session changes
   useEffect(() => {
     const db = dbRef.current;
     // Listen for changes in the '/text' node
@@ -165,13 +223,13 @@ export default function App() {
     };
   }, [currentSession]);
 
-  //Redeclares new node to write text to eveytime current Session changes
+  //Handle Session Text Change > Resets when Current Session changes
   const handleTextChange = useCallback((e) => {
     setPreviousText(e.target.value);
     set(ref(dbRef.current, `sessions/${currentSession}/text`), e.target.value);
   }, [currentSession])
 
-  //rec setup 
+  //Speech rec. setup 
   useEffect(()=>{
     //recognition
     recognition.onstart = () => console.log('recognition.onstart()')
@@ -189,6 +247,7 @@ export default function App() {
     //try out here?
   }, [])
 
+  //Handle listening for speech
   useEffect(()=>{
     const handleListen = () => {
       if(isListening){                                   
@@ -210,6 +269,7 @@ export default function App() {
     handleListen(); 
   }, [isListening])
 
+  //Clive Completion
   async function getAnswer() {
     try {
       setIsThinking(true)
@@ -232,8 +292,7 @@ export default function App() {
     }
   }
   
-
-  //clear function to undo last setText from speech and completion
+  //Undo last setText from speech and completion
   const undo = () => { //broken 
     setHighlight(true);
     setTimeout(() => {
@@ -242,6 +301,8 @@ export default function App() {
     set(ref(dbRef.current, `sessions/${currentSession}/text`), previousText);
   };
 
+
+  //UI Elements /////////////////
   const mascot = ()=> {
     return (
       <>
@@ -368,13 +429,16 @@ export default function App() {
     else return null
   }
 
+
   return (
     <div className="App ">   {/* Factor into comps - push exclusive state down to them and pass in other needed state as props */}
 
-      {/* Popups */}
+      <SignIn setUserData={setUserData} />
+
+      <Signup setUserData={setUserData} />
+
       <Popups />
 
-      
       {/* Header */}
       <div className='header row mx-0' style={promptNo!==3?{zIndex: 4}:null} >
         <div className=' col-7 '>
@@ -389,30 +453,43 @@ export default function App() {
 
         <div className='profile-container col-2'>
           <div className='profile-icon m-auto'>
-
-            {user.username && user.username.charAt(0)}
+            {/* {userData.displayName.charAt(0)} */}
+            {userData && userData.displayName && userData.displayName.charAt(0)}
+            {/* must check userData parent object has been defined from SignIn
+               - otherwise "cannot read property of undefined 'username'" */}
           </div>
         </div>
       </div>
 
 
-      {/* Public Sessions */}
-      <div className='public-sessions-container row'>
-        <h2>Text Pads</h2>
-        {(()=>{
-          let sessions = []
-          for (const sessionId in publicSessions) {
-            const session = publicSessions[sessionId]
-            sessions.push(
-            <div key={sessionId} className='session col-3'>
-              <p>{session.title}</p>
-              <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
-            </div>
-            )
-          }
-          return sessions
-        })()}
+      {/* Users Menu */}
+      <div className='lobby-menu'>
+        <h3>Lobby</h3>
+        <div className='online-users-container row'>
+          <h5>Online</h5>
 
+          {(()=>{
+                let users = []
+                for (const userId in onlineUsers) {
+                  const user = onlineUsers[userId]
+                  users.push(
+                  <div key={userId} className='user col-2'>
+                    <p>{user.displayName}</p>
+                    {/* <button onClick={()=>setOtherUserProfile(userId)}>Join</button> */}
+                  </div>
+                  )
+                }
+                return users
+              })()}
+
+        </div>
+      </div>
+
+      {/* Sessions Menu */}
+      <div className='sessions-menu'>
+        <h3>Sessions</h3>
+
+        {/* Create Session */}
         <div className='create-session col-1'>
           <input  placeholder={`Sesson Title`}
                   className='new-session-title' 
@@ -423,9 +500,55 @@ export default function App() {
                   // disabled={}
                   >
           </input>
-          <button onClick={()=>{createSession(null, null, newSessionTitle, ''); setNewSessionTitle('')}}>
+          {/* <button onClick={()=>{createSession(userId, user.username, newSessionTitle, ''); setNewSessionTitle('')}}> */}
+          <button onClick={()=>{createSession( newSessionTitle, ''); setNewSessionTitle('')}}>
             Create
           </button>
+        </div>
+
+        {/* Public Sessions */}
+        <div className='public-sessions-container row'>
+          <h5>Public</h5>
+          {/* 
+            REQ SPECIFIC DATA ON SPECIFIC ACTIONS
+            Not all data on all/many actions
+
+            Just keep track of IDs in publicSessions? - not all data
+              
+            Query db here only for data needed (session.title) absed on ID. 
+
+          */}
+          {(()=>{
+            let sessions = []
+            for (const sessionId in publicSessions) {
+              const session = publicSessions[sessionId]
+              sessions.push(
+              <div key={sessionId} className='session col-3'>
+                <p>{session.title}</p>
+                <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
+              </div>
+              )
+            }
+            return sessions
+          })()}
+        </div>
+
+        {/* Your Sessions  */}
+        <div className='public-sessions-container row'>
+          <h5>Your Sessions</h5>
+          {(()=>{
+            let sessions = []
+            for (const sessionId in userOwnedSessions) {//get session id
+              const session = publicSessions[sessionId] //get all session data
+              sessions.push(
+              <div key={sessionId} className='session col-3'>
+                <p>{session && session.title}</p>
+                <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
+              </div>
+              )
+            }
+            return sessions
+          })()}
         </div>
 
       </div>
@@ -469,28 +592,39 @@ export default function App() {
 
 
       {currentSession 
-        ?<>
+        ?
+        <div className='session'>
+
+          <div className='session-header'>
+
             <div className='session-title'>{title}</div>
-            <button className='delete-session' onClick={(e)=>deleteSession(currentSession)}>
+
+            { checkIsSessionOwned() &&
+            <button className='delete-session' onClick={(e)=>deleteSession(currentSession, userData.uid)}>
               Delete
+            </button>}
+
+            <button className='leave-session' onClick={()=>setCurrentSession(null)}>
+              Leave
             </button>
 
-            <textarea
-              placeholder={ `Speak or type to start making somehing cool with Clive!` }
-              className='text' 
-              type="text" 
-              name='text' 
-              onChange={handleTextChange} 
-              value={ text + transcript } 
-              disabled={isThinking || isListening || currentSession===null}
-            >      
-            </textarea>
-         </>
-        :<p className='p-5' style={{color: 'rgb(95, 166, 134)'}}>Join a session to chat with Clive</p>
+          </div>
+
+          <textarea
+            placeholder={ `Speak or type to start making somehing cool with Clive!` }
+            className='text' 
+            type="text" 
+            name='text' 
+            onChange={handleTextChange} 
+            value={ text + transcript } 
+            disabled={isThinking || isListening || currentSession===null}
+          >      
+          </textarea>
+
+        </div>
+        :
+        <p className='p-5' style={{color: 'rgb(95, 166, 134)'}}>Join a session to chat with Clive</p>
       }
-
-
-
 
     </div>
   )
@@ -499,52 +633,35 @@ export default function App() {
 
 
 
-      //Future Func
 
 
-      // //// //User ///////////////
-      /////////////////////////////
-      // Login/Sign up 
+        // Q's
+
+        // other/past connected sessions list on user?
+        // do sessions start and stop?
+        // should they become inactive?
+        // is there a need for a session history?
 
 
-      // Friends //////////////
-      /////////////////
+      // Have to be signed in to create session
+      // Unregistered Visitors can View (& Join?)
 
-      // {/* friends list */}
 
-      // Send friend request
 
-      // Accept friend request
-
-      // {/* invite using link */}
+      ////        Future Func        ////
+      ////////                  /////////
       
-      // {/* invite using contacts from 3rd party API */}
+      // Invite User to Session - Request/Accept
+
+      // Friends List - show Online & Offline - place in lobby & profile 
+        // Send friend request
+        // Accept friend request
+
+      // Invite to App/Session using link 
+      
+      // Invite to App/Session using contacts from 3rd party API - IG, FB, LI
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//- does removing popup from dom effect buttons transition?
-
-// Try this for fixing jumpy transition of buttons 
-// when unmounting popup from DOM - delay unmounting. 
-
-// https://stackoverflow.com/questions/55396622/add-animation-transition-to-element-when-removed-from-dom
-
-
-//IDEA: app that timelapses past iterations of running git commits
+    //APP IDEA: app that timelapses past iterations of running git commits

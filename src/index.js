@@ -11,7 +11,8 @@ import { getApps } from 'firebase/app';
 
 // Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyBzw3g21pF-6zluwehcH9BSphmh6vpcpR8",
+  // apiKey: "AIzaSyBzw3g21pF-6zluwehcH9BSphmh6vpcpR8",
+  apiKey: "AIzaSyBgjL9jAiJhZJPiCI_ds3hNXNDgSFyC1rU",
   authDomain: "singularity-b84a7.firebaseapp.com",
   databaseURL: "https://quickstories-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "singularity-b84a7",

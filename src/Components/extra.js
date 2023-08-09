@@ -1,14 +1,4 @@
 
-// how to make and search by id?
-
-
-// how to link objects in backend?
-
-// func to add remove
-
-// func to set/change current session
-
-
 
 //  ----DB Objects ----- 
 //
@@ -61,7 +51,7 @@
 
 //   -User id
 //     -Name
-//     -Owned/Connected session
+//            -Owned/Connected session
 
 //  -Session id
 //     -Title

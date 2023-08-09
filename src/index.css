@@ -348,15 +348,33 @@ i, b {
 }
 
 
-/* sessions */
+
+.sessions-menu h3, .lobby-menu h3 {
+  color: var(--buttons)
+}
+
+/* Lobby */
+
+
+.lobby-menu, .online-users-container {
+  /* height: 100px; */
+  border: 1px solid grey;
+  padding: 4px;
+  /* text-align: left; */
+}
+
+
+/* Sessions */
 
 .public-sessions-container, .owned-sessions-container {
   /* height: 100px; */
   border: 1px solid grey;
   padding: 4px;
-  text-align: left;
+  /* text-align: left; */
 }
-
+.online-users-container {
+  color: white
+}
 .session {
   text-align: center;
   border: 1px solid lightgrey
@@ -372,4 +390,13 @@ i, b {
   /* position: absolute; */
   /* top: 0;
   right: 0; */
+}
+
+.session{
+  position: relative;
+}
+.leave-session {
+  position: absolute;
+  top: 0;
+  right: 50px;
 }
