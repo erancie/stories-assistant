@@ -21,6 +21,8 @@ export default function App() {
 
   const dbRef = useRef(getDatabase()); 
 
+  const auth = getAuth();
+
   const [isListening, setIsListening ] = useState(false)
   const [isThinking, setIsThinking ] = useState(false)
   const [title, setTitle ] = useState('')
@@ -32,37 +34,60 @@ export default function App() {
 
 
   const [newSessionTitle, setNewSessionTitle] = useState('');
-  const [publicSessions, setPublicSessions] = useState()  //later - filter public sessions from all
+  const [publicSessions, setPublicSessions] = useState()  
   const [currentSession, setCurrentSession] = useState()
   const [userOwnedSessions, setUserOwnedSessions] = useState()
 
-  const [onlineUsers, setOnlineUsers] = useState() //
-  const [userData, setUserData] = useState() //
+  const [onlineUsers, setOnlineUsers] = useState() 
+  const [userData, setUserData] = useState() 
+  const [isLoggedIn, setIsLoggedIn] = useState() 
 
 
-      //        >---- Next Func --->
+  // -------------------------------------------------------------------------------------
 
-      // Clean console messages
+      //        >---- Next Merp Derp Func Lerp --->
 
-      // Lengthen text area on additional text
 
-      // Loader comp - signing in 
 
-      // Login success popup
+      // Loader comp when signing in (popup/layover?) 
+      // Notification when logged in (timed notification)
 
-      // Input Validation - redirect w/ popup on error - start signin/up
+      // Generic Popup Comp with CSS classes
+        // Fixed || Timed Popup 
+        // Can click away
+        // Overlay bg color || no bg
 
-      // Change session name - owner only
 
-      // Profile comp 
-        // Change displayName
-        // Add Logout 
-     
-      // Session - Show Joined Users
+      //       --------------------------------
 
-      // Invite to session - Accept Invite to Session
 
-      // Factor comps - add styling
+      // Factor comps - styling - func
+
+        // Profile comp 
+          // Change displayName
+          // Add Logout 
+      
+        // Session comp
+          // Show Joined Users
+          // Change session name - owner only
+          // Lengthen text area on additional text
+
+
+      //       --------------------------------
+
+      // Input Validation    (start w/ signin/up comps)
+          //- litte input popup if invalid before submit
+          //- redirect w/ popup on firebase error after submit
+
+      // Invite to session - click user icon popup
+        //if user is in currentSession invite otherUser to sessionId
+        //if not in currentSession then createSession and invite otherUser
+
+      // Accept Invite to Session - popup
+        //if invites then show popup - accept button - setCurrentSession(sessionId)
+
+
+  ////////--------------------------------------------------------------------------------
 
 
   // useEffect(()=>{
@@ -72,8 +97,22 @@ export default function App() {
 
 
   //////      Actions      ///////////////////////
+  // Listen to Auth State - put this in useContext? or auth acts just like context?
+  useEffect(() => { 
+    auth.onAuthStateChanged((user) => { 
+      if (user) { //WHY is this showing logged in?
+          console.log('User: ')
+          console.log(user) //OPTION: can set user here instead of signup /signin ?
+          setIsLoggedIn(true)
+      } else {
+          console.log('Logged Out');
+          setIsLoggedIn(false)
+      }
+    });
+  }, []);
 
-  // Get Online Users
+
+  // Listen to Online Users
   useEffect(()=>{ 
     const db = dbRef.current;
     const usersRef = ref(db, 'users');
@@ -82,35 +121,35 @@ export default function App() {
     onValue(onlineUsersQuery, getUsers );
     function getUsers(snapshot) {
       const users = snapshot.val();
-      console.log('Online Users Listener')
-      console.log(users)
+      // console.log('Online Users Listener')
+      // console.log(users)
       setOnlineUsers(users)
     }
     return ()=> {
-      console.log('cleaning Online Users listener');
+      // console.log('cleaning Online Users listener');
       off(ref(db, `users`), 'value', getUsers );
     }
   }, [])
 
-  // Get Public Sessions
+  // Listen to Public Sessions
   useEffect(()=>{ 
     const db = dbRef.current;
     onValue(ref(db, `sessions`), getSessions );
     function getSessions(snapshot) {
       const sessions = snapshot.val();
-      console.log('Public Sessions Listener')
+      // console.log('Public Sessions Listener')
       console.log(sessions)
       setPublicSessions(sessions)
     }
     return ()=> {
-      console.log('cleaning Public Sessions listener');
+      // console.log('cleaning Public Sessions listener');
       off(ref(db, `sessions`), 'value', getSessions );
     }
      //OPT: How to load just titles and id needed for session menu on every change in session? (exclude text data).
      //     Query list of only session IDs and session titles.
   }, [])
 
-  //Get Your Sessions
+  //Listen to Your Sessions
   useEffect(()=>{ 
     const db = dbRef.current;
     onValue(ref(db, `users/${userData && userData.uid}/ownedSessions`), getYourSessions );
@@ -118,6 +157,7 @@ export default function App() {
       const ownedSessions = snapshot.val();
       setUserOwnedSessions(ownedSessions)
     }
+    //dont need cleanup if in top level
     return ()=> off(ref(db, `users/${userData && userData.uid}/ownedSessions`), 'value', getYourSessions );
     // OPT: Query only id and titles? (not text as well). 
     //      Only query text in session comp
@@ -129,7 +169,7 @@ export default function App() {
   const createSession = useCallback(( title, text = null)=> {
     const auth = getAuth();
     const user = auth.currentUser;
-    console.log('Create Session - User: ')
+    // console.log('Create Session - User: ')
     console.log(user)
     if (user) {
       const uid = user.uid;
@@ -191,7 +231,7 @@ export default function App() {
     }
   },[ checkIsSessionOwned ]) 
 
-  //Setup title listener when session changes
+  //Listen when session title changes
   useEffect(() => {
     const db = dbRef.current;
     // Listen for changes in the '/title' node
@@ -202,12 +242,12 @@ export default function App() {
       else setTitle(data)
     };
     return () => { 
-      console.log('Cleaning up title listener');
+      // console.log('Cleaning up title listener');
       off(ref(db, `sessions/${currentSession}/title`), 'value', updateTitleFromDB);
     };
   }, [currentSession]);
 
-  //Setup text listener when session changes
+  //Listen when session text changes
   useEffect(() => {
     const db = dbRef.current;
     // Listen for changes in the '/text' node
@@ -221,7 +261,7 @@ export default function App() {
       else setText(data)
     };
     return () => { 
-      console.log('Cleaning up text listener');
+      // console.log('Cleaning up text listener');
       off(ref(db, `sessions/${currentSession}/text`), 'value', updateTextFromDB);
     };
   }, [currentSession]);
@@ -434,9 +474,15 @@ export default function App() {
   return (
     <div className="App ">   {/* Factor into comps - push exclusive state down to them and pass in other needed state as props */}
 
-      <SignIn setUserData={setUserData} />
-
-      <Signup setUserData={setUserData} />
+      {isLoggedIn ?
+        <div>
+          Logged In
+        </div>
+    :
+        <div>
+          Offline
+        </div>
+    }
 
       <Popups />
 
@@ -462,6 +508,10 @@ export default function App() {
         </div>
       </div>
 
+
+      <SignIn setUserData={setUserData} />
+
+      <Signup setUserData={setUserData} />
 
       {/* Users Menu */}
       <div className='lobby-menu'>

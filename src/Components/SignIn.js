@@ -1,23 +1,28 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, ref, update, onDisconnect } from 'firebase/database';
-
+import Notification from './Notification';
 
 const SignIn = ({ setUserData })=> {
 
   const dbRef = useRef(getDatabase()); 
   const [emailSignIn, setEmailSignIn] = useState('');
   const [passwordSignIn, setPasswordSignIn] = useState('');
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  // const [isSigningIn, setIsSigningIn] = useState(true);
+  const [justSignedIn, setJustSignedIn] = useState(false);
+  // const [justSignedIn, setJustSignedIn] = useState(true);
 
   //User SignIn
   const SignIn = useCallback((email, password) => { 
     console.log('Signing In')
+    setIsSigningIn(true)
     const auth = getAuth();
 
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       console.log(`User Signed In`)
-      const user = userCredential.user;
+      const user = userCredential.user; 
       return Promise.all([ 
         user,
         update(ref(dbRef.current, 'users/' + user.uid),{ online: true }),
@@ -26,36 +31,16 @@ const SignIn = ({ setUserData })=> {
     })
     .then(([user, updateResult, disconnectResult]) => {
       setUserData(user);
+      setIsSigningIn(false)
+      setJustSignedIn(true)
     })
     .catch((error) => {
       console.log( `Sign In Error`);
       console.log( `errorCode: ${error.code}`);
       console.log( `errorMessage: ${error.message}`);
-    }); //track success of all async tasks this way.
-
+      setIsSigningIn(false)
+    }); 
   },[])
-
-  //would this work better in App comp?
-  // useEffect(() => {
-  //   const auth = getAuth();
-
-  //   const unsubscribe = auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       update(ref(dbRef.current, 'users/' + user.uid),{
-  //         online: true
-  //       });
-  //       onDisconnect(ref(dbRef, 'users/' + user.uid)).update({
-  //         online: false
-  //       });
-  //     } else {
-  //         console.log('User is signed out');
-  //     }
-  //   });
-  //   return () => {//wouldn't you want to always have this listener on? If you clean it when unmounting app, it wont 'online: false'
-  //   //   unsubscribe(); //will this remove listener if I conditionally render SignIn
-  //   };
-  // }, []);
-
 
   return (
     <div className='SignIn'>
@@ -86,6 +71,23 @@ const SignIn = ({ setUserData })=> {
         Log In
       </button>
 
+      { isSigningIn && 
+          <Notification show={setIsSigningIn} 
+                        // noClickOut
+                        classes={`bg-color-dark-1`}
+                        loadMessage={'Signing in..'} 
+                        // backgroundColor={'rgba(6, 10, 20, 0.83)'}
+                        // background={'linear-gradient(180deg, rgba(6,10,20,1) 0%, rgba(16,24,43,0.80) 100%)'}
+                        /> }
+      { justSignedIn && 
+          <Notification show={setJustSignedIn} 
+                        loadMessage={"You're signed in!"} 
+                        // classes={'fade-anim green-text'} 
+                        classes={'fade-anim green-text bg-color-dark-1'} 
+                        timeout={2200} 
+                        
+                        /> }
+                      
     </div>
   )
 }

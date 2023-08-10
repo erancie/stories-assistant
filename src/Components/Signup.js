@@ -1,19 +1,23 @@
 import React, { useState, useRef, useCallback } from 'react'
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { getDatabase, update, onDisconnect, ref } from 'firebase/database';
-
+import Notification from './Notification';
 
 const Signup =({ setUserData })=> {
 
   const [emailSignup, setEmailSignup] = useState('');
   const [passwordSignup, setPasswordSignup] = useState('');
   const [nameSignup, setNameSignup] = useState('');
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  // const [isSigningIn, setIsSigningIn] = useState(true);
+  const [justSignedIn, setJustSignedIn] = useState(false);
+
   const dbRef = useRef(getDatabase()); 
 
   //Create User - SIGN UP 
   const createUser = useCallback((email, password, name = 'User')=> {
+    setIsSigningIn(true)
     const auth = getAuth();
-    
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       console.log(`User Created`)
@@ -29,14 +33,16 @@ const Signup =({ setUserData })=> {
     })
     .then(([user, updateProfileResult, updateResult, onDisconnectResult ]) => {
       console.log('Profile updated, user updated, on disconnect registered')
+      setIsSigningIn(false)
+      setJustSignedIn(true)
       setUserData(user)
     })
     .catch((error) => {
+      setIsSigningIn(false)
       console.log( `Error Creating User`);
       console.log( `errorCode: ${error.code}`);
       console.log( `errorMessage: ${error.message}`);
     });
-
   },[])
   
   return (
@@ -75,6 +81,19 @@ const Signup =({ setUserData })=> {
                         setNameSignup('') }} >
         Sign Up
       </button>
+
+
+      { isSigningIn && 
+          <Notification show={setIsSigningIn} 
+                        loadMessage={'Signing in..'} /> }
+      { justSignedIn && 
+          <Notification show={setJustSignedIn} 
+                        loadMessage={"You're signed in!"} 
+                        classes={'fade-anim green-text'} 
+                        timeout={2200} /> }
+
+      {/* { isSigningIn && <Notification show={setIsSigningIn} clickOut={true} loadMessage={'Signing In'} /> }
+      { justSignedIn && <Notification show={setJustSignedIn} clickOut={true} classes={'fade-anim green-text'} loadMessage={"You're signed in!"} /> } */}
 
     </div>
   )
