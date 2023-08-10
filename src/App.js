@@ -6,12 +6,11 @@ import axios from 'axios';
 import { getDatabase, ref, onValue, set, off, query, child, push, update, orderByChild, equalTo } from 'firebase/database';
 import { getAuth } from "firebase/auth";
 
-
 import SignIn from './Components/SignIn';
 import Signup from './Components/Signup';
 
 
-//Speech Rec.
+//Speech Rec. - should this be in App comp?
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const recognition = new SpeechRecognition()
 recognition.continuous = true
@@ -19,6 +18,8 @@ recognition.interimResults = true
 recognition.lang = 'en-US'
 
 export default function App() {
+
+  const dbRef = useRef(getDatabase()); 
 
   const [isListening, setIsListening ] = useState(false)
   const [isThinking, setIsThinking ] = useState(false)
@@ -29,8 +30,6 @@ export default function App() {
   const [highlight, setHighlight] = useState(false);
   const [promptNo, setPromptNo] = useState(1);
 
-  //db paths
-  const dbRef = useRef(getDatabase()); 
 
   const [newSessionTitle, setNewSessionTitle] = useState('');
   const [publicSessions, setPublicSessions] = useState()  //later - filter public sessions from all
@@ -38,14 +37,22 @@ export default function App() {
   const [userOwnedSessions, setUserOwnedSessions] = useState()
 
   const [onlineUsers, setOnlineUsers] = useState() //
-
   const [userData, setUserData] = useState() //
 
-  // const [connectedSessions, setConnectedSessions] = useState([]) //sessionHistory ?
 
       //        >---- Next Func --->
 
-      //FIX: session created by one user being owned by another
+      // Clean console messages
+
+      // Lengthen text area on additional text
+
+      // Loader comp - signing in 
+
+      // Login success popup
+
+      // Input Validation - redirect w/ popup on error - start signin/up
+
+      // Change session name - owner only
 
       // Profile comp 
         // Change displayName
@@ -53,28 +60,15 @@ export default function App() {
      
       // Session - Show Joined Users
 
-      // Add Security Rules - users & sessions? //https://medium.com/@juliomacr/10-firebase-realtime-database-rule-templates-d4894a118a98
+      // Invite to session - Accept Invite to Session
+
+      // Factor comps - add styling
 
 
-
-  useEffect(()=>{
-    console.log(`userData`)
-    console.log(userData)
-  },[userData])
-
-
-  //Utilities
-  const checkIsSessionOwned = useCallback(()=> {
-    let isSessionOwned;
-    for (let key in userOwnedSessions) {
-      console.log('key:')
-      console.log(key)
-      if( key === currentSession){
-        isSessionOwned = true;
-      }
-    }
-    return isSessionOwned
-  }, [userOwnedSessions, currentSession])
+  // useEffect(()=>{
+  //   console.log(`userData`)
+  //   console.log(userData)
+  // },[userData])
 
 
   //////      Actions      ///////////////////////
@@ -112,13 +106,9 @@ export default function App() {
       console.log('cleaning Public Sessions listener');
       off(ref(db, `sessions`), 'value', getSessions );
     }
+     //OPT: How to load just titles and id needed for session menu on every change in session? (exclude text data).
+     //     Query list of only session IDs and session titles.
   }, [])
-     //later - filter public sessions from all 
-     // How to load just titles and id? (not all text data).
-     // FIX: avoid dl all session data on every change in session
-     // Get list of just session IDs
-     // How to listen to just session creation.
-
 
   //Get Your Sessions
   useEffect(()=>{ 
@@ -129,9 +119,11 @@ export default function App() {
       setUserOwnedSessions(ownedSessions)
     }
     return ()=> off(ref(db, `users/${userData && userData.uid}/ownedSessions`), 'value', getYourSessions );
+    // OPT: Query only id and titles? (not text as well). 
+    //      Only query text in session comp
+    // Req specific session data on specific actions - Not all data on all/many actions
+    //   Means making more requests to db but for less data each time. - Is this more efficient?
   }, [userData])
-        // How to load just titles and id? (not all text data). - only write id in owned sessions list when creating session. 
-
 
   //Create Session
   const createSession = useCallback(( title, text = null)=> {
@@ -163,6 +155,18 @@ export default function App() {
     }
   },[])
 
+  //Utility
+  const checkIsSessionOwned = useCallback(()=> {
+    let isSessionOwned;
+    for (let key in userOwnedSessions) {
+      console.log('key:')
+      console.log(key)
+      if( key === currentSession){
+        isSessionOwned = true;
+      }
+    }
+    return isSessionOwned
+  }, [userOwnedSessions, currentSession])
 
   //Delete Session 
   const deleteSession = useCallback((sessionId, uid)=>{
@@ -186,7 +190,6 @@ export default function App() {
       console.log('currentSession IS NOT in ownedSessions')
     }
   },[ checkIsSessionOwned ]) 
-
 
   //Setup title listener when session changes
   useEffect(() => {
@@ -300,7 +303,6 @@ export default function App() {
     }, 300);
     set(ref(dbRef.current, `sessions/${currentSession}/text`), previousText);
   };
-
 
   //UI Elements /////////////////
   const mascot = ()=> {
@@ -429,7 +431,6 @@ export default function App() {
     else return null
   }
 
-
   return (
     <div className="App ">   {/* Factor into comps - push exclusive state down to them and pass in other needed state as props */}
 
@@ -509,19 +510,10 @@ export default function App() {
         {/* Public Sessions */}
         <div className='public-sessions-container row'>
           <h5>Public</h5>
-          {/* 
-            REQ SPECIFIC DATA ON SPECIFIC ACTIONS
-            Not all data on all/many actions
-
-            Just keep track of IDs in publicSessions? - not all data
-              
-            Query db here only for data needed (session.title) absed on ID. 
-
-          */}
           {(()=>{
             let sessions = []
             for (const sessionId in publicSessions) {
-              const session = publicSessions[sessionId]
+              const session = publicSessions[sessionId] //change this to req session text from db absed on seshId? check if efficient?
               sessions.push(
               <div key={sessionId} className='session col-3'>
                 <p>{session.title}</p>
@@ -538,8 +530,9 @@ export default function App() {
           <h5>Your Sessions</h5>
           {(()=>{
             let sessions = []
-            for (const sessionId in userOwnedSessions) {//get session id
-              const session = publicSessions[sessionId] //get all session data
+            for (const sessionId in userOwnedSessions) {//get session ids in ownedSessions
+              const session = publicSessions[sessionId] //get all session data from publicSessions
+              //Note: could you put make db req here for full session data (w/ text) if public sessions changes to only id and title?
               sessions.push(
               <div key={sessionId} className='session col-3'>
                 <p>{session && session.title}</p>
@@ -629,39 +622,3 @@ export default function App() {
     </div>
   )
 }
-
-
-
-
-
-
-        // Q's
-
-        // other/past connected sessions list on user?
-        // do sessions start and stop?
-        // should they become inactive?
-        // is there a need for a session history?
-
-
-      // Have to be signed in to create session
-      // Unregistered Visitors can View (& Join?)
-
-
-
-      ////        Future Func        ////
-      ////////                  /////////
-      
-      // Invite User to Session - Request/Accept
-
-      // Friends List - show Online & Offline - place in lobby & profile 
-        // Send friend request
-        // Accept friend request
-
-      // Invite to App/Session using link 
-      
-      // Invite to App/Session using contacts from 3rd party API - IG, FB, LI
-
-
-
-
-    //APP IDEA: app that timelapses past iterations of running git commits
