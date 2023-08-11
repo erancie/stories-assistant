@@ -13,15 +13,13 @@ recognition.lang = 'en-US'
 
 
 function Session({ userData,
-                                  currentSession, 
-                                  setCurrentSession, 
-                                  userOwnedSessions,
-                                  promptNo,
-                                  setPromptNo
-                                }) {
+                    currentSession, 
+                    setCurrentSession, 
+                    userOwnedSessions
+                  }) {  
   const dbRef = useRef(getDatabase()); 
 
-  const { highlight, isListening, isThinking, setHighlight, setIsListening, setIsThinking } = useCliveContext();
+  const { highlight, isListening, isThinking, promptNo, setPromptNo, setHighlight, setIsListening, setIsThinking } = useCliveContext();
   const [text, setText ] = useState('')
   const [title, setTitle ] = useState('')
   const [transcript, setTranscript ] = useState('')

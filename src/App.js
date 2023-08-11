@@ -356,8 +356,6 @@ export default function App() {
                  currentSession={currentSession}
                  setCurrentSession={setCurrentSession} 
                  userOwnedSessions={userOwnedSessions} 
-                 promptNo={promptNo}
-                 setPromptNo={setPromptNo}
         />
 
       </div>
