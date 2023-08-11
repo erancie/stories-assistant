@@ -10,8 +10,8 @@ const SignIn = ({ setUserData })=> {
   const [passwordSignIn, setPasswordSignIn] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
   // const [isSigningIn, setIsSigningIn] = useState(true);
-  const [justSignedIn, setJustSignedIn] = useState(false);
-  // const [justSignedIn, setJustSignedIn] = useState(true);
+  const [isJustSignedIn, setJustSignedIn] = useState(false);
+  // const [isJustSignedIn, setJustSignedIn] = useState(true);
 
   //User SignIn
   const SignIn = useCallback((email, password) => { 
@@ -73,19 +73,13 @@ const SignIn = ({ setUserData })=> {
 
       { isSigningIn && 
           <Notification show={setIsSigningIn} 
-                        // noClickOut
-                        classes={`bg-color-dark-1`}
                         loadMessage={'Signing in..'} 
-                        // backgroundColor={'rgba(6, 10, 20, 0.83)'}
-                        // background={'linear-gradient(180deg, rgba(6,10,20,1) 0%, rgba(16,24,43,0.80) 100%)'}
                         /> }
-      { justSignedIn && 
+      { isJustSignedIn && 
           <Notification show={setJustSignedIn} 
-                        loadMessage={"You're signed in!"} 
-                        // classes={'fade-anim green-text'} 
-                        classes={'fade-anim green-text bg-color-dark-1'} 
+                        loadMessage={"Signed in!"} 
+                        classes={'fade-anim green-text'} 
                         timeout={2200} 
-                        
                         /> }
                       
     </div>

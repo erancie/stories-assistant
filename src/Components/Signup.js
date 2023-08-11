@@ -10,7 +10,7 @@ const Signup =({ setUserData })=> {
   const [nameSignup, setNameSignup] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
   // const [isSigningIn, setIsSigningIn] = useState(true);
-  const [justSignedIn, setJustSignedIn] = useState(false);
+  const [isJustSignedIn, setJustSignedIn] = useState(false);
 
   const dbRef = useRef(getDatabase()); 
 
@@ -85,16 +85,14 @@ const Signup =({ setUserData })=> {
 
       { isSigningIn && 
           <Notification show={setIsSigningIn} 
-                        loadMessage={'Signing in..'} /> }
-      { justSignedIn && 
+                        loadMessage={'Signing in..'} 
+                        /> }
+      { isJustSignedIn && 
           <Notification show={setJustSignedIn} 
                         loadMessage={"You're signed in!"} 
                         classes={'fade-anim green-text'} 
-                        timeout={2200} /> }
-
-      {/* { isSigningIn && <Notification show={setIsSigningIn} clickOut={true} loadMessage={'Signing In'} /> }
-      { justSignedIn && <Notification show={setJustSignedIn} clickOut={true} classes={'fade-anim green-text'} loadMessage={"You're signed in!"} /> } */}
-
+                        timeout={2200} 
+                        /> }
     </div>
   )
 }

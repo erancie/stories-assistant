@@ -28,3 +28,11 @@
 
       // Have to be signed in to create session
       // Unregistered Visitors can View (& Join?)
+
+
+      //logger.ts:115 [2023-08-11T14:34:30.509Z]  
+      //@firebase/database: FIREBASE WARNING: 
+      //Using an unspecified index. 
+      //Your data will be downloaded and filtered on the client. 
+      //Consider adding ".indexOn": "online" at /users 
+      //to your security rules for better performance.

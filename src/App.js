@@ -2,82 +2,46 @@
 //and Mohan Raj for inspo with this component (https://www.section.io/engineering-education/speech-recognition-in-javascript/)
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import {} from 'dotenv/config';
-import axios from 'axios';
 import { getDatabase, ref, onValue, set, off, query, child, push, update, orderByChild, equalTo } from 'firebase/database';
 import { getAuth } from "firebase/auth";
 
 import SignIn from './Components/SignIn';
 import Signup from './Components/Signup';
 
+import Profile from './Components/Profile';
+import Session from './Components/Session';
 
-//Speech Rec. - should this be in App comp?
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-const recognition = new SpeechRecognition()
-recognition.continuous = true
-recognition.interimResults = true
-recognition.lang = 'en-US'
+import { CliveStateProvider, useCliveContext } from './Context/CliveStateContext';
 
 export default function App() {
 
   const dbRef = useRef(getDatabase()); 
-
   const auth = getAuth();
 
-  const [isListening, setIsListening ] = useState(false)
-  const [isThinking, setIsThinking ] = useState(false)
-  const [title, setTitle ] = useState('')
-  const [text, setText ] = useState('')
-  const [transcript, setTranscript ] = useState('')
-  const [previousText, setPreviousText] = useState('');
-  const [highlight, setHighlight] = useState(false);
-  const [promptNo, setPromptNo] = useState(1);
+  const { highlight, isListening, isThinking, promptNo, setHighlight, setIsListening, setIsThinking, setPromptNo} = useCliveContext;
 
-
-  const [newSessionTitle, setNewSessionTitle] = useState('');
   const [publicSessions, setPublicSessions] = useState()  
-  const [currentSession, setCurrentSession] = useState()
   const [userOwnedSessions, setUserOwnedSessions] = useState()
-
+  const [currentSession, setCurrentSession] = useState() //
   const [onlineUsers, setOnlineUsers] = useState() 
-  const [userData, setUserData] = useState() 
-  const [isLoggedIn, setIsLoggedIn] = useState() 
+  const [userData, setUserData] = useState() //
+  const [newSessionTitle, setNewSessionTitle] = useState('');
 
 
   // -------------------------------------------------------------------------------------
 
-      //        >---- Next Merp Derp Func Lerp --->
+      // >---- Next Merp Derp Func Lerp --->
 
-
-
-      // Loader comp when signing in (popup/layover?) 
-      // Notification when logged in (timed notification)
-
-      // Generic Popup Comp with CSS classes
-        // Fixed || Timed Popup 
-        // Can click away
-        // Overlay bg color || no bg
-
+      // Profile  
+        // Change displayName
+        // Expand
+    
+      // Session 
+        // Show Joined Users
+        // Change session name - owner only
+        // Lengthen text area on additional text
 
       //       --------------------------------
-
-
-      // Factor comps - styling - func
-
-        // Profile comp 
-          // Change displayName
-          // Add Logout 
-      
-        // Session comp
-          // Show Joined Users
-          // Change session name - owner only
-          // Lengthen text area on additional text
-
-
-      //       --------------------------------
-
-      // Input Validation    (start w/ signin/up comps)
-          //- litte input popup if invalid before submit
-          //- redirect w/ popup on firebase error after submit
 
       // Invite to session - click user icon popup
         //if user is in currentSession invite otherUser to sessionId
@@ -86,31 +50,29 @@ export default function App() {
       // Accept Invite to Session - popup
         //if invites then show popup - accept button - setCurrentSession(sessionId)
 
+      //       --------------------------------
 
-  ////////--------------------------------------------------------------------------------
-
-
-  // useEffect(()=>{
-  //   console.log(`userData`)
-  //   console.log(userData)
-  // },[userData])
+      // Input Validation    (start w/ signin/up comps)
+          //- litte input popup if invalid before submit
+          //- redirect w/ popup on firebase error after submit
 
 
-  //////      Actions      ///////////////////////
-  // Listen to Auth State - put this in useContext? or auth acts just like context?
+  //// --------------------------------------------------------------------------------
+
+
+  // Listen to Auth State  
   useEffect(() => { 
     auth.onAuthStateChanged((user) => { 
-      if (user) { //WHY is this showing logged in?
+      if (user) { 
           console.log('User: ')
-          console.log(user) //OPTION: can set user here instead of signup /signin ?
-          setIsLoggedIn(true)
+          console.log(user) 
+          setUserData(user)
       } else {
           console.log('Logged Out');
-          setIsLoggedIn(false)
       }
     });
   }, []);
-
+  // put this in useContext? or auth acts just like context?
 
   // Listen to Online Users
   useEffect(()=>{ 
@@ -137,12 +99,9 @@ export default function App() {
     onValue(ref(db, `sessions`), getSessions );
     function getSessions(snapshot) {
       const sessions = snapshot.val();
-      // console.log('Public Sessions Listener')
-      console.log(sessions)
       setPublicSessions(sessions)
     }
     return ()=> {
-      // console.log('cleaning Public Sessions listener');
       off(ref(db, `sessions`), 'value', getSessions );
     }
      //OPT: How to load just titles and id needed for session menu on every change in session? (exclude text data).
@@ -157,15 +116,15 @@ export default function App() {
       const ownedSessions = snapshot.val();
       setUserOwnedSessions(ownedSessions)
     }
-    //dont need cleanup if in top level
+    // keep cleanup for when factored
     return ()=> off(ref(db, `users/${userData && userData.uid}/ownedSessions`), 'value', getYourSessions );
-    // OPT: Query only id and titles? (not text as well). 
+    // OPT: Query only id and titles? (not text as well). --see firebase warning in notes. 
     //      Only query text in session comp
     // Req specific session data on specific actions - Not all data on all/many actions
     //   Means making more requests to db but for less data each time. - Is this more efficient?
   }, [userData])
 
-  //Create Session
+  //Create Session Action
   const createSession = useCallback(( title, text = null)=> {
     const auth = getAuth();
     const user = auth.currentUser;
@@ -195,156 +154,7 @@ export default function App() {
     }
   },[])
 
-  //Utility
-  const checkIsSessionOwned = useCallback(()=> {
-    let isSessionOwned;
-    for (let key in userOwnedSessions) {
-      console.log('key:')
-      console.log(key)
-      if( key === currentSession){
-        isSessionOwned = true;
-      }
-    }
-    return isSessionOwned
-  }, [userOwnedSessions, currentSession])
-
-  //Delete Session 
-  const deleteSession = useCallback((sessionId, uid)=>{
-    //permission - check if session is currently owned (put this check in backend?)
-    if( checkIsSessionOwned() ){
-      console.log('currentSession IS in ownedSessions')
-      const updates = {};
-      updates['/sessions/' + sessionId] = null; //delete
-      updates['/users/' + uid + '/ownedSessions/' + sessionId] = null; 
-      update(ref(dbRef.current), updates)
-      .then(()=> {
-        console.log("Remove succeeded.")
-        console.log(sessionId)
-      })
-      .catch((e)=> {
-        console.log("Remove failed: " + e.message)
-      });
-      // set(ref(dbRef.current, `sessions/${sessionId}`), null); //other way to delete - make null
-      setCurrentSession(null)
-    }else{
-      console.log('currentSession IS NOT in ownedSessions')
-    }
-  },[ checkIsSessionOwned ]) 
-
-  //Listen when session title changes
-  useEffect(() => {
-    const db = dbRef.current;
-    // Listen for changes in the '/title' node
-    onValue(ref(dbRef.current, `sessions/${currentSession}/title`), updateTitleFromDB);
-    function updateTitleFromDB (snapshot) {  
-      const data = snapshot.val();
-      if(data === null) setCurrentSession(null)
-      else setTitle(data)
-    };
-    return () => { 
-      // console.log('Cleaning up title listener');
-      off(ref(db, `sessions/${currentSession}/title`), 'value', updateTitleFromDB);
-    };
-  }, [currentSession]);
-
-  //Listen when session text changes
-  useEffect(() => {
-    const db = dbRef.current;
-    // Listen for changes in the '/text' node
-    onValue(ref(dbRef.current, `sessions/${currentSession}/text`), updateTextFromDB);
-    function updateTextFromDB (snapshot) { 
-      const data = snapshot.val();
-      //fix wiping shared Text when brand new client hits undo
-      // setPreviousText(data) //fixes, breaks undo VVVVVVV
-      if(data === null) setCurrentSession(null) 
-          //check if deleted (made null) by other clients - if so wipe session so cant set() new val in handleTextChange with sessionId and reinstate node
-      else setText(data)
-    };
-    return () => { 
-      // console.log('Cleaning up text listener');
-      off(ref(db, `sessions/${currentSession}/text`), 'value', updateTextFromDB);
-    };
-  }, [currentSession]);
-
-  //Handle Session Text Change > Resets when Current Session changes
-  const handleTextChange = useCallback((e) => {
-    setPreviousText(e.target.value);
-    set(ref(dbRef.current, `sessions/${currentSession}/text`), e.target.value);
-  }, [currentSession])
-
-  //Speech rec. setup 
-  useEffect(()=>{
-    //recognition
-    recognition.onstart = () => console.log('recognition.onstart()')
-    //onresult sets transcript while listening - before onend  
-    recognition.onresult = event => { 
-      const transcript = Array.from(event.results)
-      .map(result => result[0])
-      .map(result => result.transcript)
-      .join('')
-      setTranscript(' '+transcript);
-      //super expensive update db from here? =D
-      //does this onerror need to be in onresult?
-      recognition.onerror = event => console.log(event.error) 
-    }
-    //try out here?
-  }, [])
-
-  //Handle listening for speech
-  useEffect(()=>{
-    const handleListen = () => {
-      if(isListening){                                   
-        recognition.start(); 
-        recognition.onend = () => {                       
-          recognition.start(); 
-        }
-      }else {
-        recognition.stop();  
-        //onend when stopped adds transcript from listening to text
-        recognition.onend =()=> { 
-          setPreviousText(text) //text set everytime mic clicked
-          const newText = text + transcript
-          set(ref(dbRef.current, `sessions/${currentSession}/text`), newText);
-          setTranscript('')
-        }
-      }
-    }
-    handleListen(); 
-  }, [isListening])
-
-  //Clive Completion
-  async function getAnswer() {
-    try {
-      setIsThinking(true)
-      const requestBody = { text }; 
-      let postURL ='https://us-central1-quickstories.cloudfunctions.net/chatgpt' 
-      if (process.env.NODE_ENV === 'development') {  //functions emulator endpoint with client development
-       postURL ='http://127.0.0.1:5001/quickstories/us-central1/chatgpt' 
-      }
-      let response = await axios.post( postURL, requestBody );
-      const result = response.data.result;
-
-      setPreviousText(text);
-      const newText = text + ' ' + result;
-      set(ref(dbRef.current, `sessions/${currentSession}/text`), newText);
-      setIsThinking(false)
-
-    } catch (error) {
-      console.log(error)
-      setIsThinking(false)
-    }
-  }
-  
-  //Undo last setText from speech and completion
-  const undo = () => { //broken 
-    setHighlight(true);
-    setTimeout(() => {
-      setHighlight(false);
-    }, 300);
-    set(ref(dbRef.current, `sessions/${currentSession}/text`), previousText);
-  };
-
-  //UI Elements /////////////////
+  //Mascot Element
   const mascot = ()=> {
     return (
       <>
@@ -435,240 +245,123 @@ export default function App() {
     )
   }
 
-  const PopupSpeak=()=> { //
-    return (
-      <div className='popup-bg' onClick={()=>setPromptNo(3)} >
-        <div className='popup p-2' onClick={(e)=>e.stopPropagation()} >
-            <p className='py-4 col-10 m-auto'>Turn the mic green to speak..</p>
-            <div style={{height: 120}}></div>
-            <p className='pt-4 py-3 col-9 m-auto'>..turn it off again when you finish speaking.</p>
-            <div className='next-button' onClick={()=>setPromptNo(curr=>curr+1)}>Next</div>
-        </div>
-      </div>
-    )
-  }
-
-  const PopupThink=()=> { //
-    return (
-      <div className='popup-bg' onClick={()=>setPromptNo(3)}>
-        <div className='popup p-2' onClick={(e)=>e.stopPropagation()}>
-            <p className='py-4 col-10 m-auto'>Each time you press the thought bubble..</p>
-            <div style={{height: 120}}></div>
-            <p className='pt-4 py-3 col-9 m-auto'> ..Clive will add an idea.</p>
-            <div className='next-button' onClick={()=>setPromptNo(curr=>curr+1)}>Next</div>
-        </div>
-      </div>
-    )
-  }
-
-  const Popups = ()=> {
-    if (promptNo===1) {
-      return <PopupSpeak />
-    }
-    else if (promptNo===2) {
-      return <PopupThink />
-    }
-    else return null
-  }
-
   return (
-    <div className="App ">   {/* Factor into comps - push exclusive state down to them and pass in other needed state as props */}
+    <CliveStateProvider>
+      <div className="App ">   
+        
+        {/* (F) = Factor */}
 
-      {isLoggedIn ?
-        <div>
-          Logged In
-        </div>
-    :
-        <div>
-          Offline
-        </div>
-    }
-
-      <Popups />
-
-      {/* Header */}
-      <div className='header row mx-0' style={promptNo!==3?{zIndex: 4}:null} >
-        <div className=' col-7 '>
-          <h1 className='title'>
-            <div className='clever'><span className='c'>C</span>lever</div> 
-            <div className='clive'> <span className='c2'>C</span>live</div>
-          </h1>
-        </div>
-        <div className='mascot-container position-relative col-3 mt-2'>
-          {mascot()}
+        {/* Header (F) */}
+        <div className='header row mx-0' style={promptNo!==3?{zIndex: 4}:null} >
+          <div className=' col-7 '>
+            <h1 className='title'>
+              <div className='clever'><span className='c'>C</span>lever</div> 
+              <div className='clive'> <span className='c2'>C</span>live</div>
+            </h1>
+          </div>
+          <div className='mascot-container position-relative col-3 mt-2'>
+            {mascot()}
+          </div>
+          <Profile userData={userData} setUserData={setUserData} auth={auth} />
         </div>
 
-        <div className='profile-container col-2'>
-          <div className='profile-icon m-auto'>
-            {/* {userData.displayName.charAt(0)} */}
-            {userData && userData.displayName && userData.displayName.charAt(0)}
-            {/* must check userData parent object has been defined from SignIn
-               - otherwise "cannot read property of undefined 'username'" */}
+        <SignIn setUserData={setUserData} />
+
+        <Signup setUserData={setUserData} />
+
+        {/* Users Menu (F)  */}
+        <div className='lobby-menu'>
+          <h3>Lobby</h3>
+          <div className='online-users-container row'>
+            <h5>Online</h5>
+            {(()=>{
+                  let users = []
+                  for (const userId in onlineUsers) {
+                    const user = onlineUsers[userId]
+                    users.push(
+                    <div key={userId} className='user col-2'>
+                      <p>{user.displayName}</p>
+                      {/* <button onClick={()=>setOtherUserProfile(userId)}>Join</button> */}
+                    </div>
+                    )
+                  }
+                  return users
+                })()}
           </div>
         </div>
-      </div>
 
+        {/* Sessions Menu (F) */}
+        <div className='sessions-menu'>
+          <h3>Sessions</h3>
 
-      <SignIn setUserData={setUserData} />
+          {/* Create Session (F) */}
+          <div className='create-session col-1'>
+            <input  placeholder={`Sesson Title`}
+                    className='new-session-title' 
+                    type="text" 
+                    name='new-session-title' 
+                    onChange={(e)=>setNewSessionTitle(e.target.value)}
+                    value={ newSessionTitle }
+                    // disabled={}
+                    >
+            </input>
+            {/* <button onClick={()=>{createSession(userId, user.username, newSessionTitle, ''); setNewSessionTitle('')}}> */}
+            <button onClick={()=>{createSession( newSessionTitle, ''); setNewSessionTitle('')}}>
+              Create
+            </button>
+          </div>
 
-      <Signup setUserData={setUserData} />
+          {/* Public Sessions (F) */}
+          <div className='public-sessions-container row'>
+            <h5>Public</h5>
+            {(()=>{
+              let sessions = []
+              for (const sessionId in publicSessions) {
+                const session = publicSessions[sessionId] //change this to req session text from db absed on seshId? check if efficient?
+                sessions.push(
+                <div key={sessionId} className='session col-3'>
+                  <p>{session.title}</p>
+                  <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
+                </div>
+                )
+              }
+              return sessions
+            })()}
+          </div>
 
-      {/* Users Menu */}
-      <div className='lobby-menu'>
-        <h3>Lobby</h3>
-        <div className='online-users-container row'>
-          <h5>Online</h5>
-
-          {(()=>{
-                let users = []
-                for (const userId in onlineUsers) {
-                  const user = onlineUsers[userId]
-                  users.push(
-                  <div key={userId} className='user col-2'>
-                    <p>{user.displayName}</p>
-                    {/* <button onClick={()=>setOtherUserProfile(userId)}>Join</button> */}
+          {/* Your Sessions  (F) */}
+          <div className='public-sessions-container row'>
+            <h5>Your Sessions</h5>
+            {(()=>{
+              if(publicSessions && userOwnedSessions){
+                let sessions = []
+                for (const sessionId in userOwnedSessions) {//get session ids in ownedSessions
+                  const session = publicSessions[sessionId] //get all session data from publicSessions
+                  //Note: could you put make db req here for full session data (w/ text) if public sessions changes to only id and title?
+                  sessions.push(
+                  <div key={sessionId} className='session col-3'>
+                    <p>{session && session.title}</p>
+                    <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
                   </div>
                   )
                 }
-                return users
-              })()}
-
-        </div>
-      </div>
-
-      {/* Sessions Menu */}
-      <div className='sessions-menu'>
-        <h3>Sessions</h3>
-
-        {/* Create Session */}
-        <div className='create-session col-1'>
-          <input  placeholder={`Sesson Title`}
-                  className='new-session-title' 
-                  type="text" 
-                  name='new-session-title' 
-                  onChange={(e)=>setNewSessionTitle(e.target.value)}
-                  value={ newSessionTitle }
-                  // disabled={}
-                  >
-          </input>
-          {/* <button onClick={()=>{createSession(userId, user.username, newSessionTitle, ''); setNewSessionTitle('')}}> */}
-          <button onClick={()=>{createSession( newSessionTitle, ''); setNewSessionTitle('')}}>
-            Create
-          </button>
-        </div>
-
-        {/* Public Sessions */}
-        <div className='public-sessions-container row'>
-          <h5>Public</h5>
-          {(()=>{
-            let sessions = []
-            for (const sessionId in publicSessions) {
-              const session = publicSessions[sessionId] //change this to req session text from db absed on seshId? check if efficient?
-              sessions.push(
-              <div key={sessionId} className='session col-3'>
-                <p>{session.title}</p>
-                <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
-              </div>
-              )
-            }
-            return sessions
-          })()}
-        </div>
-
-        {/* Your Sessions  */}
-        <div className='public-sessions-container row'>
-          <h5>Your Sessions</h5>
-          {(()=>{
-            let sessions = []
-            for (const sessionId in userOwnedSessions) {//get session ids in ownedSessions
-              const session = publicSessions[sessionId] //get all session data from publicSessions
-              //Note: could you put make db req here for full session data (w/ text) if public sessions changes to only id and title?
-              sessions.push(
-              <div key={sessionId} className='session col-3'>
-                <p>{session && session.title}</p>
-                <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
-              </div>
-              )
-            }
-            return sessions
-          })()}
-        </div>
-
-      </div>
-
-
-      {/* Controls  */}
-      <div className='controls-secondary' >
-        <button  className={`help button col-12`} onClick={()=>setPromptNo(1)} disabled={isThinking || isListening}  >
-          <svg className='' viewBox="0 0 30 46"  xmlns="http://www.w3.org/2000/svg">
-            <path d="M25.5535 3.07226C28.5209 5.19229 30 8.32743 30 12.4956C30 14.6786 29.2741 16.7986 27.8312 18.8468C27.4138 19.5295 25.8984 20.8949 23.2759 22.9431L20.8984 24.4792C19.5191 25.6381 18.6933 26.6621 18.412 27.5515C18.2033 28.0995 18.0672 28.8451 17.9946 29.8063C17.9946 30.2824 17.7223 30.5249 17.1688 30.5249H10.5445C9.99093 30.5249 9.71869 30.3183 9.71869 29.9141C9.85481 26.5723 10.3358 24.4523 11.1706 23.5629C11.7241 22.8083 12.5499 21.9909 13.657 21.1015C14.7641 20.2122 15.726 19.4935 16.5517 18.9546L17.7949 18.2359C18.5572 17.6879 19.1379 17.113 19.5554 16.4932C20.5172 14.993 21.0073 13.7982 21.0073 12.9089C21.0073 11.5434 20.5626 10.2139 19.6642 8.91134C18.7024 7.68064 17.1143 7.06978 14.9093 7.06978C12.5681 7.06978 10.9437 7.82437 10.0454 9.32456C9.08348 10.7619 8.59347 12.325 8.59347 14.0318H0C0.208711 8.49811 2.16878 4.53652 5.89837 2.14699C8.31216 0.718656 11.1706 0 14.4828 0C18.9655 0 22.6588 1.02409 25.5535 3.07226ZM14.3829 35.6453C15.8984 35.6453 17.1597 36.1574 18.1579 37.1815C19.1561 38.2056 19.628 39.4722 19.5554 40.9724C19.4828 42.5444 18.9383 43.7931 17.9038 44.7094C16.8693 45.6257 15.5898 46.0569 14.0744 45.994C12.559 45.994 11.2976 45.4999 10.2995 44.5118C9.30127 43.5236 8.8294 42.239 8.902 40.667C8.97459 39.0949 9.51906 37.8462 10.5535 36.9299C11.588 36.0137 12.8584 35.5735 14.3829 35.6453Z" />
-          </svg>
-        </button>
-
-        <button className={`undo button col-12 ${highlight ? 'highlight' : ''}`} onClick={undo} disabled={isThinking || isListening} >
-          <svg className={` `} viewBox="0 0 24 24"  xmlns="http://www.w3.org/2000/svg">
-            <path d="M23.0472 7.3438C22.4119 5.86449 21.5577 4.58839 20.4849 3.5156C19.4119 2.44275 18.1359 1.58866 16.6565 0.953098C15.1774 0.317535 13.6255 0 12.0004 0C10.4692 0 8.98754 0.288803 7.55505 0.867064C6.12288 1.44522 4.84942 2.26029 3.73478 3.3125L1.70329 1.29657C1.39074 0.973621 1.03151 0.900777 0.625099 1.07771C0.208348 1.25504 0 1.56245 0 1.99989V9.00005C0 9.27085 0.0990024 9.50525 0.296952 9.70315C0.495012 9.90111 0.72941 10.0001 1.0002 10.0001H8.00026C8.43786 10.0001 8.7451 9.79176 8.9222 9.37505C9.09919 8.9688 9.02634 8.60951 8.70334 8.29685L6.56267 6.14065C7.29208 5.4531 8.12531 4.92447 9.06279 4.55462C10.0003 4.18482 10.9794 3.99978 12.0003 3.99978C13.0835 3.99978 14.1176 4.21092 15.1019 4.63261C16.0865 5.05456 16.9377 5.62489 17.6566 6.3437C18.3754 7.06234 18.9457 7.91386 19.3676 8.89837C19.7892 9.88277 20.0003 10.9165 20.0003 12.0001C20.0003 13.0836 19.7893 14.1173 19.3676 15.1016C18.9457 16.086 18.3754 16.9374 17.6566 17.6563C16.9377 18.3751 16.0862 18.9456 15.1019 19.3674C14.1176 19.7892 13.0835 20.0001 12.0003 20.0001C10.7607 20.0001 9.58878 19.7293 8.48454 19.1878C7.38046 18.6463 6.44818 17.8807 5.68774 16.8907C5.6149 16.7866 5.49504 16.7239 5.32834 16.703C5.17204 16.703 5.04179 16.7498 4.93764 16.8434L2.79702 18.9998C2.71378 19.0836 2.66951 19.1902 2.66425 19.3202C2.65911 19.4507 2.69309 19.5678 2.76594 19.6719C3.90148 21.047 5.27635 22.1121 6.89093 22.8671C8.5055 23.6222 10.2088 24 12.0004 24C13.6255 24 15.1774 23.6821 16.6565 23.0468C18.1359 22.4116 19.4115 21.5571 20.4847 20.4844C21.5576 19.4112 22.4117 18.1354 23.0471 16.6562C23.6826 15.177 24 13.6247 24 11.9999C24.0001 10.3746 23.6824 8.82306 23.0472 7.3438Z" />
-          </svg>
-        </button>
-      </div>
-
-      <div className={`controls ${(promptNo!==3)&&'controls-popup-active'} ${(promptNo===1) && ' prompt-1'} ${(promptNo===2) && ' prompt-2'}`} >
-        <button className={`speak button col-12 mb-3`} 
-                onClick = {(promptNo!==3) ? ()=>setPromptNo(1) : ()=>setIsListening(curr=>!curr)} 
-                disabled={isThinking} >
-          <svg className={`${isListening && 'listening'}`} viewBox="0 0 85 126" xmlns="http://www.w3.org/2000/svg">
-            <path d="M65.41 63.486C65.41 74.417 56.5549 83.285 45.6189 83.285H38.408C27.487 83.285 18.627 74.417 18.627 63.486V19.789C18.626 8.859 27.486 0 38.408 0H45.6189C56.5549 0 65.41 8.859 65.41 19.789V63.486Z" />
-            <path d="M77.963 37.5371C74.609 37.5371 71.891 40.2561 71.891 43.6091V68.8731C71.889 71.6331 71.264 74.2311 70.102 76.6561C68.363 80.2831 65.368 83.5121 61.46 85.8331C57.556 88.1531 52.772 89.5491 47.553 89.5481H36.475C29.53 89.5521 23.342 87.0621 18.989 83.2291C16.812 81.3141 15.098 79.0751 13.934 76.6551C12.771 74.2311 12.146 71.6331 12.144 68.8741V43.6091C12.144 40.2551 9.425 37.5371 6.072 37.5371C2.719 37.5371 2.78054e-06 40.2561 2.78054e-06 43.6091V68.8731C-0.00199722 73.5021 1.075 77.9411 2.99 81.9181C5.865 87.8911 10.579 92.8271 16.377 96.2731C21.609 99.3811 27.754 101.275 34.323 101.62V120.495C34.323 123.539 36.793 126 39.841 126H44.201C47.237 126 49.721 123.539 49.721 120.495V101.629C58.722 101.153 66.912 97.7631 73.074 92.3471C76.398 89.4221 79.137 85.8971 81.05 81.9161C82.964 77.9391 84.039 73.5011 84.037 68.8731V43.6091C84.036 40.2551 81.317 37.5371 77.963 37.5371Z" />
-          </svg>
-        </button>
-
-        <button className={`think button col-12`} 
-                onClick={ (promptNo!==3) ? ()=>setPromptNo(2) : getAnswer} 
-                disabled={isThinking || isListening} >
-          <svg className={`${isThinking && 'thinking'}`} viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.86 5.62457C17.898 4.57039 15.718 4.01619 13.5 4.01619C6.05597 4.01619 0 10.0963 0 17.57C0 25.0436 6.05597 31.1237 13.5 31.1237H13.616C14.828 34.1557 17.706 36.1436 21 36.1436C24.048 36.1436 26.814 34.3746 28.148 31.6578C29.406 31.969 30.698 32.1276 32 32.1276C40.8219 32.1276 48 24.9211 48 16.0639C48 1.33982 29.1671 -5.31918 19.86 5.62457Z" />
-            <path d="M14 36.1445C11.794 36.1445 10 37.9457 10 40.1605C10 42.3753 11.794 44.1765 14 44.1765C16.2061 44.1765 18.0001 42.3753 18.0001 40.1605C18.0001 37.9457 16.2061 36.1445 14 36.1445Z" />
-            <path d="M5 42.168C3.34597 42.168 2 43.5193 2 45.1799C2 46.8405 3.34597 48.1919 5 48.1919C6.65403 48.1919 8 46.8405 8 45.1799C8 43.5193 6.65403 42.168 5 42.168Z" />
-          </svg>
-        </button>
-      </div>
-
-
-      {currentSession 
-        ?
-        <div className='session'>
-
-          <div className='session-header'>
-
-            <div className='session-title'>{title}</div>
-
-            { checkIsSessionOwned() &&
-            <button className='delete-session' onClick={(e)=>deleteSession(currentSession, userData.uid)}>
-              Delete
-            </button>}
-
-            <button className='leave-session' onClick={()=>setCurrentSession(null)}>
-              Leave
-            </button>
-
+                return sessions
+              }
+            })()}
           </div>
 
-          <textarea
-            placeholder={ `Speak or type to start making somehing cool with Clive!` }
-            className='text' 
-            type="text" 
-            name='text' 
-            onChange={handleTextChange} 
-            value={ text + transcript } 
-            disabled={isThinking || isListening || currentSession===null}
-          >      
-          </textarea>
-
         </div>
-        :
-        <p className='p-5' style={{color: 'rgb(95, 166, 134)'}}>Join a session to chat with Clive</p>
-      }
 
-    </div>
+        <Session userData={userData}
+                 currentSession={currentSession}
+                 setCurrentSession={setCurrentSession} 
+                 userOwnedSessions={userOwnedSessions} 
+                 promptNo={promptNo}
+                 setPromptNo={setPromptNo}
+        />
+
+      </div>
+    </CliveStateProvider>
+
   )
 }
