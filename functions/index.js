@@ -11,7 +11,7 @@ const allowedOrigins = [
 ];
 const corsMiddleware = cors({ origin: allowedOrigins }); //set allowed origins
 
-exports.chatgpt= functions
+exports.chatgpt = functions
   .runWith({ secrets: ["OPENAI_API_KEY"]})
   .https.onRequest(
     async (req, res) => {
@@ -30,6 +30,31 @@ exports.chatgpt= functions
     } catch (error) {
           console.error(error);
           res.status(500).json({ error: 'An error occurred.' });
+        }
+      });
+    }
+  );
+  
+exports.deleteUsers = functions
+  .runWith({ secrets: ["OPENAI_API_KEY"]})
+  .https.onRequest(
+    async (req, res) => {
+
+      corsMiddleware(req, res, async () => {
+        const usersRef = admin.firestore().collection('users');
+
+        try {
+          const snapshot = await usersRef.get();
+        
+          snapshot.forEach(async (doc) => {
+            await doc.ref.delete();
+          });
+        
+          console.log('Successfully deleted all users from Firestore.');
+        }
+        catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'An error occurred deleteing users.' });
         }
       });
     }

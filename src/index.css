@@ -23,7 +23,7 @@ body {
   background-repeat: no-repeat;
   color: #bf8867;
   color: white;
-  height: 100vh; 
+  min-height: 100vh; 
 }
 i, b {
   font-size: 1.2rem;

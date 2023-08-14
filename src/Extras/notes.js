@@ -1,10 +1,77 @@
+
+
 // NOTES
+
+
+
+
+
+
+
+
+
+  // -------------------------------------------------------------------------------------
+
+      // >---- Next Merp Derp Func Lerp --->
+
+      // FIX
+
+      // user.displayName not showing now?
+
+      // If users logs out in one window, logs out in other 
+          // BUT connection Ref from other window is not removed
+
+
+      // Undo from one user in session deletes other users last speech set
+          // (answer too ?)       
+
+      // Profile  
+        // Change displayName
+        // Expand
+    
+      // Session 
+        // Show Joined Users
+        // Change session name - owner only
+        // Always have 3-4 lines after type listen, think
+
+      //       --------------------------------
+
+      // Invite to session - click user icon popup
+        //if user is in currentSession invite otherUser to sessionId
+        //if not in currentSession then createSession and invite otherUser
+
+      // Accept Invite to Session - popup
+        //if invites then show popup - accept button - setCurrentSession(sessionId)
+
+      //       --------------------------------
+
+      // Input Validation    (start w/ signin/up comps)
+          //- litte input popup if invalid before submit
+          //- redirect w/ popup on firebase error after submit
+
+
+  //// --------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
 
 
     ////        Future Func        ////
     ////////                  /////////
+
+    // Allow Re-Signup
     
     // Add Security Rules - users & sessions? //https://medium.com/@juliomacr/10-firebase-realtime-database-rule-templates-d4894a118a98
+
+    // Profile - Visability Toggle - User Visibile (default) || User Hidden  
 
     // Friends List - show Online & Offline - place in lobby & profile 
       // Send friend request

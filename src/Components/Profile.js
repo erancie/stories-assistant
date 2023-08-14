@@ -1,13 +1,15 @@
-import React, {useState} from 'react'
+import React, {useState, useRef } from 'react'
 import Notification from './Notification';
 import { signOut } from "firebase/auth";
+import { getDatabase, ref, set, update, remove} from 'firebase/database';
 
 
-export default function Profile({ userData, setUserData, auth }) {
+export default function Profile({ userData, setUserData, auth, connectionRef, setConnectionRef }) {
+
+  const dbRef = useRef(getDatabase()); 
 
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isJustSignedOut, setJustSignedOut] = useState(false);
-  // const [isJustSignedOut, setJustSignedOut] = useState(true);
 
   return (
         <div className='profile-container col-2 p-2'>
@@ -19,11 +21,19 @@ export default function Profile({ userData, setUserData, auth }) {
               <button className='profile-signout' 
               onClick={()=>{
                         setIsSigningOut(true)
-                        signOut(auth).then(()=>{
-                          setUserData(null)
+
+                        remove(connectionRef)
+                        .then(()=>{
+                          setConnectionRef(null)
+                          return signOut(auth)
+                        })
+                        // signOut(auth)
+
+                        .then(()=>{
                           setIsSigningOut(false)
                           setJustSignedOut(true)
-                        }).catch((e)=>console.log(`error signing out: ${e}`))
+                        })
+                        .catch((e)=>console.log(`error signing out: ${e}`))
                       }}>
               Logout</button>
           }

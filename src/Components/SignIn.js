@@ -1,38 +1,35 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref, update, onDisconnect } from 'firebase/database';
+import React, { useState, useCallback, useRef } from 'react'
+import {  getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { set, getDatabase, onDisconnect, push, ref} from 'firebase/database';
+
 import Notification from './Notification';
 
 const SignIn = ({ setUserData })=> {
 
-  const dbRef = useRef(getDatabase()); 
   const [emailSignIn, setEmailSignIn] = useState('');
   const [passwordSignIn, setPasswordSignIn] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
-  // const [isSigningIn, setIsSigningIn] = useState(true);
   const [isJustSignedIn, setJustSignedIn] = useState(false);
-  // const [isJustSignedIn, setJustSignedIn] = useState(true);
+
+  const dbRef = useRef(getDatabase()); 
 
   //User SignIn
   const SignIn = useCallback((email, password) => { 
-    console.log('Signing In')
     setIsSigningIn(true)
     const auth = getAuth();
-
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      console.log(`User Signed In`)
       const user = userCredential.user; 
-      return Promise.all([ 
-        user,
-        update(ref(dbRef.current, 'users/' + user.uid),{ online: true }),
-        onDisconnect(ref(dbRef.current, 'users/' + user.uid)).update({ online: false })
-      ]);
-    })
-    .then(([user, updateResult, disconnectResult]) => {
-      setUserData(user);
+      console.log(`User Signed In ${user.uid}`)
+      // setUserData(user);
       setIsSigningIn(false)
       setJustSignedIn(true)
+
+      // Add a new connection reference for the signed-in user
+      // const userConnectionRef = push(ref(dbRef.current, 'users/' + user.uid + '/connections'));
+      // set(userConnectionRef, true);
+      // onDisconnect(userConnectionRef).remove();
+
     })
     .catch((error) => {
       console.log( `Sign In Error`);

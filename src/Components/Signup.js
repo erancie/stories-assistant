@@ -1,7 +1,8 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { getDatabase, update, onDisconnect, ref } from 'firebase/database';
 import Notification from './Notification';
+import { set, getDatabase, onDisconnect, push, ref, update} from 'firebase/database';
+
 
 const Signup =({ setUserData })=> {
 
@@ -9,10 +10,10 @@ const Signup =({ setUserData })=> {
   const [passwordSignup, setPasswordSignup] = useState('');
   const [nameSignup, setNameSignup] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
-  // const [isSigningIn, setIsSigningIn] = useState(true);
   const [isJustSignedIn, setJustSignedIn] = useState(false);
 
   const dbRef = useRef(getDatabase()); 
+
 
   //Create User - SIGN UP 
   const createUser = useCallback((email, password, name = 'User')=> {
@@ -22,16 +23,20 @@ const Signup =({ setUserData })=> {
     .then((userCredential) => {
       console.log(`User Created`)
       const user = userCredential.user;
-      return user
+
+      // Add a new connection reference for the signed-in user
+      // const userConnectionRef = push(ref(dbRef.current, 'users/' + user.uid + '/connections'));
+      // set(userConnectionRef, true);
+      // onDisconnect(userConnectionRef).remove();
+
+
+      return Promise.all([user, 
+                          updateProfile(user, { displayName: name }),
+                          update(ref(dbRef.current, 'users/' + user.uid),{ displayName: name }) 
+                        ])
+      
     })
     .then((user) => {
-      return Promise.all([
-        user,
-        updateProfile(user, { displayName: name }),
-        update(ref(dbRef.current, 'users/' + user.uid),{ online: true, displayName: name}),
-        onDisconnect(ref(dbRef.current, 'users/' + user.uid)).update({ online: false })])
-    })
-    .then(([user, updateProfileResult, updateResult, onDisconnectResult ]) => {
       console.log('Profile updated, user updated, on disconnect registered')
       setIsSigningIn(false)
       setJustSignedIn(true)
