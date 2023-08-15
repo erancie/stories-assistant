@@ -14,13 +14,25 @@
 
       // >---- Next Merp Derp Func Lerp --->
 
+
+      // DEV
+
+      //PROBLEM: If users logs out in one window, logs out in other 
+          // BUT connection Ref from other window is not remove and still shows in connected
+
+          //Q: How to remove all connection References only for all windows in same browser at logout
+
+            //SOLUTION:
+                // Find a reference that is common for every tab opened in a specific browser: 
+                // -store in connections
+                // -Or store seperate onlineUsers list in rtdb with each user having connection and common browser refs. (Is this 'fanning' the data?)
+
+                //FINALLY: Filter for connected refs with common browser ref and remove them all on logout
+
+
+
+
       // FIX
-
-      // user.displayName not showing now?
-
-      // If users logs out in one window, logs out in other 
-          // BUT connection Ref from other window is not removed
-
 
       // Undo from one user in session deletes other users last speech set
           // (answer too ?)       

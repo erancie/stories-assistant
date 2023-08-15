@@ -14,7 +14,7 @@ export default function Profile({ userData, setUserData, auth, connectionRef, se
   return (
         <div className='profile-container col-2 p-2'>
           <div className='profile-icon m-auto my-2'>
-            {userData && userData.displayName && userData.displayName.charAt(0)}
+            {userData && userData.displayName && userData.displayName.charAt(0)} {/* FIX -not setting on sign up */}
           </div>
 
           {auth.currentUser &&
@@ -23,6 +23,9 @@ export default function Profile({ userData, setUserData, auth, connectionRef, se
                         setIsSigningOut(true)
 
                         remove(connectionRef)
+
+                        //remove other common browser refs here
+
                         .then(()=>{
                           setConnectionRef(null)
                           return signOut(auth)

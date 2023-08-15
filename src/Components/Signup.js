@@ -24,23 +24,16 @@ const Signup =({ setUserData })=> {
       console.log(`User Created`)
       const user = userCredential.user;
 
-      // Add a new connection reference for the signed-in user
-      // const userConnectionRef = push(ref(dbRef.current, 'users/' + user.uid + '/connections'));
-      // set(userConnectionRef, true);
-      // onDisconnect(userConnectionRef).remove();
-
-
       return Promise.all([user, 
                           updateProfile(user, { displayName: name }),
                           update(ref(dbRef.current, 'users/' + user.uid),{ displayName: name }) 
                         ])
-      
     })
     .then((user) => {
       console.log('Profile updated, user updated, on disconnect registered')
       setIsSigningIn(false)
       setJustSignedIn(true)
-      setUserData(user)
+      setUserData(user)// FIX - not setting user profile letter
     })
     .catch((error) => {
       setIsSigningIn(false)

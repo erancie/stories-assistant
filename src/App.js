@@ -37,7 +37,7 @@ export default function App() {
     auth.onAuthStateChanged((user) => { 
 
       if (user) { 
-        // Add a new connection reference for the user
+        // Add a new connection reference for the user's connection
         const userConnectionRef = push(ref(dbRef.current, 'users/' + user.uid + '/connections'));
         setConnectionRef(userConnectionRef)
         set(userConnectionRef, true);
@@ -49,7 +49,6 @@ export default function App() {
         console.log('connection Ref')
         console.log(connectionRef)
         setUserData(null)
-        // if(connectionRef) remove(connectionRef)
       }
     });
   }, []);
@@ -58,59 +57,14 @@ export default function App() {
   useEffect(()=>{ 
     const db = dbRef.current;
     const usersRef = ref(db, 'users');
-
-    // const query = usersRef.orderByChild('connections').equalTo(true);
-
-    // Attach a listener to the users node
-
-    onValue(usersRef, (snapshot) => {
+    onValue(usersRef, (snapshot) => { //listen to just changes in connections? not all changes in users?
       const connected = []
-
-      snapshot.forEach((doc)=>{
-        const user = doc.val()
-        console.log(`user`);
-        console.log(user);
-        console.log(`user.connections`)
-        console.log(user.connections)
-        if (user.connections) {
-          console.log(user);
-          console.log(user.connections);
-          connected.push(user)
-          // Handle user with connections node created or updated
-        } else {
-          // Handle user with connections node deleted
-        }
+      snapshot.forEach((doc)=>{//isn't snapshot an object?
+        const user = doc.val()//doesn't forEach get value - val() isn't doc the val? console this
+        if (user.connections) connected.push(user)
       })
-      
       setOnlineUsers(connected)
-
     });
-
-    // const onlineUsersQuery = query(usersRef, orderByChild('connections'), equalTo(true)); //filters users with connections                                 
-    
-    // onValue(onlineUsersQuery, getUsers );
-
-    // const online = ref(usersRef)
-    // onValue(online, getUsers );
-    // let onlineUsers = [];
-
-    // function getUsers(snapshot) {
-    //   const connectedUsers = snapshot.val();
-    //   // console.log(connect)
-    //   for (let user in connectedUsers) {
-    //     console.log('user --->')
-    //     console.log(user.hasChildren())
-    //     if(user.hasChildren) onlineUsers.push(user)
-    //   }
-    //   console.log('Online Users Listener')
-    //   console.log(onlineUsers)
-    //   setOnlineUsers(onlineUsers)
-
-    //   // console.log('Online Users Listener')
-    //   // console.log(connectedUsers)
-    //   // setOnlineUsers(connectedUsers)
-    // }
-    // return  ()=> off(ref(db, `users`), 'value', getUsers)
   }, [])
 
 
