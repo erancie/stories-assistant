@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useRef } from 'react'
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import Notification from './Notification';
+import Popup from './Popup';
 import { set, getDatabase, onDisconnect, push, ref, update} from 'firebase/database';
 
 
-const Signup =({ setUserData })=> {
+const Signup =({ setUserData, setShowSignUp })=> {
 
   const [emailSignup, setEmailSignup] = useState('');
   const [passwordSignup, setPasswordSignup] = useState('');
@@ -45,7 +45,7 @@ const Signup =({ setUserData })=> {
   
   return (
     <div className='signup'>
-      <h1>Sign Up</h1>
+      {/* <h1>Sign Up</h1> */}
 
       <input className='email-signup'
             placeholder={`email`}
@@ -76,18 +76,20 @@ const Signup =({ setUserData })=> {
                         createUser(emailSignup, passwordSignup, nameSignup);
                         setEmailSignup('')
                         setPasswordSignup('') 
-                        setNameSignup('') }} >
+                        setNameSignup('') 
+                        setShowSignUp(false)
+                        }} >
         Sign Up
       </button>
 
 
       { isSigningIn && 
-          <Notification show={setIsSigningIn} 
-                        loadMessage={'Signing in..'} 
+          <Popup show={setIsSigningIn} 
+                        message={'Signing in..'} 
                         /> }
       { isJustSignedIn && 
-          <Notification show={setJustSignedIn} 
-                        loadMessage={"You're signed in!"} 
+          <Popup show={setJustSignedIn} 
+                        message={"You're signed in!"} 
                         classes={'fade-anim green-text'} 
                         timeout={2200} 
                         /> }

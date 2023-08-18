@@ -1,0 +1,106 @@
+
+.popup-bg-style {
+  background: rgb(19 23 30);
+  background: linear-gradient(-45deg, rgb(19, 23, 30, .98) 0%, rgb(19, 23, 30, .98) 100%);
+}
+.popup-style {
+  background: rgb(19, 23, 30, 1);
+  background: linear-gradient(-35deg, rgb(19, 23, 30, 1) 0%, rgba(36, 43, 56, 1) 100%);
+  box-shadow: -0px -1px 1px #99d6f131;
+  border-bottom: 1px solid #99d6f121;
+  border-radius: 15px;
+}
+.popup-style-neu {
+  background: rgb(19, 23, 30, 1);
+  background: linear-gradient(-65deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.021) 50%, rgba(255, 255, 255, 0) 70%);
+  border-bottom: 1px solid #99d6f121;
+  box-shadow: -0px -1px 1px #99d6f131;
+  border-radius: 10px;
+}
+
+/* Popup */
+.popup-bg {
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  color: rgb(175, 209, 222);
+}
+
+.popup {
+  /* width: 80%;
+  max-width: 320px;
+  height: 120px; */
+  padding: 3rem;
+  position: fixed;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: 200;
+  /* border-radius: 25px; */
+}
+
+.popup-message {
+  position: relative;
+  top: 44%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.close-popup-button {
+  font-size: 1.5rem;
+  font-weight: 200;
+  width: 20px;
+  position: absolute;
+  bottom: .5rem;
+  right: .6rem;
+  opacity: .2;
+  cursor: pointer;
+}
+
+/* Walkthrough Popups///////////////////// */
+.walkthrough-bg {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+  transition: all 1s ease;
+  top: 0;
+}
+.walkthrough {
+  border-radius: 10px;
+  position: absolute;
+  width: 280px;
+  height: 420px;
+  left: 50%;
+  top: 200px;
+  transform: translateX(-50%) translateY(0%); 
+} 
+                                                                                                                   .next-button {
+  color: rgb(52, 196, 107);
+  border: .5px solid rgba(52, 196, 107, 0.463);
+  color: var(--buttons);
+  border: .5px solid var(--buttons);
+  border-radius: 3px;
+  width: 100px;
+  padding: .5rem .5rem .7rem;
+  margin: 2rem auto;
+  position: relative;
+  cursor: pointer;
+}
+
+.fade-anim {
+  animation: fade-anim 1.2s ease .9s forwards;
+}
+
+@keyframes fade-anim {
+ 0% {
+   opacity: 1;	
+ }
+ 100% {
+   opacity: 0;
+ }
+}

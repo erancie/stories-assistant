@@ -1,0 +1,110 @@
+/* Profile */
+
+.profile-container {
+  position: absolute;
+  /* top: 0; */
+  right: 0;
+  width: 14%;
+  /* max-width: 100%; */
+}
+
+
+/* Singed Out */
+.auth-buttons {
+  position: absolute;
+  /* top: 50%; */
+  right: .5rem;
+  /* transform: translateY(-50%); */
+  font-weight: 500;
+  /* width: 220px; */
+  width: 52px;
+  /* max-width: 100%; */
+
+}
+@media (min-width: 576px) {
+  .profile-container {
+    width: 150px;
+  }
+  .auth-buttons {
+    width: 140px;
+  }
+}
+.auth-buttons div {
+  border-radius: 5px;
+}
+.auth-buttons svg {
+  width: 20px;
+  display: inline;
+}
+
+.signup-button {
+  border: 1px solid #5a91a0;
+  color: #5a91a0;
+  transition: all .4s ease;
+  cursor: pointer;
+  /* flex-wrap: nowrap; */
+}
+.signup-button-text, .login-button-text {
+  /* width: 66%; */
+}
+.signup-button:hover {
+  background: #5a91a0;
+  color: white;
+}
+.signup-svg {
+  /* width: 28px; */
+  fill: #5a91a0;
+  transition: all .4s ease;
+}
+.signup-button:hover svg {
+  fill: white;
+}
+
+.login-button {
+  border: 1px solid #5785c1;
+  color: #5785c1;
+  transition: all .2s ease;
+  cursor: pointer;
+  /* flex-wrap: nowrap; */
+}
+.login-button:hover {
+  background: #5785c1;
+  color: white;
+}
+.login-svg {
+  /* width: 28px !important; */
+  stroke: #5785c1;
+  fill: none;
+  transition: all .4s ease;
+}
+.login-button:hover svg {
+  stroke: white;
+}
+
+/* @media (min-width: 576px) {
+    {
+  }
+} */
+
+/* Signed In */
+.profile-icon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  /* background: ##4a5c79 */
+  border: 1px solid #4a5c79;
+  border-radius: 20px;
+  /* top: 50%; */
+  /* margin-top: 6rem; */
+  /* transform: translate(0%, -50%); */
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #4a5c79;
+  /* box-shadow: 0 2px 5px #ffffff77; */
+}
+
+.profile-signout-button {
+  margin: auto;
+}
+
+

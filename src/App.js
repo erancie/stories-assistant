@@ -3,8 +3,6 @@ import {} from 'dotenv/config';
 import { set, getDatabase, ref, onValue, off, onSnapshot, query, child, push, update, orderByChild, remove, onDisconnect, equalTo } from 'firebase/database';
 import { getAuth } from "firebase/auth";
 
-import SignIn from './Components/SignIn';
-import Signup from './Components/Signup';
 import Profile from './Components/Profile';
 import Session from './Components/Session';
 
@@ -18,16 +16,14 @@ export default function App() {
 
   const { highlight, isListening, isThinking, promptNo } = useCliveContext;
   // const { user : userData, setUser : setUserData} = useAuth() //fix
-
+  
   const [publicSessions, setPublicSessions] = useState()  
   const [userOwnedSessions, setUserOwnedSessions] = useState()
   const [currentSession, setCurrentSession] = useState() 
   const [onlineUsers, setOnlineUsers] = useState() 
-
   const [userData, setUserData] = useState()
 
   const [newSessionTitle, setNewSessionTitle] = useState('');
-
 
   const [connectionRef, setConnectionRef] = useState() 
 
@@ -35,7 +31,6 @@ export default function App() {
   // Listen to Auth State    // put this in useContext
   useEffect(() => { 
     auth.onAuthStateChanged((user) => { 
-
       if (user) { 
         // Add a new connection reference for the user's connection
         const userConnectionRef = push(ref(dbRef.current, 'users/' + user.uid + '/connections'));
@@ -66,8 +61,6 @@ export default function App() {
       setOnlineUsers(connected)
     });
   }, [])
-
-
 
   // Listen to Public Sessions
   useEffect(()=>{ 
@@ -226,34 +219,28 @@ export default function App() {
       <AuthProvider>
         <div className="App ">   
           
-          {/* (F) = Factor */}
-
-          {/* Header (F) */}
+          {/* Header */}
           <div className='header row mx-0' style={promptNo!==3?{zIndex: 4}:null} >
-            <div className=' col-7 '>
-              <h1 className='title'>
-                <div className='clever'><span className='c'>C</span>lever</div> 
-                <div className='clive'> <span className='c2'>C</span>live</div>
-              </h1>
-            </div>
+            
+            <h1 className='title col-7'>
+              <div className='clever'><span className='c'>C</span>lever</div> 
+              <div className='clive'> <span className='c2'>C</span>live</div>
+            </h1>
+
             <div className='mascot-container position-relative col-3 mt-2'>
               {mascot()}
             </div>
+
             <Profile userData={userData} 
                      setUserData={setUserData} 
                      auth={auth} 
                      connectionRef={connectionRef} 
-                     setConnectionRef={setConnectionRef}
-            />
+                     setConnectionRef={setConnectionRef} />
           </div>
 
-          <SignIn setUserData={setUserData} />
-
-          <Signup setUserData={setUserData} />
-
-          {/* Users Menu (F)  */}
+          {/* Users Menu  */}
           <div className='lobby-menu'>
-            <h3>Lobby</h3>
+            <h3 className='menu-title'>Lobby</h3>
             <div className='online-users-container row'>
               <h5>Online</h5>
               {(()=>{
@@ -263,7 +250,6 @@ export default function App() {
                       users.push(
                       <div key={userId} className='user col-2'>
                         <p>{user.displayName ? user.displayName : 'User'}</p>
-                        {/* <p>{ auth.currentUser ? auth.currentUser.displayName : 'User'}</p> */}
                       </div>
                       )
                     }
@@ -272,71 +258,72 @@ export default function App() {
             </div>
           </div>
 
-          {/* Sessions Menu (F) */}
+          {/* Sessions Menu */}
           <div className='sessions-menu'>
-            <h3>Sessions</h3>
+            <h3 className='menu-title'>Sessions</h3>
 
-            {/* Create Session (F) */}
-            <div className='create-session col-1'>
-              <input  placeholder={`Sesson Title`}
-                      className='new-session-title' 
-                      type="text" 
-                      name='new-session-title' 
-                      onChange={(e)=>setNewSessionTitle(e.target.value)}
-                      value={ newSessionTitle }
-                      // disabled={}
-                      >
-              </input>
-              {/* <button onClick={()=>{createSession(userId, user.username, newSessionTitle, ''); setNewSessionTitle('')}}> */}
-              <button onClick={()=>{createSession( newSessionTitle, ''); setNewSessionTitle('')}}>
-                Create
-              </button>
-            </div>
+                {/* Create Session */}
+                <div className='create-session col-1'>
+                  <input  placeholder={`Sesson Title`}
+                          className='new-session-title' 
+                          type="text" 
+                          name='new-session-title' 
+                          onChange={(e)=>setNewSessionTitle(e.target.value)}
+                          value={ newSessionTitle }
+                          // disabled={}
+                          >
+                  </input>
+                  {/* <button onClick={()=>{createSession(userId, user.username, newSessionTitle, ''); setNewSessionTitle('')}}> */}
+                  <button onClick={()=>{createSession( newSessionTitle, ''); setNewSessionTitle('')}}>
+                    Create
+                  </button>
+                </div>
 
-            {/* Public Sessions (F) */}
-            <div className='public-sessions-container row'>
-              <h5>Public</h5>
-              {(()=>{
-                let sessions = []
-                for (const sessionId in publicSessions) {
-                  const session = publicSessions[sessionId] //change this to req session text from db absed on seshId? check if efficient?
-                  sessions.push(
-                  <div key={sessionId} className='session col-3'>
-                    <p>{session.title}</p>
-                    <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
-                  </div>
-                  )
-                }
-                return sessions
-              })()}
-            </div>
+                {/* Public Sessions */}
+                <div className='public-sessions-container row'>
+                  <h5>Public</h5>
+                  {(()=>{
+                    let sessions = []
+                    for (const sessionId in publicSessions) {
+                      const session = publicSessions[sessionId] //change this to req session text from db absed on seshId? check if efficient?
+                      sessions.push(
+                      <div key={sessionId} className='session col-3'>
+                        <p>{session.title}</p>
+                        <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
+                      </div>
+                      )
+                    }
+                    return sessions
+                  })()}
+                </div>
 
-            {/* Your Sessions  (F) */}
-            <div className='public-sessions-container row'>
-              <h5>Your Sessions</h5>
-              {(()=>{
-                if(publicSessions && userOwnedSessions){
-                  let sessions = []
-                  for (const sessionId in userOwnedSessions) {//get session ids in ownedSessions
-                    const session = publicSessions[sessionId] //get all session data from publicSessions
-                    //Note: could you put make db req here for full session data (w/ text) if public sessions changes to only id and title?
-                    sessions.push(
-                    <div key={sessionId} className='session col-3'>
-                      <p>{session && session.title}</p>
-                      <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
-                    </div>
-                    )
-                  }
-                  return sessions
-                }
-              })()}
-            </div>
+                {/* Your Sessions  */}
+                <div className='public-sessions-container row'>
+                  <h5>Your Sessions</h5>
+                  {(()=>{
+                    if(publicSessions && userOwnedSessions){
+                      let sessions = []
+                      for (const sessionId in userOwnedSessions) {//get session ids in ownedSessions
+                        const session = publicSessions[sessionId] //get all session data from publicSessions
+                        //Note: could you put make db req here for full session data (w/ text) if public sessions changes to only id and title?
+                        sessions.push(
+                        <div key={sessionId} className='session col-3'>
+                          <p>{session && session.title}</p>
+                          <button onClick={()=>setCurrentSession(sessionId)}>Join</button>
+                        </div>
+                        )
+                      }
+                      return sessions
+                    }
+                  })()}
+                </div>
+
           </div>
 
           <Session userData={userData}
-                  currentSession={currentSession}
-                  setCurrentSession={setCurrentSession} 
-                  userOwnedSessions={userOwnedSessions} />
+                   currentSession={currentSession}
+                   setCurrentSession={setCurrentSession} 
+                   userOwnedSessions={userOwnedSessions} />
         </div>
       </AuthProvider>
     </CliveStateProvider>
@@ -344,8 +331,3 @@ export default function App() {
   )
 }
 
-
-        // Update the user's online status
-        // const userStatusRef = ref(dbRef.current, 'users/' + user.uid + '/status');
-        // set(userStatusRef, 'online');
-        // onDisconnect(userStatusRef).set('offline');

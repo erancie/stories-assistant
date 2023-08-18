@@ -2,9 +2,9 @@ import React, { useState, useCallback, useRef } from 'react'
 import {  getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { set, getDatabase, onDisconnect, push, ref} from 'firebase/database';
 
-import Notification from './Notification';
+import Popup from './Popup';
 
-const SignIn = ({ setUserData })=> {
+const SignIn = ({ setUserData, setShowSignIn })=> {
 
   const [emailSignIn, setEmailSignIn] = useState('');
   const [passwordSignIn, setPasswordSignIn] = useState('');
@@ -15,21 +15,15 @@ const SignIn = ({ setUserData })=> {
 
   //User SignIn
   const SignIn = useCallback((email, password) => { 
+    // setShowSignIn(false)
     setIsSigningIn(true)
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       const user = userCredential.user; 
       console.log(`User Signed In ${user.uid}`)
-      // setUserData(user);
       setIsSigningIn(false)
       setJustSignedIn(true)
-
-      // Add a new connection reference for the signed-in user
-      // const userConnectionRef = push(ref(dbRef.current, 'users/' + user.uid + '/connections'));
-      // set(userConnectionRef, true);
-      // onDisconnect(userConnectionRef).remove();
-
     })
     .catch((error) => {
       console.log( `Sign In Error`);
@@ -40,8 +34,8 @@ const SignIn = ({ setUserData })=> {
   },[])
 
   return (
-    <div className='SignIn'>
-      <h1>SignIn</h1>
+    <div className='signin'>
+      {/* <h1>SignIn</h1> */}
 
       <input className='email-SignIn'
               placeholder={`email`}
@@ -61,20 +55,21 @@ const SignIn = ({ setUserData })=> {
 
       <button className='SignIn-button' 
               onClick={(e)=>{
-                          SignIn(emailSignIn, passwordSignIn);
-                          setEmailSignIn('');
-                          setPasswordSignIn('');
+                          SignIn(emailSignIn, passwordSignIn)
+                          setEmailSignIn('')
+                          setPasswordSignIn('')
+                          // setShowSignIn(false)
                         }} >
         Log In
       </button>
 
       { isSigningIn && 
-          <Notification show={setIsSigningIn} 
-                        loadMessage={'Signing in..'} 
+          <Popup show={setIsSigningIn}  //FIX: why are these not showing when setShowSignIn(false) ???
+                        message={'Signing in..'} 
                         /> }
       { isJustSignedIn && 
-          <Notification show={setJustSignedIn} 
-                        loadMessage={"Signed in!"} 
+          <Popup show={setJustSignedIn} 
+                        message={"Signed in!"} 
                         classes={'fade-anim green-text'} 
                         timeout={2200} 
                         /> }
