@@ -1,0 +1,53 @@
+
+.lobby-menu {
+  border-radius: 3px;
+  background: rgb(32, 39, 51);
+}
+
+.sessions-menu {
+  border-radius: 3px;
+  background: rgb(32, 39, 51);
+}
+.sub-h {
+  color: rgb(118, 169, 148);
+  text-align: left;
+}
+.session-thumb {
+  border-radius: 3px;
+  border: 1px solid rgb(22, 30, 43);
+  box-shadow: -2px 2px 4px rgb(19 23 30);
+  margin: .5rem;
+  transition: all .2s ease;
+
+}
+.session-thumb:hover {
+  background: rgb(52, 72, 107);
+  border: 1px solid rgb(52, 72, 107);
+  color: rgb(19 23 30);
+}
+
+.create-session-button {
+  border-radius: 4px;
+  border: 1px solid rgb(52, 90, 127);
+  color: rgb(59, 105, 151);
+  transition: all .2s ease;
+}
+.create-session-button:hover {
+  background-color: rgb(59, 105, 151);
+  color: rgb(19, 23, 30)
+}
+
+.online-users-container, .public-sessions-container {
+  /* gap: 12px; */
+}
+.online-users-container {
+
+}
+.public-sessions-container {
+
+}
+.owned-sessions-container {
+
+}
+
+

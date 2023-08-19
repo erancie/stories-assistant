@@ -81,8 +81,7 @@ const Signup =({ setUserData, setShowSignUp })=> {
                         }} >
         Sign Up
       </button>
-
-
+           
       { isSigningIn && 
           <Popup show={setIsSigningIn} 
                         message={'Signing in..'} 
@@ -90,7 +89,7 @@ const Signup =({ setUserData, setShowSignUp })=> {
       { isJustSignedIn && 
           <Popup show={setJustSignedIn} 
                         message={"You're signed in!"} 
-                        classes={'fade-anim green-text'} 
+                        bgClasses={'fade-anim green-text'} 
                         timeout={2200} 
                         /> }
     </div>

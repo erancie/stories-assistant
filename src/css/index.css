@@ -1,5 +1,8 @@
+@import './header.css';
 @import './profile.css';
 @import './popup.css';
+@import './menus.css';
+@import './session.css';
 @import url('https://fonts.googleapis.com/css2?family=Barriecito&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:wght@100;200;400;600;800&display=swap');
 
 body,html {
@@ -37,279 +40,48 @@ body {
   margin-left: 0;
 }
 
-/* // Header // */
-.header {
-  height: var(--header-height);
+
+
+/* Walkthrough Popup */
+.walkthrough-bg {
+  position: fixed;
   width: 100%;
-  z-index: 2;
-  position: relative;
+  height: 100vh;
+  z-index: 1;
+  transition: all 1s ease;
+  top: 0;
+  left: 0;
 }
-.title {
-  font-family: Raleway;
-  font-weight: 900;
+.walkthrough {
+  border-radius: 10px;
+  position: absolute;
+  width: 280px;
+  height: 420px;
+  left: 50%;
+  top: 200px;
+  transform: translateX(-50%) translateY(0%); 
+} 
+.next-button {
+  color: rgb(52, 196, 107);
+  border: .5px solid rgba(52, 196, 107, 0.463);
   color: var(--buttons);
-  position: relative;
-}
-.clever {
-  font-size: 2.5rem;
-  position: absolute;
-  left: 6.5rem;
-  top: .35rem;
-  color: #ffffff;
-  z-index: 1;
-}
-.clive {
-  font-size: 5rem;
-  position: absolute;
-  left: .8rem;
-  top: .8rem;
-}
-
-.mascot-base {
-  transition: opacity .3s ease;
-  top: 0;
-  left: 0;
+  border: .5px solid var(--buttons);
+  border-radius: 3px;
   width: 100px;
-  position: absolute;
-}
-.mascot{
-  transition: opacity .3s ease;
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100px;
-}
-.show {
-  opacity: 1;
-}
-.hide {
-  opacity: 0;
-}
-
-
-.menu-title {
-  font-weight: 700;
-}
-
-
-/* Session Text */
-.text {
-  margin: 0;
+  padding: .5rem .5rem .7rem;
+  margin: 2rem auto;
   position: relative;
-  font-size: .9rem;
-  color: white;
-  padding: 1rem;
-  padding-right: 3.3rem;
-  width: 100%;
-  height: calc(100vh - 118px);
-  border: none;
-  background: transparent;
+  cursor: pointer;
 }
-.text::placeholder{
-  color: rgb(95, 166, 134)
-}
-.text:focus {
-  outline: 0;
+.fade-anim {
+  animation: fade-anim 1.2s ease .9s forwards;
 }
 
-
- /* Session Listening Button state classes */
-.listening {
-  fill: var(--buttons) !important;
-}
-.thinking {
-  fill: var(--buttons) !important;
-}
-
-.session-controls-popup-active {
-  top: 330px; 
-  transform: translateX(50%);
-  right: 50%;
-  /* transition: all 1s ease; */
-}
-
-.prompt-1 .speak {
-  width: 50px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(2);
-  transition: all 1s ease;
-}
-.prompt-2 .speak {
-  width: 50px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(150%, -10%) scale(.8);
-  transition: all 1s ease;
-}
-.prompt-2 .speak svg {
-  fill: #4a5057 ;
-}
-.prompt-1 .speak svg {
-  animation: micAnim 5s ease 0s infinite ;
-}
-
-
-.prompt-1 .think {
-  width: 50px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(125%, -50%) scale(.8);
-  transition: all 1s ease;
-}
-.prompt-2 .think {
-  width: 50px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, 0%) scale(2);
-  transition: all 1s ease;
-}
-.prompt-1 .think svg {
-  fill: #4a5057 ;
-}
-.prompt-2 .think svg {
-  animation: bubbleAnim 4s ease 0s ;
-  fill: var(--buttons) ;
-}
-
-
-/* Button Animations */
-@keyframes micAnim {
-	0%, 40%, 100% {
-    fill:var(--svg-inactive);
-	}
-  50%, 90% {
-		/* fill: #fbae7e; */
-		fill: var(--buttons);
-	}
-}
-@keyframes bubbleAnim {
-	0%, 40%{
-    fill:var(--svg-inactive);
-	}
-  50%, 100%{
-		/* fill: #fbae7e; */
-		fill: var(--buttons) ;
-	}
-}
-
-.sessions-menu h3, .lobby-menu h3 {
-  color: var(--buttons)
-}
-
-
-/* Lobby */
-.lobby-menu, .online-users-container {
-  border: 1px solid grey;
-  padding: 4px;
-}
-
-
-/*  Session  */
-.public-sessions-container, .owned-sessions-container {
-  /* height: 100px; */
-  border: 1px solid grey;
-  padding: 4px;
-  /* text-align: left; */
-}
-.online-users-container {
-  color: white
-}
-
-.session {
-  position: relative;
-  text-align: center;
-  border: 1px solid lightgrey
-}
-
-.create-session {
-  border: 1px solid rgb(70, 113, 148);
-}
-
-.leave-session-button {
-  position: absolute;
-  top: 0;
-  right: .8rem;
-}
-
-
-/*  Session Controls  */
-.help {
-  transition: all 1s ease;
-  position: fixed;
-  right: .8rem;
-  /* top: 0%; */
-  /* bottom: 25%; */
-  width: 40px;
-  z-index: 1;
-  top: 14%;
-}
-.help svg {
-  width: 80%;
-}
-
-.undo {
-  transition: all 1s ease;
-  /* position: ; */
-  right: .8rem;
-  top: 50%;
-  width: 40px;
-  z-index: 1;
-}
-.undo svg {
-  transition: all .1s ease;
-  display: inline;
-  transform: translateX(-5%) translateY(-0%);
-  width: 120%;
-}
-.undo.highlight svg{
-  fill: var(--buttons);
-}
-
-.disabled {
-  fill: #5b677523 !important
-}
-.controls-secondary svg {
-  fill: #586671;
-}
-
-.session-controls {
-  transition: all .5s ease;
-  position: fixed;
-  right: .8rem;
-  top: 65%;
-  width: 45px;
-  z-index: 2;
-}
-.button {
-  height: 50px;
-  background: transparent;
-  color: var(--btn-text);
-  border: none;
-  padding: 0.375rem 0.75rem;
-}
-/* .button:hover svg { */
-  /* fill: ; */
-/* } */
-
-.button:focus {
-  box-shadow: none;
-}
-.session-controls svg {
-  transition: all .5s ease;
-  fill:var(--svg-inactive);
-}
-
-.speak svg {
-  width: 120%;
-  transform: translateX(-5%);
-}
-.think svg {
-  width: 150%;
-  transform: translateX(-15%);
+@keyframes fade-anim {
+ 0% {
+   opacity: 1;	
+ }
+ 100% {
+   opacity: 0;
+ }
 }

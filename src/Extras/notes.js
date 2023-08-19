@@ -1,13 +1,13 @@
 
+
 // TODO 
 
-      // Style sign up + login mob first
+      // auth context
 
+      // make mic icon animate on listening
 
 
 // FIX
-
-      // Walkthrough buttons position
 
       // Check sign in/out popups 
           //- sequence 
@@ -22,7 +22,6 @@
 
       // Profile  
         // Change displayName
-        // Expand
     
       // Session 
         // Show Joined Users

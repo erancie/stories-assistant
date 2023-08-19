@@ -70,7 +70,7 @@ const SignIn = ({ setUserData, setShowSignIn })=> {
       { isJustSignedIn && 
           <Popup show={setJustSignedIn} 
                         message={"Signed in!"} 
-                        classes={'fade-anim green-text'} 
+                        bgClasses={'fade-anim green-text'} 
                         timeout={2200} 
                         /> }
                       
