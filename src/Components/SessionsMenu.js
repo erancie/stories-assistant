@@ -4,6 +4,7 @@ import { getDatabase, ref, onValue, off, push, update, child } from 'firebase/da
 
 export default function SessionsMenu({ auth, 
                                        userData, 
+                                       sessionElRef,
                                        setCurrentSession, 
                                        userOwnedSessions, 
                                        setUserOwnedSessions }) {
@@ -12,6 +13,7 @@ export default function SessionsMenu({ auth,
   const [publicSessions, setPublicSessions] = useState()  
   const [showCreateSession, setShowCreateSession] = useState(false);
   const [newSessionTitle, setNewSessionTitle] = useState('');
+  const [sessionsExpanded, setSessionsExapanded] = useState(true);
 
   // Listen to Public Sessions
   useEffect(()=>{ 
@@ -79,12 +81,23 @@ export default function SessionsMenu({ auth,
     <div className='clickout-overlay' onClick={()=>{console.log('fire');setShowCreateSession(false)}}>
     </div>}
 
-
-    <div className='sessions-menu m-2 mt-4'>
+    <div className='sessions-menu m-2 mt-4 disable-caret'>
 
       {/* Make expandable ? --> animate */}
-      <h3 className={`menu-title p-3 pb-2 px-4 ${showCreateSession && 'width-0'}`}>Sessions</h3>
+      <h3 className={`menu-title p-2 ${showCreateSession && 'width-0'}`}
+          onClick={()=>setSessionsExapanded((curr)=>!curr)} >
+        Sessions
+      </h3>
 
+      {sessionsExpanded ? 
+        <svg className={`minimize-svg ${showCreateSession && 'hide'}`} onClick={()=>setSessionsExapanded((curr)=>!curr)} viewBox="0 0 24 19" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.54354 1.50388C10.738 -0.199922 13.262 -0.199918 14.4565 1.50389L23.4119 14.2778C24.8057 16.266 23.3835 19 20.9554 19H3.04457C0.616523 19 -0.805704 16.266 0.588116 14.2779L9.54354 1.50388Z" />
+        </svg>
+        :
+        <svg className={`expand-svg ${showCreateSession && 'hide'}`} onClick={()=>setSessionsExapanded((curr)=>!curr)} viewBox="0 0 24 19" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.4565 17.4961C13.262 19.1999 10.738 19.1999 9.54354 17.4961L0.588121 4.72215C-0.805698 2.73401 0.616531 -2.48136e-06 3.04458 -2.2691e-06L20.9554 -7.03279e-07C23.3835 -4.91012e-07 24.8057 2.73401 23.4119 4.72215L14.4565 17.4961Z" />
+        </svg> 
+      }
 
       <svg className={`show-create-session-button ${showCreateSession && 'fill-orange'}`} onClick={()=>setShowCreateSession((curr)=>!curr)} viewBox="0 0 40 40"  xmlns="http://www.w3.org/2000/svg">
         <path d="M4.44444 11.1111C4.44444 11.7005 4.67857 12.2657 5.09532 12.6825C5.51206 13.0992 6.07729 13.3333 6.66666 13.3333C7.25603 13.3333 7.82126 13.0992 8.23801 12.6825C8.65476 12.2657 8.88889 11.7005 8.88889 11.1111V8.88889H11.1111C11.7005 8.88889 12.2657 8.65476 12.6825 8.23801C13.0992 7.82127 13.3333 7.25604 13.3333 6.66667C13.3333 6.0773 13.0992 5.51207 12.6825 5.09532C12.2657 4.67857 11.7005 4.44444 11.1111 4.44444H8.88889V2.22222C8.88889 1.63285 8.65476 1.06762 8.23801 0.650874C7.82126 0.234126 7.25603 0 6.66666 0C6.07729 0 5.51206 0.234126 5.09532 0.650874C4.67857 1.06762 4.44444 1.63285 4.44444 2.22222V4.44444H2.22222C1.63285 4.44444 1.06762 4.67857 0.650873 5.09532C0.234126 5.51207 0 6.0773 0 6.66667C0 7.25604 0.234126 7.82127 0.650873 8.23801C1.06762 8.65476 1.63285 8.88889 2.22222 8.88889H4.44444V11.1111ZM33.3333 4.44444H20C19.4106 4.44444 18.8454 4.67857 18.4286 5.09532C18.0119 5.51207 17.7778 6.0773 17.7778 6.66667C17.7778 7.25604 18.0119 7.82127 18.4286 8.23801C18.8454 8.65476 19.4106 8.88889 20 8.88889H33.3333C33.9227 8.88889 34.4879 9.12301 34.9047 9.53976C35.3214 9.95651 35.5555 10.5217 35.5555 11.1111V32.7111L32.0667 29.4889C31.6568 29.1052 31.117 28.8908 30.5555 28.8889H11.1111C10.5217 28.8889 9.95651 28.6548 9.53976 28.238C9.12301 27.8213 8.88889 27.256 8.88889 26.6667V20C8.88889 19.4106 8.65476 18.8454 8.23801 18.4287C7.82126 18.0119 7.25603 17.7778 6.66666 17.7778C6.07729 17.7778 5.51206 18.0119 5.09532 18.4287C4.67857 18.8454 4.44444 19.4106 4.44444 20V26.6667C4.44444 28.4348 5.14682 30.1305 6.39706 31.3807C7.6473 32.631 9.343 33.3333 11.1111 33.3333H29.6889L36.3555 39.4C36.7427 39.7635 37.2472 39.9764 37.7778 40C38.0825 39.9967 38.384 39.9364 38.6666 39.8222C39.0642 39.6487 39.4022 39.3627 39.6391 38.9994C39.8761 38.6362 40.0015 38.2115 40 37.7778V11.1111C40 9.343 39.2976 7.64731 38.0474 6.39707C36.7971 5.14682 35.1014 4.44444 33.3333 4.44444Z" />
@@ -111,6 +124,9 @@ export default function SessionsMenu({ auth,
                   if (auth.currentUser){
                     createSession( newSessionTitle, ''); 
                     setNewSessionTitle('');
+                    setShowCreateSession(false);
+                    sessionElRef.current.scrollIntoView();
+                    // sessionElRef.current?.scrollIntoView({ behavior: 'smooth' });
                   } else {
                     console.log('no-one is logged in')
                     // let anonymous user create session?
@@ -125,20 +141,8 @@ export default function SessionsMenu({ auth,
       </div>
       }
 
-
-    {/* //how to remove 'caret' */}
-
-
-
-
-
-
-
-
-
-
-
-
+      {sessionsExpanded && <>
+      
       {/* Public Sessions */}
       <div className='public-sessions-container row m-3 mb-5'>
         <h5 className='sub-h'>Public</h5>
@@ -149,7 +153,11 @@ export default function SessionsMenu({ auth,
             sessions.push(
             <div key={sessionId} 
                   className='session-thumb col-3 p-3 pb-0'
-                  onClick={()=>setCurrentSession(sessionId)} >
+                  onClick={()=>{
+                      setCurrentSession(sessionId)
+                      setSessionsExapanded(false)
+                      sessionElRef.current.scrollIntoView()
+                  }} >
               <p>{session.title}</p>
               {/* <div className='join-button m-1' onClick={()=>setCurrentSession(sessionId)}>Join</div> */}
             </div>
@@ -158,7 +166,6 @@ export default function SessionsMenu({ auth,
           return sessions
         })()}
       </div>
-
 
       {/* Your Sessions  */}
       <div className='owned-sessions-container row m-3 pb-4'>
@@ -172,7 +179,11 @@ export default function SessionsMenu({ auth,
               sessions.push(
               <div key={sessionId} 
                     className='session-thumb col-2 p-1'
-                    onClick={()=>setCurrentSession(sessionId)} >
+                    onClick={()=>{
+                      setCurrentSession(sessionId)
+                      setSessionsExapanded(false)
+                      sessionElRef.current.scrollIntoView()
+                    }} >
                 <p>{session && session.title}</p>
                 {/* <div className='join-button m-1' onClick={()=>setCurrentSession(sessionId)}>Join</div> */}
               </div>
@@ -181,7 +192,11 @@ export default function SessionsMenu({ auth,
             return sessions
           }
         })()}
-      </div>
+      </div>     
+
+      </>}
+
+
 
     </div>
   </>

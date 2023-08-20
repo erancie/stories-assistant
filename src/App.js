@@ -15,9 +15,9 @@ import Header from './Components/Header';
 
 export default function App() {
 
+  const sessionElRef = useRef(); 
   const dbRef = useRef(getDatabase()); 
   const auth = getAuth();
-
   // const { user : userData, setUser : setUserData} = useAuth() //fix
   
   const [userOwnedSessions, setUserOwnedSessions] = useState()
@@ -71,12 +71,15 @@ export default function App() {
                           userData={userData} 
                           setCurrentSession={setCurrentSession} 
                           userOwnedSessions={userOwnedSessions}
-                          setUserOwnedSessions={setUserOwnedSessions} />
+                          setUserOwnedSessions={setUserOwnedSessions} 
+                          sessionElRef={sessionElRef} />
 
-            <Session userData={userData}
+            <Session userData={userData} 
                      currentSession={currentSession}
                      setCurrentSession={setCurrentSession} 
-                     userOwnedSessions={userOwnedSessions} />
+                     userOwnedSessions={userOwnedSessions} 
+                     sessionElRef={sessionElRef}/>
+                     {/* ref={sessionElRef}/> */}
           </div>
 
         </div>

@@ -12,7 +12,8 @@ recognition.lang = 'en-US'
 
 console.log(`speech online`)
 
-function Session({ userData,
+function Session({  userData, 
+                    sessionElRef,
                     currentSession, 
                     setCurrentSession, 
                     userOwnedSessions
@@ -178,7 +179,9 @@ function Session({ userData,
   return (
     <>
 
-    <div className='session m-2 mt-5'>
+    <div ref={sessionElRef} className='session m-2 mt-4'>
+
+      {/* <h3 className={`menu-title p-3 pb-2 px-4`}>Current Session</h3> */}
 
       {/* Controls  -*/}
       <div className={`session-controls ${(promptNo!==3)&&'session-controls-popup-active'} ${(promptNo===1) && ' prompt-1'} ${(promptNo===2) && ' prompt-2'}`} >

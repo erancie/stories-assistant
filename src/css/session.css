@@ -1,13 +1,24 @@
 .session {
   position: relative;
   text-align: center;
-  box-shadow: -2px -2px 4px rgb(19 23 30);
+  box-shadow: -2px 2px 15px rgba(19, 23, 30, 0.655);
+  /* box-shadow: -2px 2px 15px rgb(19 23 30), 2px -1px 5px rgba(124, 140, 169, 0.114); */
+  /* border-top: .5px solid rgba(187, 207, 253, 0.094); */
+  /* border-left: 1px solid rgba(187, 207, 253, 0.189); */
+  min-height: 100%;
+  border-radius: 6px;
+}
+.starters-container {
+  background: rgb(32, 39, 51);
+  border-radius: 6px;
+
 
 }
 .session-title {
   text-align: left;
   font-size: 2rem;
   font-weight: 600;
+  
 }
 
 .delete-session-button {
@@ -15,18 +26,20 @@
   border: 1px solid rgb(40, 68, 96);
   color: rgb(40, 68, 96);
   position: absolute;
-  top: 1.3rem;
+  /* top: 3.5rem; */
+  top: 1.5rem;
   transition: all .2s ease;
-  left: 13rem;
+  right: 5.5rem;
 }
 .leave-session-button {
   border-radius: 4px;
   border: 1px solid rgb(40, 68, 96);
   color: rgb(40, 68, 96);
   position: absolute;
-  top: 1.3rem;
+  /* top: 3.5rem; */
+  top: 1.5rem;
   transition: all .2s ease;
-  left: 8rem;
+  right: .8rem;
 }
 .delete-session-button:hover {
   background-color: rgb(40, 68, 96);
@@ -158,11 +171,17 @@
   fill: #586671;
 } */
 .session-controls {
+  z-index: 1;
   position: absolute;
   right: 0rem;
-  top: 1rem;
+  top: 5.2rem;
   width: 45px;
   transition: all .5s ease;
+}
+@media (min-width: 576px) {
+  .session-controls {
+    right: 1rem;
+  }
 }
 .session-controls-popup-active {
   top: 330px; 
@@ -197,3 +216,4 @@
 .disabled {
   fill: #5b677523 !important
 }
+
