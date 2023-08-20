@@ -99,12 +99,12 @@ export default function Header() {
   return (
     <div className='header row mx-0' style={promptNo!==3?{zIndex: 4}:null} >
       
-      <h1 className='title col-7'>
+      <h1 className='title col-7 mt-3'>
         <div className='clever'><span className='c'>C</span>lever</div> 
         <div className='clive'> <span className='c2'>C</span>live</div>
       </h1>
 
-      <div className='mascot-container position-relative col-3 mt-2'>
+      <div className='mascot-container position-relative col-3 '>
         {mascot()}
       </div>
 
