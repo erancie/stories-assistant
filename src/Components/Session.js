@@ -239,7 +239,17 @@ function Session({ userData,
           </textarea>
         </>
         :
-        <p className='p-5' style={{color: 'rgb(95, 166, 134)'}}>Join a session to chat with Clive</p>
+        <div className='starters-container'>
+          <p className='p-1 px-5 pt-5' style={{color: 'rgb(95, 166, 134)'}}>
+            Join a session or start one with these starters..
+          </p>
+          <div className='starters row p-1 px-3 pb-5'>
+            {/* map starters */}
+            <div className='col-3'>ICON <br/> option 1</div>
+            <div className='col-3'>ICON <br/> option 2</div>
+            <div className='col-3'>ICON <br/> option 3</div>
+          </div>
+        </div>
       }
       </div>
     </> 
