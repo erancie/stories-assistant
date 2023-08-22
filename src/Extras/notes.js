@@ -1,72 +1,103 @@
+// TASKS
 
 
-// TODO 
+// NEXT 
+
+      //------- 1
+      // cross gadient - neu
+
+      // Change Profile displayName 
 
       // auth context
 
-      // make mic icon animate on listening
+      //------- 2
+      // Session - Always have 3-4 lines space after type, listen, think. 
 
+      // Session - Show Joined Users 
 
-// FIX
-
-      // Check sign in/out popups 
-          //- sequence 
-          //- styling
-
-      // Undo from one user in session 
-          // ..deletes other users last speech set. (answer too ?)       
-
-
-
-// NEW FUNC 
-
-      // Profile  
-        // Change displayName
-    
-      // Session 
-        // Show Joined Users
-        // Change session name - owner only
-        // Always have 3-4 lines after type listen, think
-
-      //       --------------------------------
-
-      // Invite to session - click user icon popup
+      //------- 3
+      // Send Session Invite - popup on click user icon 
         //if user is in currentSession invite otherUser to sessionId
         //if not in currentSession then createSession and invite otherUser
 
-      // Accept Invite to Session - popup
+      // Accept Session Invite - popup
         //if invites then show popup - accept button - setCurrentSession(sessionId)
 
-      //       --------------------------------
+
+
+// UPCOMING 
+
+      // make mic icon animate on listening
 
       // Input Validation    (start w/ signin/up comps)
           //- litte input popup if invalid before submit
           //- redirect w/ popup on firebase error after submit
 
+// FIX
 
+      // filter owned sessions out of public sessions
 
-// DEV
+      // Move Delete & Leave session buttons (put in ... popup?)
 
-      //PROBLEM: If users logs out in one window, logs out in other 
-          // BUT connection Ref from other window is not remove and still shows in connected
+      // limit headings on menus - hide overflow with '...' on edge? - limit expanding of elemtns in same row as larger titles with flex
 
-          //Q: How to remove all connection References only for all windows in same browser at logout
+      // Check sign in/out popups 
+          //- sequence 
+          //- styling - sizing
 
-            //SOLUTION:
-                // Find a reference that is common for every tab opened in a specific browser: 
-                // -store in connections
-                // -Or store seperate onlineUsers list in rtdb with each user having connection and common browser refs. (Is this 'fanning' the data?)
-
-                //FINALLY: Filter for connected refs with common browser ref and remove them all on logout
-
-              
-
+      // Undo from one user in session 
+          // ..deletes other users last speech set. (answer too ?)       
   
+      // Allow Re-Signup
+
+
+
+
+
+// Platform Library Comps ///------------------------->>
+
+  //Popups - wrapper
+    //Overlay
+    //Message
+    //Children (inputs, buttons..)
+
+  //In element Notification 
+    // Message
+    //Children 
+
+  // Walkthrough
+
+  // Profile
+
+  // Sign UP
+
+  // Sign IN
+
+  // Lateral List / Menu / Tabs - collapses into left right nav arrows
+
+  // Carouselle - <L  xxx  R>
+    // 3D circle version? 
+
+      // hmm  
+      // Assorted stack of overlapping elements that can be clicked and comes to top
+      // Partially hidden elements
+
+  // Accordion 
+
+  // Buttons 1
+  // Buttons 2
+
+
+
+//////------------------------------------->>
+
+
+
+
 
 // -----------------
 // Future Func Notes  
 
-    // Allow Re-Signup
     
     // Add Security Rules - users & sessions? //https://medium.com/@juliomacr/10-firebase-realtime-database-rule-templates-d4894a118a98
 

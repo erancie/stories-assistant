@@ -9,32 +9,48 @@ body,html {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+
 }
 * {
   box-sizing: border-box;
 }
 :root {
   --buttons: #44da79 ;
+  --buttons: white ;
   --svg-inactive: #c1ccda ;
   --bg: rgb(19 23 30);
   --header-height: 112px;
-
+  --mute-blue: rgb(80, 108, 169);
   --font-header: Barriecito ; 
-
   --session-color: #ffbc2a;
- 
+  --session-color: white;
+  --sky-blue: rgb(56, 99, 173);
+  --session-buttons: rgb(140, 145, 170) ;
+
 }
 body {
   font-family: Raleway;
   text-align: center;
   background: none;
   background: rgb(19 23 30);
-  background: radial-gradient(at 46% 42%, rgb(33, 40, 51) 0%, rgb(19 23 30) 100%);
+  /* background:  radial-gradient(at 46% 42%, rgb(33, 40, 51) 0%, rgb(19 23 30) 100%); */
+  background:  radial-gradient(at 55% 62%, rgba(33, 40, 51, 0.94) 0%, rgba(19, 23, 30, .94) 100%),
+               url('../assets/net1.jpg');
+               /* <a href="https://www.freepik.com/free-vector/futuristic-networking-technology-background-vector-purple-tone_16252223.htm#page=8&query=technology%20background%20hd&position=49&from_view=keyword&track=ais">Image by rawpixel.com</a> on Freepik */
+  background-position: top;
+  background-attachment: fixed;
   background-size: cover;
   background-repeat: no-repeat;
   color: #bf8867;
   color: white;
   min-height: 100vh; 
+  /* animation: bgAnim 8s forwards ease; */
+  /* position: ; */
+}
+.container {
+  overflow: hidden;
+  min-height: 600px;
+  /* min-height: 100% ; */
 }
 .row {
   margin-top: 0;
@@ -49,7 +65,7 @@ body {
   position: fixed;
   width: 100%;
   height: 100vh;
-  z-index: 2;
+  z-index: 100;
   transition: all 1s ease;
   top: 0;
   left: 0;
@@ -155,3 +171,47 @@ xl	    ≥1200px
 xxl	    ≥1400px 
 
 */
+
+
+
+/* bgs */
+
+.bg-1 {
+  background:  radial-gradient(at 46% 42%, rgba(33, 40, 51, 0.7) 0%, rgba(19, 23, 30, .7) 100%),
+  url('../assets/net1.jpg');
+}
+.bg-2 {
+  background:  radial-gradient(at 46% 42%, rgba(33, 40, 51, 0.7) 0%, rgba(19, 23, 30, .7) 100%),
+  url('../assets/net2.jpg');
+}
+.bg-3 {
+  background:  radial-gradient(at 46% 42%, rgba(33, 40, 51, 0.7) 0%, rgba(19, 23, 30, .7) 100%),
+  url('../assets/net3.jpg');
+}
+.bg-4 {
+  background:  radial-gradient(at 46% 42%, rgba(33, 40, 51, 0.7) 0%, rgba(19, 23, 30, .7) 100%),
+  url('../assets/net4.jpg');
+}
+.bg-5 {
+  background:  radial-gradient(at 46% 42%, rgba(33, 40, 51, 0.7) 0%, rgba(19, 23, 30, .7) 100%),
+  url('../assets/net5.jpg');
+}
+.bg-6 {
+  background:  radial-gradient(at 46% 42%, rgba(33, 40, 51, 0.7) 0%, rgba(19, 23, 30, .7) 100%),
+  url('../assets/net6.jpg');
+}
+.bg-7 {
+  background:  radial-gradient(at 46% 42%, rgba(33, 40, 51, 0.7) 0%, rgba(19, 23, 30, .7) 100%),
+  url('../assets/net7.jpg');
+}
+
+@keyframes bgAnim {
+  0% {
+    background:  radial-gradient(at 46% 42%, rgba(33, 40, 51, 0.7) 0%, rgba(19, 23, 30, .7) 100%),
+    url('../assets/net5.jpg');
+  }
+  50% {
+    background:  radial-gradient(at 46% 42%, rgba(33, 40, 51, 0.7) 0%, rgba(19, 23, 30, .7) 100%),
+    url('../assets/net6.jpg');
+  }
+}

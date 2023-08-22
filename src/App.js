@@ -23,6 +23,8 @@ export default function App() {
   const [userOwnedSessions, setUserOwnedSessions] = useState()
   const [currentSession, setCurrentSession] = useState() 
   const [userData, setUserData] = useState()
+  const [sessionsExpanded, setSessionsExpanded] = useState(true);
+
 
 
   const [connectionRef, setConnectionRef] = useState() 
@@ -51,7 +53,7 @@ export default function App() {
   return (
     <CliveStateProvider>
       <AuthProvider>
-        <div className="App ">   
+        <div className="App disable-caret">   
 
           <Walkthrough />
 
@@ -72,14 +74,17 @@ export default function App() {
                           setCurrentSession={setCurrentSession} 
                           userOwnedSessions={userOwnedSessions}
                           setUserOwnedSessions={setUserOwnedSessions} 
-                          sessionElRef={sessionElRef} />
+                          sessionElRef={sessionElRef}
+                          sessionsExpanded={sessionsExpanded}
+                          setSessionsExapanded={setSessionsExpanded} />
 
             <Session userData={userData} 
                      currentSession={currentSession}
                      setCurrentSession={setCurrentSession} 
                      userOwnedSessions={userOwnedSessions} 
-                     sessionElRef={sessionElRef}/>
-                     {/* ref={sessionElRef}/> */}
+                     sessionElRef={sessionElRef}
+                     sessionsExpanded={sessionsExpanded}
+                     setSessionsExpanded={setSessionsExpanded} />
           </div>
 
         </div>

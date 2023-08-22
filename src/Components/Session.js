@@ -16,7 +16,8 @@ function Session({  userData,
                     sessionElRef,
                     currentSession, 
                     setCurrentSession, 
-                    userOwnedSessions
+                    userOwnedSessions,
+                    setSessionsExpanded
                   }) {  
   const dbRef = useRef(getDatabase()); 
 
@@ -25,6 +26,7 @@ function Session({  userData,
   const [title, setTitle ] = useState('')
   const [transcript, setTranscript ] = useState('')
   const [previousText, setPreviousText] = useState('');
+  const [changeSessionTitle, setChangeSessionTitle] = useState('');
 
   //Speech rec. setup 
   useEffect(()=>{
@@ -112,6 +114,7 @@ function Session({  userData,
       off(ref(db, `sessions/${currentSession}/title`), 'value', updateTitleFromDB);
     };
   }, [currentSession]);
+  
 
   //Listen when Session text changes
   useEffect(() => {
@@ -132,8 +135,8 @@ function Session({  userData,
     };
   }, [currentSession]);
 
-  //Session Utility
-  const checkIsSessionOwned = useCallback(()=> {
+  //Check if seeeison is owned by current user
+  const isSessionOwned = useCallback(()=> {
     let isSessionOwned;
     for (let key in userOwnedSessions) {
       // console.log('key:')
@@ -148,7 +151,7 @@ function Session({  userData,
   //Delete Session 
   const deleteSession = useCallback((sessionId, uid)=>{
     //permission - check if session is currently owned (put this check in backend?)
-    if( checkIsSessionOwned() ) {
+    if( isSessionOwned() ) {
       console.log('currentSession IS in ownedSessions')
       const updates = {};
       updates['/sessions/' + sessionId] = null; //delete
@@ -166,20 +169,29 @@ function Session({  userData,
     } else {
       console.log('currentSession IS NOT in ownedSessions')
     }
-  },[checkIsSessionOwned]) 
+  },[isSessionOwned]) 
 
   //Handle Session Text Change > Resets when Current Session changes
   const handleTextChange = useCallback((e) => {
     setPreviousText(e.target.value);
     set(ref(dbRef.current, `sessions/${currentSession}/text`), e.target.value);
   }, [currentSession])
+  
+  //Handle Session Title Change > Resets when Current Session changes
+  const handleTitleChange = useCallback((e) => {
+    setPreviousText(e.target.value);
+    set(ref(dbRef.current, `sessions/${currentSession}/title`), e.target.value);
+  }, [currentSession])
 
 
+  const isDisabled = () => {
+    if (!currentSession || (promptNo !== 3)) return 'disabled-fill'
+  }
 
   return (
     <>
 
-    <div ref={sessionElRef} className='session m-2 mt-4'>
+    <div ref={sessionElRef} className='session m-2 mt-4 disable-caret'>
 
       {/* <h3 className={`menu-title p-3 pb-2 px-4`}>Current Session</h3> */}
 
@@ -196,7 +208,7 @@ function Session({  userData,
         <button className={`speak button col-12 my-3`} 
                 onClick = {(promptNo!==3) ? ()=>setPromptNo(1) : ()=>setIsListening(curr=>!curr)} 
                 disabled={isThinking || (!currentSession && (promptNo===3))} >
-          <svg className={`${(isListening && 'listening')}` } viewBox="0 0 85 126" xmlns="http://www.w3.org/2000/svg">
+          <svg className={`${(isListening && 'listening')}` + isDisabled() } viewBox="0 0 85 126" xmlns="http://www.w3.org/2000/svg">
             <path d="M65.41 63.486C65.41 74.417 56.5549 83.285 45.6189 83.285H38.408C27.487 83.285 18.627 74.417 18.627 63.486V19.789C18.626 8.859 27.486 0 38.408 0H45.6189C56.5549 0 65.41 8.859 65.41 19.789V63.486Z" />
             <path d="M77.963 37.5371C74.609 37.5371 71.891 40.2561 71.891 43.6091V68.8731C71.889 71.6331 71.264 74.2311 70.102 76.6561C68.363 80.2831 65.368 83.5121 61.46 85.8331C57.556 88.1531 52.772 89.5491 47.553 89.5481H36.475C29.53 89.5521 23.342 87.0621 18.989 83.2291C16.812 81.3141 15.098 79.0751 13.934 76.6551C12.771 74.2311 12.146 71.6331 12.144 68.8741V43.6091C12.144 40.2551 9.425 37.5371 6.072 37.5371C2.719 37.5371 2.78054e-06 40.2561 2.78054e-06 43.6091V68.8731C-0.00199722 73.5021 1.075 77.9411 2.99 81.9181C5.865 87.8911 10.579 92.8271 16.377 96.2731C21.609 99.3811 27.754 101.275 34.323 101.62V120.495C34.323 123.539 36.793 126 39.841 126H44.201C47.237 126 49.721 123.539 49.721 120.495V101.629C58.722 101.153 66.912 97.7631 73.074 92.3471C76.398 89.4221 79.137 85.8971 81.05 81.9161C82.964 77.9391 84.039 73.5011 84.037 68.8731V43.6091C84.036 40.2551 81.317 37.5371 77.963 37.5371Z" />
           </svg>
@@ -206,7 +218,7 @@ function Session({  userData,
                 //factor this and make 3rd function for popup to prompt joining session if !currentSession (then remove !currentSesison from disabled)
                 onClick={ (promptNo!==3) ? ()=>setPromptNo(2) : getAnswer} 
                 disabled={isThinking || isListening || (!currentSession && (promptNo===3)) } >
-          <svg className={`${isThinking && 'thinking'}`} viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <svg className={`${isThinking && 'thinking'}` + isDisabled()} viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
             <path d="M19.86 5.62457C17.898 4.57039 15.718 4.01619 13.5 4.01619C6.05597 4.01619 0 10.0963 0 17.57C0 25.0436 6.05597 31.1237 13.5 31.1237H13.616C14.828 34.1557 17.706 36.1436 21 36.1436C24.048 36.1436 26.814 34.3746 28.148 31.6578C29.406 31.969 30.698 32.1276 32 32.1276C40.8219 32.1276 48 24.9211 48 16.0639C48 1.33982 29.1671 -5.31918 19.86 5.62457Z" />
             <path d="M14 36.1445C11.794 36.1445 10 37.9457 10 40.1605C10 42.3753 11.794 44.1765 14 44.1765C16.2061 44.1765 18.0001 42.3753 18.0001 40.1605C18.0001 37.9457 16.2061 36.1445 14 36.1445Z" />
             <path d="M5 42.168C3.34597 42.168 2 43.5193 2 45.1799C2 46.8405 3.34597 48.1919 5 48.1919C6.65403 48.1919 8 46.8405 8 45.1799C8 43.5193 6.65403 42.168 5 42.168Z" />
@@ -219,14 +231,25 @@ function Session({  userData,
       {currentSession 
         ?
         <>
-          <div className='session-title p-3'>{title}</div>
+          <div className='session-title-container'>
+          {/* Check if owned */}
+          { isSessionOwned() ?
+            <input className='change-session-title-input p-3 ' 
+                   type="text" 
+                   name='change-session-title' 
+                   onChange={handleTitleChange}
+                   value={ title } >
+            </input>
+          : <div className='session-title p-3 disable-caret'>{title}</div> 
+          }
+          </div>
 
-          { checkIsSessionOwned() &&
-          <div className='delete-session-button p-2' onClick={(e)=>deleteSession(currentSession, userData.uid)}>
+          { isSessionOwned() &&
+          <div className='delete-session-button p-2 disable-caret' onClick={(e)=>deleteSession(currentSession, userData.uid)}>
             Delete
           </div>}
 
-          <div className='leave-session-button p-2' onClick={()=>setCurrentSession(null)}>
+          <div className='leave-session-button p-2 disable-caret' onClick={()=>{setCurrentSession(null)}}>
             Leave
           </div>
 

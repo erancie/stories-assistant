@@ -10,15 +10,22 @@
 .title {
   font-family: Raleway;
   font-weight: 900;
-  color: var(--buttons);
   position: relative;
+  /* color: var(--buttons); */
+  /* color: var(--sky-blue); */
+  /* color: var(--session-color); */
+  /* color: #deba39; */
+  color: rgb(146, 173, 232);
+  color: rgb(80, 108, 169);
+  color: rgb(52, 72, 107);
 }
 .clever {
   font-size: 2.5rem;
   position: absolute;
   left: 6.5rem;
   top: .35rem;
-  color: #ffffff;
+  /* color: #3a8592; */
+  /* color: rgb(82, 117, 128); */
   z-index: 1;
 }
 .clive {

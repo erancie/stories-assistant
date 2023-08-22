@@ -1,7 +1,9 @@
-import React, {useState, useRef } from 'react'
-import { signOut } from "firebase/auth";
-import { getDatabase, ref, set, update, remove} from 'firebase/database';
+import React, {useState, useRef, useCallback } from 'react'
+import { signOut, updateProfile } from "firebase/auth";
+import { getDatabase, ref, set, update, remove } from 'firebase/database';
 import { useCliveContext } from '../Context/CliveStateContext';
+import { debounce } from 'lodash';
+
 
 import Popup from './Popup';
 import SignIn from './SignIn';
@@ -11,16 +13,50 @@ export default function Profile({ userData, setUserData, auth, connectionRef, se
 
   const { highlight, isListening, isThinking, promptNo, setPromptNo, setHighlight, setIsListening, setIsThinking } = useCliveContext();
 
-  // const dbRef = useRef(getDatabase()); 
+  const dbRef = useRef(getDatabase()); 
   const [showSignIn, setShowSignIn] = useState()  
   const [showSignUp, setShowSignUp] = useState() 
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isJustSignedOut, setJustSignedOut] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [displayName, setDisplayName] = useState('');
 
-  
+    //Handle Session Title Change > Resets when Current Session changes
+    const handleDisplayNameChange = useCallback((e) => {
+      // set(ref(dbRef.current, `sessions/${currentSession}/title`), e.target.value);
+      // updateProfile(auth.currentUser, { displayName: displayName })
+      // console.log('auth')
+      // console.log(auth.currentUser)
+
+      // const handleChange = debounce((e) => {
+      //   // Update Firebase
+      // }, 500);
+
+
+      setDisplayName(e.target.value)
+
+      if (auth.currentUser) {
+        updateProfile(auth.currentUser, {
+          displayName: e.target.value
+        })
+        .then(() => {
+          console.log("Profile updated!");
+          set(ref(dbRef.current, `users/${auth.currentUser.uid}/displayName`), e.target.value);
+        })
+        .then(() => {
+          console.log("User updated!");
+        })
+        .catch((error) => {
+          console.error("An error occurred: ", error);
+        });
+      }
+
+      // updateProfile(auth.currentUser, { displayName: displayName })
+
+    }, [ displayName, auth ])
+
   return (
-      <div className='profile'>
+      <div className='profile disable-caret'>
         
         {/* Logged Out --> Singup + Login Buttons */}
         {!userData &&
@@ -67,10 +103,20 @@ export default function Profile({ userData, setUserData, auth, connectionRef, se
             {userData.displayName?.charAt(0)} {/* FIX -not setting on sign up */}
           </div>
 
+
+          {/* Change Display Name */}
+          <input className='change-display-name-input p-3 ' 
+                   type="text" 
+                   name='change-session-title' 
+                   onChange={handleDisplayNameChange}
+                   value={ displayName } >
+          </input>
+
+
           {profileOpen &&
           <Popup show={setProfileOpen} 
                  bgClasses={'popup-bg-light'}
-                 classes={'top-0 right popup-style translate-none top-right-popup'} 
+                 classes={'top-0 right popup-style translate-none top-right-popup dark-bg'} 
                  height={'500px'}
                  width={`100%`}
                  maxWidth={'400px'}

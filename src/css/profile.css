@@ -22,7 +22,9 @@
   z-index: 4;
   transition: all .4s ease;
 }
-
+.dark-bg {
+  background: #34486b !important;
+}
 /* Signed Out */
 .auth-buttons {
   position: absolute;

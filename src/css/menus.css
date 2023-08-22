@@ -2,22 +2,50 @@
 .lobby-menu {
   border-radius: 6px;
   background: rgb(32, 39, 51);
+  /* background: linear-gradient(-65deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.027) 50%, rgba(255, 255, 255, 0) 70%), 
+              rgba(32, 39, 51, 1); */
+  background-position: 0 0 , 0 0, 0 0;
   position: relative;
   box-shadow: -2px 2px 10px rgba(19, 23, 30, 0.505);
+  transition: all .4s ease;
 }
+/* .lobby-menu:hover {
+  background: rgba(32, 39, 51, 1);
+  background: linear-gradient(-65deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.027) 50%, rgba(255, 255, 255, 0) 70%), 
+  rgba(32, 39, 51, 1);
+} */
+
+
 
 .sessions-menu {
   border-radius: 6px;
-  background: rgb(32, 39, 51);
+  background: rgba(32, 39, 51, 1);
+  /* background: linear-gradient(-65deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.027) 50%, rgba(255, 255, 255, 0) 70%), 
+              rgba(32, 39, 51, 1)
+              ; */
+  transition: all .4s ease;
   position: relative;
   box-shadow: -2px 2px 10px rgba(19, 23, 30, 0.518);
 }
+/* .sessions-menu:hover {
+  background: rgba(32, 39, 51, 1);
+  background: linear-gradient(-65deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.027) 50%, rgba(255, 255, 255, 0) 70%), 
+  rgba(32, 39, 51, 1);
+} */
+.glare {
+  transition: all .4s ease;
+}
+.glare:hover {
+  /* background: rgba(32, 39, 51, 1); */
+  background: linear-gradient(-65deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.038) 50%, rgba(255, 255, 255, 0) 100%), 
+  rgba(32, 39, 51, 1);
+}
+
 .menu-title {
   position: relative;
   transition: all .3s ease;
   width: 100%;
   text-align: center;
-  /* height: 40px; */
 }
 
 @media (max-width: 768px) {
@@ -35,18 +63,24 @@
 
 .sessions-menu h3, .lobby-menu h3 {
   color: var(--buttons);
+  font-weight: 600;
+  /* color: #478b56; */
 }
 .sub-h {
   color: rgb(118, 169, 148);
+  color: rgb(153, 168, 181);
   text-align: left;
-}
+} 
+
 .session-thumb {
-  border-radius: 3px;
-  /* border-bottom: 1px solid rgb(22, 30, 43); */
-  border-top: 1.5px solid rgba(187, 207, 253, 0.094);
-  border-left: 1px solid rgba(187, 207, 253, 0.189);
-  /* border-bottom: 1px solid rgba(187, 207, 253, 0.189); */
-  box-shadow: 1px 2px 4px rgba(19, 23, 30, 0.699);
+  color: var(--session-color);
+  color: var(--mute-blue);
+  color: var(--buttons);
+  font-weight: 400;
+  font-size: 1rem;
+  background: rgba(36, 42, 54, 0.963);
+  border-radius: 2px;
+  box-shadow: -1px 2px 4px rgba(19, 23, 30, 0.452);
   margin: .4rem;
   margin-top: 1rem ;
   transition: all .2s ease;
@@ -54,11 +88,9 @@
 }
 .session-thumb:hover {
   background: rgb(52, 72, 107);
-  /* border: 1px solid rgb(52, 72, 107); */
-  color: rgb(19 23 30);
   cursor: pointer;
+  font-weight: 600;
 }
-
 
 /* Create Session */
 .show-create-session-button {
@@ -66,7 +98,7 @@
   top: .4rem;
   /* transform: translateY(-50%); */
   right: 1rem;
-  z-index: 1;
+  z-index: 2;
   fill: var(--buttons);
   width: 30px;
   transition: all .5s ease;
@@ -86,6 +118,7 @@
   top: 0rem;
   right: 0rem;
   border-radius: 15px 2px 15px 15px;
+  border-radius: 4px 4px 4px 25px;
   background: rgb(52, 72, 107);
   box-shadow: 0 2px 5px #0b0b0d69;
 }
@@ -97,7 +130,6 @@
 
 .new-session-title-input {
   background: rgb(52, 72, 107);
-  /* width: 80%; */
   border: none;
   border-bottom: 2px solid #ffbc2a;
   outline: none;
@@ -105,12 +137,6 @@
   caret-color: #ffdfbf ;
   max-width: 78%;
   border-radius: 0;
-  /* max-width: 100%; */
-}
-.new-session-title-input:focus {
-  /* border: none; */
-  /* border-bottom: 2px solid #ffbc2a; */
-
 }
 .new-session-title-input::placeholder {
   color: rgb(217, 234, 253);
@@ -137,25 +163,33 @@
 
 
 
-
-
-
-
-
-
-
-
-.online-users-container, .public-sessions-container {
-  /* gap: 12px; */
+.session-title-container {
+  position: relative;
+  width: 100%;
+  height: 80px;
 }
-.online-users-container {
 
+.change-session-title-input {
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 600;
+  background: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: none;
+  outline: none;
+  color: white;
+  caret-color: #ffdfbf ;
+  /* max-width: 78%; */
+  border-radius: 0;
 }
-.public-sessions-container {
+.change-session-title-input:focus {
+  background: rgb(52, 72, 107);
+  border-bottom: 2px solid #ffbc2a;
+}
 
-}
-.owned-sessions-container {
 
-}
+
 
 
