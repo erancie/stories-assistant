@@ -179,10 +179,8 @@ function Session({  userData,
   
   //Handle Session Title Change > Resets when Current Session changes
   const handleTitleChange = useCallback((e) => {
-    setPreviousText(e.target.value);
     set(ref(dbRef.current, `sessions/${currentSession}/title`), e.target.value);
   }, [currentSession])
-
 
   const isDisabled = () => {
     if (!currentSession || (promptNo !== 3)) return 'disabled-fill'

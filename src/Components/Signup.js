@@ -44,34 +44,34 @@ const Signup =({ setUserData, setShowSignUp })=> {
   },[])
   
   return (
-    <div className='signup'>
+    <div className='signup row justify-content-center'>
       {/* <h1>Sign Up</h1> */}
 
-      <input className='email-signup'
-            placeholder={`email`}
+      <input className='email-signup-input col-lg-10'
+            placeholder={`Email`}
             type="text" 
-            name='email-signup' 
+            name='email-signup-input' 
             onChange={(e)=>setEmailSignup(e.target.value)}
             value={ emailSignup }
       ></input>
 
-      <input className='password-signup'
+      <input className='password-signup-input col-lg-10'
             placeholder={`Password`}
             type="text" 
-            name='password-signup' 
+            name='password-signup-input' 
             onChange={(e)=>setPasswordSignup(e.target.value)}
             value={ passwordSignup }
       ></input>
 
-      <input className='name-signup'
+      <input className='name-signup-input col-lg-10'
             placeholder={`Display Name`}
             type="text" 
-            name='name-signup' 
+            name='name-signup-input' 
             onChange={(e)=>setNameSignup(e.target.value)}
             value={ nameSignup }
       ></input>
 
-      <button className='signup-button' 
+      <button className='submit-signup-button col-lg-10' 
               onClick={(e)=>{
                         createUser(emailSignup, passwordSignup, nameSignup);
                         setEmailSignup('')

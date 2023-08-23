@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import {} from 'dotenv/config';
+// import {} from 'dotenv/config';
 import { set, getDatabase, ref, push, onDisconnect } from 'firebase/database';
 import { getAuth } from "firebase/auth";
 

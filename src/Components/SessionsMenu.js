@@ -155,7 +155,7 @@ export default function SessionsMenu({ auth,
             const session = publicSessions[sessionId] //change this to req session text from db absed on seshId? check if efficient?
             sessions.push(
             <div key={sessionId} 
-                  className='session-thumb col-3 p-3 pb-0'
+                  className='session-thumb col-3 p-3 pb-0 '
                   onClick={()=>{
                       setCurrentSession(sessionId)
                       setSessionsExapanded(false)
@@ -181,7 +181,7 @@ export default function SessionsMenu({ auth,
               //Note: could you put make db req here for full session data (w/ text) if public sessions changes to only id and title?
               sessions.push(
               <div key={sessionId} 
-                    className='session-thumb col-3 p-3 pb-0'
+                    className='session-thumb col-3 p-3 pb-0 '
                     onClick={()=>{
                       setCurrentSession(sessionId)
                       setSessionsExapanded(false)

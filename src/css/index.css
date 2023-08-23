@@ -15,15 +15,29 @@ body,html {
   box-sizing: border-box;
 }
 :root {
-  --buttons: #44da79 ;
-  --buttons: white ;
+  --buttons: rgb(124, 221, 198); 
+  --buttons: #44da79 ; 
+  --buttons: #e0b14b ;  
+  --buttons: #ffd884 ;  
+  --secondary: rgb(109, 155, 144);
+  --secondary: #ffe2a4;
+  --secondary: #e0b14b;
+  --sub-heading: rgb(140, 145, 170) ;
+  --heading: rgb(136, 149, 211) ;
+
+  --utility: #ffbc2a;
+  --utility: #e0b14b;
+  /* --secondary: #1e6877 ; */
+  --item: #ffffff ;
+  --green: #44da79 ;
+  /* --buttons: white ; */
   --svg-inactive: #c1ccda ;
   --bg: rgb(19 23 30);
   --header-height: 112px;
   --mute-blue: rgb(80, 108, 169);
   --font-header: Barriecito ; 
-  --session-color: #ffbc2a;
-  --session-color: white;
+  --session-color: #e0b14b;
+  /* --session-color: white; */
   --sky-blue: rgb(56, 99, 173);
   --session-buttons: rgb(140, 145, 170) ;
 
@@ -34,7 +48,7 @@ body {
   background: none;
   background: rgb(19 23 30);
   /* background:  radial-gradient(at 46% 42%, rgb(33, 40, 51) 0%, rgb(19 23 30) 100%); */
-  background:  radial-gradient(at 55% 62%, rgba(33, 40, 51, 0.94) 0%, rgba(19, 23, 30, .94) 100%),
+  background:  radial-gradient(at 55% 62%, rgba(33, 40, 51, 0.82) 0%, rgba(19, 23, 30, .82) 100%),
                url('../assets/net1.jpg');
                /* <a href="https://www.freepik.com/free-vector/futuristic-networking-technology-background-vector-purple-tone_16252223.htm#page=8&query=technology%20background%20hd&position=49&from_view=keyword&track=ais">Image by rawpixel.com</a> on Freepik */
   background-position: top;
@@ -80,10 +94,8 @@ body {
   transform: translateX(-50%) translateY(0%); 
 } 
 .next-button {
-  color: rgb(52, 196, 107);
+  color: var(--green);
   border: .5px solid rgba(52, 196, 107, 0.463);
-  color: var(--buttons);
-  border: .5px solid var(--buttons);
   border-radius: 3px;
   width: 100px;
   padding: .5rem .5rem .7rem;

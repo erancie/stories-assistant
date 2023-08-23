@@ -34,26 +34,26 @@ const SignIn = ({ setUserData, setShowSignIn })=> {
   },[])
 
   return (
-    <div className='signin'>
+    <div className='signin row justify-content-center'>
       {/* <h1>SignIn</h1> */}
 
-      <input className='email-SignIn'
-              placeholder={`email`}
+      <input className='email-signin-input col-lg-10'
+              placeholder={`Email`}
               type="text" 
-              name='email-SignIn' 
+              name='email-signin-input' 
               onChange={(e)=>setEmailSignIn(e.target.value)}
               value={ emailSignIn }
       ></input>
 
-      <input className='password-SignIn'
+      <input className='password-signin-input col-lg-10'
               placeholder={`Password`}
               type="text" 
-              name='password-SignIn' 
+              name='password-signin-input' 
               onChange={(e)=>setPasswordSignIn(e.target.value)}
               value={ passwordSignIn }
       ></input>
 
-      <button className='SignIn-button' 
+      <button className='submit-signin-button col-lg-10' 
               onClick={(e)=>{
                           SignIn(emailSignIn, passwordSignIn)
                           setEmailSignIn('')

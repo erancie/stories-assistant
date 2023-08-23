@@ -9,7 +9,7 @@ function Popup({ message, bgClasses, classes, show, timeout, noClose,
     <div className={`popup-bg popup-bg-style ${bgClasses}`}
          onClick={ !noClickOut && (()=>show(false)) }
     >
-      <div className={`popup popup-style-neu ${classes}`} 
+      <div className={`popup col-10 popup-style-neu ${classes}`} 
            onClick={ !noClickOut && ((e)=>e.stopPropagation()) }
            style={{height: `${height}`, width: `${width}`, maxWidth: `${maxWidth}`}}
       >
