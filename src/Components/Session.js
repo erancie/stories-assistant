@@ -232,13 +232,13 @@ function Session({  userData,
           <div className='session-title-container'>
           {/* Check if owned */}
           { isSessionOwned() ?
-            <input className='change-session-title-input p-3 ' 
+            <input className='change-session-title-input p-3 px-md-4 ' 
                    type="text" 
                    name='change-session-title' 
                    onChange={handleTitleChange}
                    value={ title } >
             </input>
-          : <div className='session-title p-3 disable-caret'>{title}</div> 
+          : <div className='session-title p-3 px-md-4 disable-caret'>{title}</div> 
           }
           </div>
 

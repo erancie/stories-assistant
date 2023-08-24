@@ -107,6 +107,11 @@
 .text:focus {
   outline: 0;
 }
+@media (min-width: 768px) {
+  .text {
+    padding-left: 1.6rem;
+  }
+}
 
 
  /* Session Listening Button state classes */

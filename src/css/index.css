@@ -15,24 +15,25 @@ body,html {
   box-sizing: border-box;
 }
 :root {
-  --buttons: rgb(124, 221, 198); 
-  --buttons: #44da79 ; 
-  --buttons: #e0b14b ;  
-  --buttons: #ffd884 ;  
-  --secondary: rgb(109, 155, 144);
-  --secondary: #ffe2a4;
-  --secondary: #e0b14b;
-  --sub-heading: rgb(140, 145, 170) ;
-  --heading: rgb(136, 149, 211) ;
+  --buttons: rgb(124, 221, 185); 
+  --buttons: rgb(146, 164, 190); 
+  --buttons: rgb(173, 191, 224); 
+
+
+  --secondary: #e1a21b;
+
+  --sub-heading: rgb(162, 179, 203) ;
+
+  --heading: #ffffff;
 
   --utility: #ffbc2a;
-  --utility: #e0b14b;
+  --utility-2: #e0b14b;
   /* --secondary: #1e6877 ; */
   --item: #ffffff ;
   --green: #44da79 ;
   /* --buttons: white ; */
   --svg-inactive: #c1ccda ;
-  --bg: rgb(19 23 30);
+  --bg: #13171e;
   --header-height: 112px;
   --mute-blue: rgb(80, 108, 169);
   --font-header: Barriecito ; 

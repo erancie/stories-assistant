@@ -50,7 +50,6 @@ export default function SessionsMenu({ auth,
   //Create Session Action
   const createSession = useCallback(( title, text = null)=> {
     const user = auth.currentUser;
-    // console.log('Create Session - User: ')
     console.log(user)
     if (user) {
       const uid = user.uid;
@@ -152,19 +151,20 @@ export default function SessionsMenu({ auth,
         {(()=>{
           let sessions = []
           for (const sessionId in publicSessions) {
-            const session = publicSessions[sessionId] //change this to req session text from db absed on seshId? check if efficient?
-            sessions.push(
-            <div key={sessionId} 
-                  className='session-thumb col-3 p-3 pb-0 '
-                  onClick={()=>{
-                      setCurrentSession(sessionId)
-                      setSessionsExapanded(false)
-                      sessionElRef.current.scrollIntoView({behavior: 'smooth'})
-                  }} >
-              <p>{session.title}</p>
-              {/* <div className='join-button m-1' onClick={()=>setCurrentSession(sessionId)}>Join</div> */}
-            </div>
-            )
+            if(!userOwnedSessions || !userOwnedSessions[sessionId]) {
+              const session = publicSessions[sessionId] //change this to req session text from db absed on seshId? check if efficient?
+              sessions.push(
+              <div key={sessionId} 
+                    className='session-thumb col-3 p-3 pb-0 '
+                    onClick={()=>{
+                        setCurrentSession(sessionId)
+                        // setSessionsExapanded(false)
+                        sessionElRef.current.scrollIntoView({behavior: 'smooth'})
+                    }} >
+                <p>{session.title}</p>
+              </div>
+              )
+            }
           }
           return sessions
         })()}
@@ -184,7 +184,7 @@ export default function SessionsMenu({ auth,
                     className='session-thumb col-3 p-3 pb-0 '
                     onClick={()=>{
                       setCurrentSession(sessionId)
-                      setSessionsExapanded(false)
+                      // setSessionsExapanded(false)
                       sessionElRef.current.scrollIntoView({behavior: 'smooth'})
                     }} >
                 <p>{session && session.title}</p>
