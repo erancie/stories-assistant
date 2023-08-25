@@ -116,10 +116,10 @@
 
  /* Session Listening Button state classes */
 .listening {
-  fill: var(--buttons) !important;
+  fill: var(--green) !important;
 }
 .thinking {
-  fill: var(--buttons) !important;
+  fill: var(--green) !important;
 }
 
 
@@ -208,9 +208,7 @@
 .undo.highlight svg{
   fill: var(--buttons);
 }
-/* .controls-secondary svg {
-  fill: #586671;
-} */
+
 .session-controls {
   z-index: 1;
   position: absolute;
@@ -255,9 +253,6 @@
   transform: translateX(-15%);
 }
 .disabled-fill {
-  fill: #5b677523 !important
-}
-.speak .disabled {
   fill: #5b677523 !important
 }
 

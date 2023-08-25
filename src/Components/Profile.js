@@ -98,8 +98,10 @@ export default function Profile({ userData, setUserData, auth, connectionRef, se
         { userData &&
           <>
           {/* Profile Icon */}
-          <div className={`profile-icon my-2`}
-               style={{right: `${profileOpen ? '325px' : '1.4rem'}`, position: `${profileOpen ? 'fixed' : 'absolute'}`}} 
+          <div className={`profile-icon my-1`}
+               style={{top: `${profileOpen ? '1.5rem' : '7.4rem'}`, 
+                       right: `${profileOpen ? '325px' : '2.1rem'}`, 
+                       position: `${profileOpen ? 'fixed' : 'absolute'}`}} 
                onClick={()=>setProfileOpen((curr)=>!curr)}>
                 {/* FIX -not setting on sign up */}
               {userData.displayName?.charAt(0)} 

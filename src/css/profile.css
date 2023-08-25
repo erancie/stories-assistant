@@ -9,14 +9,14 @@
   /* box-shadow: -2pb 0 3px rgb(19 23 30) !important; */
 }
 .profile-icon {
-  top: 3.6rem;
+  top: 7.4rem;
   width: 100%;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--sub-heading);
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--sub-heading);
   border-radius: 20px;
-  font-size: 1.6rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 400;
   color: #ffbc2a;
   color: var(--sub-heading);
   cursor: pointer;
@@ -251,5 +251,13 @@
   }
   .help {
     left: 1.6rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .profile-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 1.45rem;
   }
 }

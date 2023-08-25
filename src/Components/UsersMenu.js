@@ -37,14 +37,13 @@ export default function UsersMenu() {
       }
 
       {lobbyExpanded &&
-      <div className='online-users-container row px-4 pb-3'>
-        {/* <h5>Online</h5> */}
+      <div className='online-users-container row px-4 pb-3 '>
         {(()=>{
               let users = []
               for (const userId in onlineUsers) {
                 const user = onlineUsers[userId]
                 users.push(
-                <div key={userId} className='user-thumb col-2 col-sm-2 m-2 p-2 '>
+                <div key={userId} className='user-thumb col-3 col-md-2 m-2 p-2 '>
                   <p className='user-thumb-name'>{user.displayName ? user.displayName : 'User'}</p>
                 </div>
                 )

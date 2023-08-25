@@ -72,7 +72,6 @@
   left: 1.6rem;
 }
 
-
 .user-thumb {
   /* border-radius: 30px 30px 30px 30px; */
   border-radius: 50px;
@@ -80,6 +79,12 @@
   transition: background-color .2s ease;
   transition: all .2s ease;
   font-weight: 600;
+  /* width: 80px; */
+  height: 36px;
+  /* min-width: 60px; */
+  /* max-width: 120px; */
+  /* display: inline; */
+  overflow: hidden;
 }
 .user-thumb:hover {
   background: rgb(52, 72, 107);
@@ -87,11 +92,13 @@
   
 }
 .user-thumb-name {
+  /* text-align: left; */
+  width: 100%;
   position: relative;
   margin: auto 0;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  /* top: 50%; */
+  /* left: 50%; */
+  /* transform: translate(-50%, -50%); */
 }
 
 .session-thumb {
@@ -104,10 +111,16 @@
   margin: .8rem;
   transition: all .2s ease;
   overflow: hidden;
+  text-align: left;
 }
 .session-thumb:hover {
   background: rgb(52, 72, 107);
   cursor: pointer;
+}
+@media (min-width: 576px) {
+  .session-thumb {
+    text-align: center;
+  }
 }
 
 /* Create Session */
