@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useCliveContext } from './../Context/CliveStateContext';
 
-export default function Header() {
 
-  const { highlight, isListening, isThinking, promptNo } = useCliveContext;
+export default function Header({ userData }) {
+
+  const { highlight, isListening, isThinking, promptNo } = useCliveContext();
+
+  // useEffect(()=>console.log(`promptNo: ${promptNo}`), [promptNo])
 
   //Mascot Element
   const mascot = ()=> {
@@ -97,14 +100,14 @@ export default function Header() {
   }
 
   return (
-    <div className='header row mx-0  disable-caret justify-content-between' style={promptNo!==3?{zIndex: 4}:null} >
+    <div className={`header row mx-auto disable-caret justify-content-between ${(promptNo!==3) && 'walkthrough-header'}`}  >
       
-      <h1 className='title col-7 mt-2 '>
+      <div className={`title `}>
         <div className='clever'><span className='c'>C</span>lever</div> 
         <div className='clive'> <span className='c2'>C</span>live</div>
-      </h1>
+      </div>
 
-      <div className='mascot-container position-relative col-3 '>
+      <div className={`mascot-container position-relative ${ !userData && 'shift-left' }`}>
         {mascot()}
       </div>
 

@@ -15,10 +15,10 @@ body,html {
   box-sizing: border-box;
 }
 :root {
-  --buttons: rgb(124, 221, 185); 
-  --buttons: rgb(146, 164, 190); 
+
   --buttons: rgb(173, 191, 224); 
 
+  --muted: #4a617b;
 
   --secondary: #e1a21b;
 
@@ -26,11 +26,14 @@ body,html {
 
   --heading: #ffffff;
 
+  --hover-bg: rgb(52, 72, 107);
+  
   --utility: #ffbc2a;
   --utility-2: #e0b14b;
   /* --secondary: #1e6877 ; */
   --item: #ffffff ;
   --green: #44da79 ;
+  --mute-green: rgb(95, 166, 134);
   /* --buttons: white ; */
   --svg-inactive: #c1ccda ;
   --bg: #13171e;
@@ -166,7 +169,7 @@ body {
 }
 
 .fill-orange {
-  fill: var(--session-color)
+  fill: var(var(--secondary))
 }
 
 

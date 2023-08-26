@@ -256,3 +256,27 @@
   fill: #5b677523 !important
 }
 
+
+.starters {
+  font-size: .8rem;
+  text-align: center;
+  color: var(--muted);
+  color: var(--buttons);
+  color: var(--mute-green);
+}
+.starter-item {
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.starter-icon {
+  width: 32px;
+  fill: var(--mute-green);
+  margin: .5rem;
+  transition: all .4s ease;
+}
+.starter-item:hover {
+  color: var(--buttons)
+}
+.starter-item:hover svg {
+  fill: var(--buttons) !important;
+}

@@ -9,7 +9,8 @@ export default function SessionsMenu({ auth,
                                        userOwnedSessions, 
                                        setUserOwnedSessions,
                                        sessionsExpanded,
-                                       setSessionsExapanded }) {
+                                       setSessionsExapanded,
+                                       createSession }) {
 
   const dbRef = useRef(getDatabase()); 
   const [publicSessions, setPublicSessions] = useState()  
@@ -47,33 +48,7 @@ export default function SessionsMenu({ auth,
     //   Means making more requests to db but for less data each time. - Is this more efficient?
   }, [userData])
 
-  //Create Session Action
-  const createSession = useCallback(( title, text = null)=> {
-    const user = auth.currentUser;
-    console.log(user)
-    if (user) {
-      const uid = user.uid;
-      const sessionData = {
-        ownerId: uid,
-        text: text,
-        title: title,
-      };
-      const sessionId = push(child(ref(dbRef.current), 'sessions')).key;
-      const updates = {};
-      updates['/sessions/' + sessionId] = sessionData;
-      updates['/users/' + uid + '/ownedSessions/'+ sessionId ] = true; //connect to owner
-      update(ref(dbRef.current), updates)
-      .then(() => {
-        console.log('session created')
-        setCurrentSession(sessionId)
-      })
-      .catch((error) => {
-        console.log('failed to create session')
-      });
-    } else {
-      console.log('User is not authenticated');
-    }
-  },[])
+
 
   return (
   <>
@@ -101,13 +76,15 @@ export default function SessionsMenu({ auth,
         </svg>
       }
 
-      <svg className={`show-create-session-button ${showCreateSession && 'fill-orange'}`} onClick={()=>setShowCreateSession((curr)=>!curr)} viewBox="0 0 41 41"  xmlns="http://www.w3.org/2000/svg">
-        <path d="M7.15388 0C7.70617 0 8.15388 0.447715 8.15388 1V6.18945L13.3077 6.18945C13.86 6.18945 14.3077 6.63717 14.3077 7.18945C14.3077 7.74174 13.86 8.18945 13.3077 8.18945H8.15388V13.3819C8.15388 13.9342 7.70617 14.3819 7.15388 14.3819C6.6016 14.3819 6.15388 13.9342 6.15388 13.3819V8.18945H1C0.447715 8.18945 -3.79732e-08 7.74174 0 7.18945C3.79732e-08 6.63717 0.447715 6.18945 1 6.18945L6.15388 6.18945V1C6.15388 0.447715 6.6016 0 7.15388 0Z" />
-        <path d="M6.12849 21.5V30.0176C6.12849 32.2267 7.91935 34.0176 10.1285 34.0176H30.7439C30.9047 34.0176 36.6113 38.3843 39.4412 40.5574C40.4252 41.313 41.0003 41.1089 41.0003 39.8682V10.1514C41.0003 7.94227 39.2094 6.1582 37.0003 6.1582H20V8.1582H37.0003C38.1093 8.1582 39.0003 9.05126 39.0003 10.1514V37.699C37.8234 36.7979 36.489 35.7792 35.299 34.8781C34.397 34.1951 33.5717 33.575 32.9589 33.1236C32.6545 32.8993 32.3912 32.7083 32.1932 32.57C32.0973 32.503 31.9971 32.4346 31.9073 32.3776C31.866 32.3515 31.797 32.3086 31.7169 32.2658C31.6792 32.2457 31.6042 32.2068 31.508 32.1677L31.5044 32.1662C31.4638 32.1491 31.1523 32.0176 30.7439 32.0176H10.1285C9.02392 32.0176 8.12849 31.1221 8.12849 30.0176V21.5H6.12849Z" />
-      </svg>
-      {/* <svg className={`show-create-session-button ${showCreateSession && 'fill-orange'}`} onClick={()=>setShowCreateSession((curr)=>!curr)} viewBox="0 0 40 40"  xmlns="http://www.w3.org/2000/svg">
-        <path d="M4.44444 11.1111C4.44444 11.7005 4.67857 12.2657 5.09532 12.6825C5.51206 13.0992 6.07729 13.3333 6.66666 13.3333C7.25603 13.3333 7.82126 13.0992 8.23801 12.6825C8.65476 12.2657 8.88889 11.7005 8.88889 11.1111V8.88889H11.1111C11.7005 8.88889 12.2657 8.65476 12.6825 8.23801C13.0992 7.82127 13.3333 7.25604 13.3333 6.66667C13.3333 6.0773 13.0992 5.51207 12.6825 5.09532C12.2657 4.67857 11.7005 4.44444 11.1111 4.44444H8.88889V2.22222C8.88889 1.63285 8.65476 1.06762 8.23801 0.650874C7.82126 0.234126 7.25603 0 6.66666 0C6.07729 0 5.51206 0.234126 5.09532 0.650874C4.67857 1.06762 4.44444 1.63285 4.44444 2.22222V4.44444H2.22222C1.63285 4.44444 1.06762 4.67857 0.650873 5.09532C0.234126 5.51207 0 6.0773 0 6.66667C0 7.25604 0.234126 7.82127 0.650873 8.23801C1.06762 8.65476 1.63285 8.88889 2.22222 8.88889H4.44444V11.1111ZM33.3333 4.44444H20C19.4106 4.44444 18.8454 4.67857 18.4286 5.09532C18.0119 5.51207 17.7778 6.0773 17.7778 6.66667C17.7778 7.25604 18.0119 7.82127 18.4286 8.23801C18.8454 8.65476 19.4106 8.88889 20 8.88889H33.3333C33.9227 8.88889 34.4879 9.12301 34.9047 9.53976C35.3214 9.95651 35.5555 10.5217 35.5555 11.1111V32.7111L32.0667 29.4889C31.6568 29.1052 31.117 28.8908 30.5555 28.8889H11.1111C10.5217 28.8889 9.95651 28.6548 9.53976 28.238C9.12301 27.8213 8.88889 27.256 8.88889 26.6667V20C8.88889 19.4106 8.65476 18.8454 8.23801 18.4287C7.82126 18.0119 7.25603 17.7778 6.66666 17.7778C6.07729 17.7778 5.51206 18.0119 5.09532 18.4287C4.67857 18.8454 4.44444 19.4106 4.44444 20V26.6667C4.44444 28.4348 5.14682 30.1305 6.39706 31.3807C7.6473 32.631 9.343 33.3333 11.1111 33.3333H29.6889L36.3555 39.4C36.7427 39.7635 37.2472 39.9764 37.7778 40C38.0825 39.9967 38.384 39.9364 38.6666 39.8222C39.0642 39.6487 39.4022 39.3627 39.6391 38.9994C39.8761 38.6362 40.0015 38.2115 40 37.7778V11.1111C40 9.343 39.2976 7.64731 38.0474 6.39707C36.7971 5.14682 35.1014 4.44444 33.3333 4.44444Z" />
-      </svg> */}
+      {userData &&
+        <svg className={`show-create-session-button ${showCreateSession && 'fill-orange'}`} onClick={()=>setShowCreateSession((curr)=>!curr)} viewBox="0 0 41 41"  xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.15388 0C7.70617 0 8.15388 0.447715 8.15388 1V6.18945L13.3077 6.18945C13.86 6.18945 14.3077 6.63717 14.3077 7.18945C14.3077 7.74174 13.86 8.18945 13.3077 8.18945H8.15388V13.3819C8.15388 13.9342 7.70617 14.3819 7.15388 14.3819C6.6016 14.3819 6.15388 13.9342 6.15388 13.3819V8.18945H1C0.447715 8.18945 -3.79732e-08 7.74174 0 7.18945C3.79732e-08 6.63717 0.447715 6.18945 1 6.18945L6.15388 6.18945V1C6.15388 0.447715 6.6016 0 7.15388 0Z" />
+          <path d="M6.12849 21.5V30.0176C6.12849 32.2267 7.91935 34.0176 10.1285 34.0176H30.7439C30.9047 34.0176 36.6113 38.3843 39.4412 40.5574C40.4252 41.313 41.0003 41.1089 41.0003 39.8682V10.1514C41.0003 7.94227 39.2094 6.1582 37.0003 6.1582H20V8.1582H37.0003C38.1093 8.1582 39.0003 9.05126 39.0003 10.1514V37.699C37.8234 36.7979 36.489 35.7792 35.299 34.8781C34.397 34.1951 33.5717 33.575 32.9589 33.1236C32.6545 32.8993 32.3912 32.7083 32.1932 32.57C32.0973 32.503 31.9971 32.4346 31.9073 32.3776C31.866 32.3515 31.797 32.3086 31.7169 32.2658C31.6792 32.2457 31.6042 32.2068 31.508 32.1677L31.5044 32.1662C31.4638 32.1491 31.1523 32.0176 30.7439 32.0176H10.1285C9.02392 32.0176 8.12849 31.1221 8.12849 30.0176V21.5H6.12849Z" />
+        </svg>
+      }
+
+
+
 
       {/* Create Session */}
       {showCreateSession &&
@@ -159,7 +136,7 @@ export default function SessionsMenu({ auth,
               const session = publicSessions[sessionId] //change this to req session text from db absed on seshId? check if efficient?
               sessions.push(
               <div key={sessionId} 
-                    className='session-thumb col-10 col-sm-5 col-md-3 col-lg-2 p-3 ps-5 px-sm-3 pb-0 '
+                    className='session-thumb col-10 col-sm-5 col-md-3 col-lg-2 p-3 ps-4 px-sm-3 pb-0 '
                     onClick={()=>{
                         setCurrentSession(sessionId)
                         sessionElRef.current.scrollIntoView({behavior: 'smooth'})
@@ -184,7 +161,7 @@ export default function SessionsMenu({ auth,
               //Note: could you put make db req here for full session data (w/ text) if public sessions changes to only id and title?
               sessions.push(
               <div key={sessionId} 
-                    className='session-thumb col-10 col-sm-5 col-md-3 col-lg-2 p-3 ps-5 px-sm-3 pb-0 '
+                    className='session-thumb col-10 col-sm-5 col-md-3 col-lg-2 p-3 ps-4 px-sm-3 pb-0 '
                     onClick={()=>{
                       setCurrentSession(sessionId)
                       sessionElRef.current.scrollIntoView({behavior: 'smooth'})

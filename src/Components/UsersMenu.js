@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { getDatabase, ref, onValue } from 'firebase/database';
+import Profile from './Profile';
 
-export default function UsersMenu() {
+export default function UsersMenu({auth, userData, setUserData, connectionRef, setConnectionRef}) {
 
   const dbRef = useRef(getDatabase()); 
   const [onlineUsers, setOnlineUsers] = useState() 
@@ -22,7 +23,13 @@ export default function UsersMenu() {
   }, [])
   return (
     <>
-    <div className={`lobby-menu m-2 mt-3 disable-caret ${!lobbyExpanded && 'glare'}`}>
+    <div className={`lobby-menu m-2 disable-caret ${!lobbyExpanded && 'glare'}`}>
+
+    <Profile auth={auth} 
+             userData={userData} 
+             setUserData={setUserData} 
+             connectionRef={connectionRef} 
+             setConnectionRef={setConnectionRef} />
 
       <h3 className='menu-title p-2' onClick={()=>setLobbyExapanded((curr)=>!curr)} >Lobby</h3>
 
@@ -43,8 +50,8 @@ export default function UsersMenu() {
               for (const userId in onlineUsers) {
                 const user = onlineUsers[userId]
                 users.push(
-                <div key={userId} className='user-thumb col-3 col-md-2 m-2 p-2 '>
-                  <p className='user-thumb-name'>{user.displayName ? user.displayName : 'User'}</p>
+                <div key={userId} className='user-thumb col-3 col-md-2 m-2 p-2'>
+                  <p className='user-thumb-name '>{user.displayName ? user.displayName : 'User'}</p>
                 </div>
                 )
               }

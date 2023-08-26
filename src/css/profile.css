@@ -9,24 +9,26 @@
   /* box-shadow: -2pb 0 3px rgb(19 23 30) !important; */
 }
 .profile-icon {
-  top: 7.4rem;
   width: 100%;
   width: 32px;
   height: 32px;
   border: 1.5px solid var(--sub-heading);
   border-radius: 20px;
-  font-size: 1.25rem;
-  font-weight: 400;
-  color: #ffbc2a;
-  color: var(--sub-heading);
   cursor: pointer;
   z-index: 4;
   transition: all .4s ease;
 }
+.profile-letter {
+  font-weight: 400;
+  color: #ffbc2a;
+  color: var(--sub-heading);
+  font-size: 1.25rem;
+  /* margin-left: -1px; */
+
+}
 .dark-bg {
   background: #34486b !important;
 }
-
 
 /* Signed Out */
 .auth-buttons {
@@ -107,19 +109,19 @@
 
 /* HUD signup */
 .signup-button {
-  border: 1px solid #5a91a0;
-  color: #5a91a0;
+  border: 1px solid var(--green);
+  color: var(--green);
   transition: all .4s ease;
   cursor: pointer;
   border-radius: 5px;
   /* width: 100%; */
 }
 .signup-button:hover {
-  background: #5a91a0;
+  background: var(--green);
   color: white;
 }
 .signup-svg {
-  fill: #5a91a0;
+  fill: var(--green);
   transition: all .4s ease;
 }
 .signup-button:hover svg {
@@ -128,7 +130,9 @@
 
 .login-button {
   border: 1px solid #5785c1;
+  border: 1px solid var(--utility);
   color: #5785c1;
+  color: var(--utility);
   transition: all .2s ease;
   cursor: pointer;
   border-radius: 5px;
@@ -140,6 +144,7 @@
 }
 .login-svg {
   stroke: #5785c1;
+  stroke: var(--utility);
   fill: none;
   transition: all .4s ease;
 }
@@ -191,7 +196,7 @@
 .help {
   position: absolute;
   bottom: 1.2rem;
-  left: 1.6rem;
+  left: 1.4rem;
   width: 14px;
   z-index: 1;
   cursor: pointer;
@@ -250,14 +255,17 @@
     width: 140px;
   }
   .help {
-    left: 1.6rem;
+    /* left: 1.6rem; */
   }
 }
 
 @media (min-width: 768px) {
   .profile-icon {
-    width: 35px;
-    height: 35px;
-    font-size: 1.45rem;
+    /* width: 32px; */
+    /* height: 32px; */
+  }
+  .profile-letter {
+    /* font-size: 1.25rem; */
+    /* margin-left: -1px; */
   }
 }
