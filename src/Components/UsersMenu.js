@@ -1,8 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { getDatabase, ref, onValue } from 'firebase/database';
 import Profile from './Profile';
+import { useAuth } from '../Context/AuthContext';
 
-export default function UsersMenu({auth, userData, setUserData, connectionRef, setConnectionRef}) {
+
+export default function UsersMenu() {
+
+  const { auth, userData, setUserData, connectionRef, setConnectionRef} = useAuth() //fix
 
   const dbRef = useRef(getDatabase()); 
   const [onlineUsers, setOnlineUsers] = useState() 
@@ -25,11 +29,13 @@ export default function UsersMenu({auth, userData, setUserData, connectionRef, s
     <>
     <div className={`lobby-menu m-2 disable-caret ${!lobbyExpanded && 'glare'}`}>
 
-    <Profile auth={auth} 
-             userData={userData} 
-             setUserData={setUserData} 
-             connectionRef={connectionRef} 
-             setConnectionRef={setConnectionRef} />
+    <Profile 
+            //  auth={auth} 
+            //  userData={userData} 
+            //  setUserData={setUserData} 
+            //  connectionRef={connectionRef} 
+            //  setConnectionRef={setConnectionRef} 
+             />
 
       <h3 className='menu-title p-2' onClick={()=>setLobbyExapanded((curr)=>!curr)} >Lobby</h3>
 

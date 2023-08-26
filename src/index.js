@@ -6,6 +6,9 @@ import App from './App';
 //Firebase
 import { initializeApp } from "firebase/app";
 import { getApps } from 'firebase/app';
+
+import { AuthProvider } from './Context/AuthContext';
+
 // import { getAnalytics } from "firebase/analytics";
 
 
@@ -43,7 +46,9 @@ const firebaseApp = getApps()[0];
 //render React App
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

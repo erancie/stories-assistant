@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react'
 import { useCliveContext } from './../Context/CliveStateContext';
+import { useAuth } from '../Context/AuthContext';
 
 
-export default function Header({ userData }) {
+export default function Header() {
 
   const { highlight, isListening, isThinking, promptNo } = useCliveContext();
+
+  const { auth, userData, setUserData, connectionRef, setConnectionRef} = useAuth() //fix
+
 
   // useEffect(()=>console.log(`promptNo: ${promptNo}`), [promptNo])
 

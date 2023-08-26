@@ -3,6 +3,9 @@ import axios from 'axios';
 import { getDatabase, ref, update, set, onValue, off } from 'firebase/database';
 import { useCliveContext } from '../Context/CliveStateContext';
 
+import { useAuth } from '../Context/AuthContext';
+
+
 //Speech Rec. - define this once - pass in recognition from App?
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const recognition = new SpeechRecognition()
@@ -10,7 +13,10 @@ recognition.continuous = true
 recognition.interimResults = true
 recognition.lang = 'en-US'
 
-function Session({  userData, 
+
+
+function Session({  
+  // userData, 
                     sessionElRef,
                     currentSession, 
                     setCurrentSession, 
@@ -19,6 +25,8 @@ function Session({  userData,
                     createSession
                   }) {  
   const dbRef = useRef(getDatabase()); 
+
+  const { auth, userData, setUserData, connectionRef, setConnectionRef} = useAuth() //fix
 
   const { highlight, isListening, isThinking, promptNo, setPromptNo, setHighlight, setIsListening, setIsThinking } = useCliveContext();
   const [text, setText ] = useState('')

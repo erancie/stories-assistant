@@ -2,13 +2,17 @@ import React, {useState, useRef, useCallback, useEffect } from 'react'
 import { signOut, updateProfile } from "firebase/auth";
 import { getDatabase, ref, set, update, remove, onValue, off } from 'firebase/database';
 import { useCliveContext } from '../Context/CliveStateContext';
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
+import { useAuth } from '../Context/AuthContext';
+
 
 import Popup from './Popup';
 
-export default function Profile({ userData, setUserData, auth, connectionRef, setConnectionRef }) {
+export default function Profile() {
 
   const { isListening, isThinking, setPromptNo } = useCliveContext();
+
+  const { auth , userData, setUserData, connectionRef, setConnectionRef} = useAuth() //fix
 
   const dbRef = useRef(getDatabase()); 
   const [isSigningOut, setIsSigningOut] = useState(false);

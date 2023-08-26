@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import { getDatabase, ref, onValue, off, push, update, child } from 'firebase/database';
+import { useAuth } from '../Context/AuthContext';
 
 
-export default function SessionsMenu({ auth, 
-                                       userData, 
+export default function SessionsMenu({ 
+  // auth, 
+                                      //  userData, 
                                        sessionElRef,
                                        setCurrentSession, 
                                        userOwnedSessions, 
@@ -11,6 +13,9 @@ export default function SessionsMenu({ auth,
                                        sessionsExpanded,
                                        setSessionsExapanded,
                                        createSession }) {
+
+  const { auth, userData, setUserData, connectionRef, setConnectionRef} = useAuth() //fix
+
 
   const dbRef = useRef(getDatabase()); 
   const [publicSessions, setPublicSessions] = useState()  
