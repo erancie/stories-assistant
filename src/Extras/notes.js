@@ -3,19 +3,27 @@
 
 // NEXT 
 
-      //------- 1
-      // cross gadient - neu
+      //Fix: clive is hanging left on signed out
 
-      // Change Profile displayName 
+      //move all global data to centralised redux store 
+        // session(s) data
+        // auth/user(s) data
 
-      // auth context
+      //fix clive left on walkthrough when logged out
 
-      //------- 2
       // Session - Always have 3-4 lines space after type, listen, think. 
+
+      //add public/private status to session 
+          //Sessions.sessionId.visibility = 'public' || 'private'
+
+      //Track joined sessions for logged in user in db
+          // User Joins Session -
+          // push/set   currentSession/sessionId 
+          //   to
+          // Users.userId.currentSessions = { sessionId : true, sessionId : true,  … }
 
       // Session - Show Joined Users 
 
-      //------- 3
       // Send Session Invite - popup on click user icon 
         //if user is in currentSession invite otherUser to sessionId
         //if not in currentSession then createSession and invite otherUser
@@ -23,11 +31,13 @@
       // Accept Session Invite - popup
         //if invites then show popup - accept button - setCurrentSession(sessionId)
 
+      // make mic icon animate on listening
+
+
 
 
 // UPCOMING 
 
-      // make mic icon animate on listening
 
       // Input Validation    (start w/ signin/up comps)
           //- litte input popup if invalid before submit
@@ -41,15 +51,12 @@
 
       // limit headings on menus - hide overflow with '...' on edge? - limit expanding of elemtns in same row as larger titles with flex
 
-      // Check sign in/out popups 
-          //- sequence 
-          //- styling - sizing
-
       // Undo from one user in session 
           // ..deletes other users last speech set. (answer too ?)       
   
       // Allow Re-Signup
 
+                  // Check sign in/out popups - sequence?? Still ??
 
 
 

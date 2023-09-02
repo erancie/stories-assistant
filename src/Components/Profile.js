@@ -28,10 +28,6 @@ export default function Profile() {
       onValue(ref(dbRef.current, `users/${auth.currentUser.uid}/displayName`), updateDisplayNameFromDB);
       function updateDisplayNameFromDB (snapshot) {  
         const data = snapshot.val();
-        // if(data === null) setDisplayName(null)
-        // else
-        console.log(`displayName`)
-        console.log(data)
         setDisplayName(data)
       };
 
@@ -43,12 +39,10 @@ export default function Profile() {
 
   //Submit display name change
   const submitDisplayNameChange = useCallback(() => {
-    // const val = e.target.value;
     if (auth.currentUser) {
       updateProfile(auth.currentUser, { displayName: displayName })
       .then(() => {
         console.log('Profile updated!');
-        // console.log(auth.currentUser.uid)
         set(ref(dbRef.current, `users/${auth.currentUser.uid}/displayName`), displayName)
       })
       .then(() => console.log('User updated!'))
@@ -60,8 +54,6 @@ export default function Profile() {
   return (
       <div className='profile disable-caret'>
         
-
-
         {/* Logged In --> Profile Icon + Logout Button*/}
         { userData &&
           <>
@@ -74,11 +66,8 @@ export default function Profile() {
                 {/* FIX -not setting on sign up */}
                 <div className='profile-letter'>
                   {userData.displayName?.charAt(0)} 
-
                 </div>
-              {/* {auth.currentUser.displayName?.charAt(0)}  */}
           </div>
-
 
           {profileOpen &&
           <Popup show={setProfileOpen} 
@@ -123,13 +112,12 @@ export default function Profile() {
             <div className='logout-button m-2 mx-4 me-sm-4 p-1' 
                     onClick={()=>{
                       setIsSigningOut(true)
-                      remove(connectionRef)
-                      //remove other common browser refs here
+                      remove(connectionRef.current)
+                      //remove other common browser refs here -- ?
                       .then(()=>{
-                        setConnectionRef(null)
+                        connectionRef.current = null
                         return signOut(auth)
                       })
-                      // signOut(auth)
                       .then(()=>{
                         setIsSigningOut(false)
                         setJustSignedOut(true)

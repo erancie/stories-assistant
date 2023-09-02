@@ -15,25 +15,25 @@ recognition.lang = 'en-US'
 
 
 
-function Session({  
-  // userData, 
-                    sessionElRef,
+function Session({  sessionElRef,
                     currentSession, 
                     setCurrentSession, 
                     userOwnedSessions,
-                    setSessionsExpanded,
-                    createSession
+                    createSession,
+                    activeSessionUsers,
+                    setActiveSessionUsers
                   }) {  
-  const dbRef = useRef(getDatabase()); 
 
-  const { auth, userData, setUserData, connectionRef, setConnectionRef} = useAuth() //fix
+  const dbRef = useRef(getDatabase()); 
+  const { userData } = useAuth() 
 
   const { highlight, isListening, isThinking, promptNo, setPromptNo, setHighlight, setIsListening, setIsThinking } = useCliveContext();
   const [text, setText ] = useState('')
   const [title, setTitle ] = useState('')
   const [transcript, setTranscript ] = useState('')
   const [previousText, setPreviousText] = useState('');
-  // const [changeSessionTitle, setChangeSessionTitle] = useState('');
+  
+
 
   //Speech rec. setup 
   useEffect(()=>{
@@ -227,6 +227,37 @@ function Session({
     if (!currentSession && (promptNo === 3)) return 'disabled-fill'
   }
 
+
+  const leaveSession=(sessionId)=>{
+    const updates = {};
+    updates['/sessions/' + sessionId + '/activeSessionUsers/' + userData.uid] = null
+    update(ref(dbRef.current), updates
+    //   ['/sessions/' + sessionId + '/activeSessionUsers/' + userData.uid] : null,
+    // }
+    )
+    .then(() => {
+      setCurrentSession(null)
+      console.log('left session')
+    })
+    .then(() => {
+      console.log('current session null')
+    })
+    .catch((error) => {
+      console.log('failed to join session')
+    });
+  }
+
+  // const displaySessionUsers=()=>{
+  //   const sessionUsers = []
+  //   for (const uid in activeSessionUsers) {
+  //       sessionUsers.push(<div key={uid} className='session-user user-thumb col-3 col-md-2 m-2 p-2'>{activeSessionUsers[uid]}</div>)
+  //     }
+  //   return sessionUsers
+  // }
+//   <div key={userId} className='user-thumb col-3 col-md-2 m-2 p-2'>
+//   <p className='user-thumb-name '>{user.displayName ? user.displayName : 'User'}</p>
+// </div>
+
   return (
     <>
 
@@ -288,8 +319,23 @@ function Session({
             Delete
           </div>}
 
-          <div className='leave-session-button p-2 disable-caret' onClick={()=>{setCurrentSession(null)}}>
+          <div className='leave-session-button p-2 disable-caret' onClick={()=>leaveSession(currentSession)}>
             Leave
+          </div>
+
+          <div className='active-session-users row px-2 pb-3'>
+            {/* { displaySessionUsers() } */}
+            {(()=>{
+              const sessionUsers = []
+              for (const uid in activeSessionUsers) {
+                  sessionUsers.push(
+                    <div key={uid} className='session-user user-thumb col-3 col-md-2 m-2 p-2'>
+                      {activeSessionUsers[uid]}
+                    </div>
+                  )
+                }
+              return sessionUsers
+            })()}
           </div>
 
           <textarea
@@ -303,8 +349,8 @@ function Session({
           >      
           </textarea>
         </>
-        :
 
+        :
 
         <div className='starters-container'>
           <p className='p-1 px-5 pt-5' style={{color: 'rgb(95, 166, 134)'}}>

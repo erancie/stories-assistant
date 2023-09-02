@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 // import {} from 'dotenv/config';
-import { set, getDatabase, ref, push, onDisconnect, update, child } from 'firebase/database';
+import { set, getDatabase, ref, push, onDisconnect, update, child, onValue, off } from 'firebase/database';
 import { getAuth } from "firebase/auth";
 
 import { CliveStateProvider } from './Context/CliveStateContext';
@@ -18,68 +18,72 @@ export default function App() {
   const sessionElRef = useRef(); 
   const dbRef = useRef(getDatabase()); 
 
-  // const auth = getAuth();
-
-  const { auth, userData, setUserData, connectionRef, setConnectionRef} = useAuth() //fix
+  const { auth } = useAuth()
   
   const [userOwnedSessions, setUserOwnedSessions] = useState()
+
   const [currentSession, setCurrentSession] = useState() 
-  // const [userData, setUserData] = useState()
-  const [sessionsExpanded, setSessionsExpanded] = useState(true);
+
+  const [activeSessionUsers, setActiveSessionUsers] = useState() 
+
+  //Done - On create session && joining session add userId to SessionId.activeSessionUsers
+
+  //Next - on leave session and on joining session with currentSession already set
+    //remove user from activeSessionUsers
+    //- sessionId.activeSessionUsers.userId : false
+
+//listen to active Session users - move to session? or does menu need these too?
+  useEffect(()=> {
+    const db = dbRef.current;
+    onValue(ref(db, 'sessions/' + currentSession + '/activeSessionUsers'), updateASU )
+    function updateASU (snapshot) {
+      console.log('snapshot')
+      console.log(snapshot)
+      const activeUsers = snapshot.val()
+      setActiveSessionUsers(activeUsers)
+      console.log('currentSession')
+      console.log(currentSession)
+      console.log('activeSessionUsers')
+      console.log(activeUsers)
+    }
+    return off(ref(db, `sessions/${currentSession}/title`), 'value', updateASU);
+  }, [currentSession])
 
 
 
-  // // Listen to Auth State    // put this in useContext
-  // useEffect(() => { 
-  //   auth.onAuthStateChanged((user) => { 
-  //     if (user) { 
-  //       // Add a new connection reference for the user's connection
-  //       const userConnectionRef = push(ref(dbRef.current, 'users/' + user.uid + '/connections'));
-  //       setConnectionRef(userConnectionRef)
-  //       set(userConnectionRef, true);
-  //       onDisconnect(userConnectionRef).remove();
-  //       setUserData(user)
-  //     } 
-  //     else {
-  //       console.log('Auth State: NO USER')
-  //       console.log('connection Ref')
-  //       console.log(connectionRef)
-  //       setUserData(null)
-  //     }
-  //   });
-  // }, []);
+  //Create Session Action
+  const createSession = useCallback(( title, text = null)=> {
+    const user = auth.currentUser;
+    console.log(user)
+    if (user) {
+      const uid = user.uid;
+      const sessionData = {
+        ownerId: uid,
+        text: text,
+        title: title,
+        activeSessionUsers: { uid : user.displayName },
+        // activeSessionUsers: {[uid]: {displayName: user.displayName } }, //this wont work?
+      };
 
-    //Create Session Action
-    const createSession = useCallback(( title, text = null)=> {
-      const user = auth.currentUser;
-      console.log(user)
-      if (user) {
-        const uid = user.uid;
-        const sessionData = {
-          ownerId: uid,
-          text: text,
-          title: title,
-        };
-        const sessionId = push(child(ref(dbRef.current), 'sessions')).key;
-        const updates = {};
-        updates['/sessions/' + sessionId] = sessionData;
-        updates['/users/' + uid + '/ownedSessions/'+ sessionId ] = true; //connect to owner
+      const sessionId = push(child(ref(dbRef.current), 'sessions')).key;
+      const updates = {};
+      updates['/sessions/' + sessionId] = sessionData;
+      updates['/users/' + uid + '/ownedSessions/'+ sessionId ] = true; //connect to owner
 
-        let updated = update(ref(dbRef.current), updates)
-        .then(() => {
-          console.log('session created')
-          setCurrentSession(sessionId) // why is this sessionId not setting properly so it can be used in Session when setting starter prompt as text in db
-          // console.log('currentSession')
-          // console.log(currentSession)
-        })
-        .catch((error) => {
-          console.log('failed to create session')
-        });
-        return Promise.all([ sessionId, updated ])
-      } else {
-        console.log('User is not authenticated. Cannot create session.');
-      }
-    },[])
+      let updated = update(ref(dbRef.current), updates)
+      .then(() => {
+        console.log('session created')
+        setCurrentSession(sessionId) 
+      })
+      .catch((error) => {
+        console.log('failed to create session')
+      });
+      return Promise.all([ sessionId, updated ])
+    } else {
+      console.log('User is not authenticated. Cannot create session.');
+    }
+  },[])
+
 
   return (
     <CliveStateProvider>
@@ -89,42 +93,26 @@ export default function App() {
 
           <div className='container position-relative'>
 
-            <Header 
-            // userData={userData} 
-            />
+            <Header />
 
-            <AuthButtons 
-            // userData={userData} 
-                        //  setUserData={setUserData} 
-                         />
+            <AuthButtons />
 
-            <UsersMenu 
-            // auth={auth} 
-                      //  userData={userData} 
-                      //  setUserData={setUserData} 
-                      //  connectionRef={connectionRef} 
-                      //  setConnectionRef={setConnectionRef}
-                       />
+            <UsersMenu />
 
             <SessionsMenu 
-            // auth={auth} 
-                          // userData={userData} 
                           setCurrentSession={setCurrentSession} 
                           userOwnedSessions={userOwnedSessions}
                           setUserOwnedSessions={setUserOwnedSessions} 
                           sessionElRef={sessionElRef}
-                          sessionsExpanded={sessionsExpanded}
-                          setSessionsExapanded={setSessionsExpanded} 
                           createSession={createSession} />
 
             <Session 
-            // userData={userData} 
+                     activeSessionUsers={activeSessionUsers}
+                     setActiveSessionUsers={setActiveSessionUsers}
                      currentSession={currentSession}
                      setCurrentSession={setCurrentSession} 
                      userOwnedSessions={userOwnedSessions} 
-                     sessionElRef={sessionElRef}
-                     sessionsExpanded={sessionsExpanded}
-                     setSessionsExpanded={setSessionsExpanded} 
+                     sessionElRef={sessionElRef} 
                      createSession={createSession} />
           </div>
 

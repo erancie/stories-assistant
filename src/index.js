@@ -14,7 +14,6 @@ import { AuthProvider } from './Context/AuthContext';
 
 // Firebase config
 const firebaseConfig = {
-  // apiKey: "AIzaSyBzw3g21pF-6zluwehcH9BSphmh6vpcpR8",
   apiKey: "AIzaSyBgjL9jAiJhZJPiCI_ds3hNXNDgSFyC1rU",
   authDomain: "singularity-b84a7.firebaseapp.com",
   databaseURL: "https://quickstories-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -25,17 +24,6 @@ const firebaseConfig = {
   measurementId: "G-2Y7J79KDJN"
 };
 
-//why have all these details changed?
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBgjL9jAiJhZJPiCI_ds3hNXNDgSFyC1rU",
-//   authDomain: "quickstories-60609.firebaseapp.com",
-//   databaseURL: "https://quickstories-default-rtdb.asia-southeast1.firebasedatabase.app",
-//   projectId: "quickstories",
-//   storageBucket: "quickstories.appspot.com",
-//   messagingSenderId: "687120219169",
-//   appId: "1:687120219169:web:ac9f5a1dca3abeb6fff760"
-// };
 
 
 // Initialize Firebase

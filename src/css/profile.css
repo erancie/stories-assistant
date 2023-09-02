@@ -114,11 +114,15 @@
   transition: all .4s ease;
   cursor: pointer;
   border-radius: 5px;
+  font-weight: 600;
+
   /* width: 100%; */
 }
 .signup-button:hover {
   background: var(--green);
   color: white;
+  color: rgb(42, 43, 44);
+
 }
 .signup-svg {
   fill: var(--green);
@@ -126,30 +130,32 @@
 }
 .signup-button:hover svg {
   fill: white;
+  fill: rgb(42, 43, 44);
 }
 
 .login-button {
-  border: 1px solid #5785c1;
   border: 1px solid var(--utility);
-  color: #5785c1;
   color: var(--utility);
   transition: all .2s ease;
   cursor: pointer;
   border-radius: 5px;
+  font-weight: 600;
+
   /* width: 100%; */
 }
 .login-button:hover {
-  background: #5785c1;
+  background: var(--utility);
   color: white;
+  color: rgb(42, 43, 44);
 }
 .login-svg {
-  stroke: #5785c1;
   stroke: var(--utility);
   fill: none;
   transition: all .4s ease;
 }
 .login-button:hover svg {
   stroke: white;
+  stroke: rgb(42, 43, 44);
 }
 
 /*   Signed In   */

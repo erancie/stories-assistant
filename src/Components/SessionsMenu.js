@@ -10,17 +10,16 @@ export default function SessionsMenu({
                                        setCurrentSession, 
                                        userOwnedSessions, 
                                        setUserOwnedSessions,
-                                       sessionsExpanded,
-                                       setSessionsExapanded,
                                        createSession }) {
 
-  const { auth, userData, setUserData, connectionRef, setConnectionRef} = useAuth() //fix
+  const { auth, userData } = useAuth() 
 
 
   const dbRef = useRef(getDatabase()); 
   const [publicSessions, setPublicSessions] = useState()  
   const [showCreateSession, setShowCreateSession] = useState(false);
   const [newSessionTitle, setNewSessionTitle] = useState('');
+  const [sessionsExpanded, setSessionsExpanded] = useState(true);
 
   // Listen to Public Sessions
   useEffect(()=>{ 
@@ -53,6 +52,24 @@ export default function SessionsMenu({
     //   Means making more requests to db but for less data each time. - Is this more efficient?
   }, [userData])
 
+  // joinSession
+  const joinSession = (sessionId)=> {
+    update(ref(dbRef.current), {
+      ['/sessions/' + sessionId + '/activeSessionUsers/' + auth.currentUser.uid] : auth.currentUser.displayName,
+      // ['/sessions/' + sessionId + '/activeSessionUsers/' + auth.currentUser.uid + '/displayName'] : auth.currentUser.displayName,
+    })
+    .then(() => {
+      setCurrentSession(sessionId)
+      console.log('session joined')
+    })
+    .then(() => {
+      console.log('current session set')
+    })
+    .catch((error) => {
+      console.log('failed to join session')
+    });
+  }
+
 
 
   return (
@@ -65,17 +82,17 @@ export default function SessionsMenu({
 
       {/* Make expandable ? --> animate */}
       <h3 className={`menu-title p-2 ${showCreateSession && 'width-0'}`}
-          onClick={()=>setSessionsExapanded((curr)=>!curr)} >
+          onClick={()=>setSessionsExpanded((curr)=>!curr)} >
         Sessions
       </h3>
 
       {sessionsExpanded ?                                                     //why dont these onClicks bubble to menu title?
-        <svg className={`minimize-svg ${showCreateSession && 'hide'}`} onClick={()=>setSessionsExapanded((curr)=>!curr)} 
+        <svg className={`minimize-svg ${showCreateSession && 'hide'}`} onClick={()=>setSessionsExpanded((curr)=>!curr)} 
              viewBox="0 0 92 49" xmlns="http://www.w3.org/2000/svg">
           <path d="M43.8787 1.12132C45.0503 -0.0502524 46.9498 -0.0502525 48.1213 1.12132L90.8787 43.8787C92.7686 45.7686 91.4301 49 88.7574 49H72.2426C71.447 49 70.6839 48.6839 70.1213 48.1213L48.1213 26.1213C46.9498 24.9497 45.0503 24.9497 43.8787 26.1213L21.8787 48.1213C21.3161 48.6839 20.553 49 19.7574 49H3.24264C0.569927 49 -0.768574 45.7686 1.12132 43.8787L43.8787 1.12132Z" />
         </svg>
         :
-        <svg className={`expand-svg ${showCreateSession && 'hide'}`} onClick={()=>setSessionsExapanded((curr)=>!curr)} 
+        <svg className={`expand-svg ${showCreateSession && 'hide'}`} onClick={()=>setSessionsExpanded((curr)=>!curr)} 
              viewBox="0 0 92 49" xmlns="http://www.w3.org/2000/svg">
           <path d="M43.8787 47.8787C45.0503 49.0503 46.9498 49.0503 48.1213 47.8787L90.8787 5.12132C92.7686 3.23143 91.4301 4.76837e-07 88.7574 4.76837e-07H72.2426C71.447 4.76837e-07 70.6839 0.316071 70.1213 0.87868L48.1213 22.8787C46.9498 24.0503 45.0503 24.0503 43.8787 22.8787L21.8787 0.87868C21.3161 0.316071 20.553 4.76837e-07 19.7574 4.76837e-07H3.24264C0.569927 4.76837e-07 -0.768574 3.23143 1.12132 5.12132L43.8787 47.8787Z" />
         </svg>
@@ -143,7 +160,7 @@ export default function SessionsMenu({
               <div key={sessionId} 
                     className='session-thumb col-10 col-sm-5 col-md-3 col-lg-2 p-3 ps-4 px-sm-3 pb-0 '
                     onClick={()=>{
-                        setCurrentSession(sessionId)
+                      joinSession(sessionId)
                         sessionElRef.current.scrollIntoView({behavior: 'smooth'})
                     }} >
                 <p>{session.title}</p>
@@ -168,7 +185,7 @@ export default function SessionsMenu({
               <div key={sessionId} 
                     className='session-thumb col-10 col-sm-5 col-md-3 col-lg-2 p-3 ps-4 px-sm-3 pb-0 '
                     onClick={()=>{
-                      setCurrentSession(sessionId)
+                      joinSession(sessionId)
                       sessionElRef.current.scrollIntoView({behavior: 'smooth'})
                     }} >
                 <p>{session && session.title}</p>
@@ -181,7 +198,6 @@ export default function SessionsMenu({
       </div>     
 
       </>}
-
 
 
     </div>

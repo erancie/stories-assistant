@@ -9,45 +9,35 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
 
   const auth = getAuth();
-
   const dbRef = useRef(getDatabase()); 
-
-
   const [userData, setUserData] = useState(null);
-
-  // const [connectionRef, setConnectionRef] = useState() 
   const connectionRef = useRef() 
 
   // Listen to Auth State  
   useEffect(() => { 
-    auth.onAuthStateChanged((user) => { 
+    const cleanup = auth.onAuthStateChanged((user) => { 
       if (user) { 
-        // Add a new connection reference for the user's connection
-        const userConnectionRef = push(ref(dbRef.current, 'users/' + user.uid + '/connections'));
-        // setConnectionRef(userConnectionRef)
-        connectionRef.current = userConnectionRef
-        set(userConnectionRef, true);
-        onDisconnect(userConnectionRef).remove();
+        // Add a new connection reference for each client under current user
+        const userConnectionDbRef = push(ref(dbRef.current, 'users/' + user.uid + '/connections'));
+        connectionRef.current = userConnectionDbRef
+        set(userConnectionDbRef, true);
+        onDisconnect(userConnectionDbRef).remove();
         setUserData(user)
       } 
       else {
         console.log('Auth State: NO USER')
-        console.log('connection Ref')
-        console.log(connectionRef)
         setUserData(null)
       }
+      return cleanup
     });
-    //needs cleanup ???
-  }, [ auth ]); //need this dep?
+  }, [ auth ]); 
 
   return (
-    <AuthContext.Provider value={{auth, userData, setUserData, connectionRef, 
-    // setConnectionRef
-    }}>
+    <AuthContext.Provider value={{ auth, userData, setUserData, connectionRef, dbRef }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Create a custom hook to use the auth context
-export const useAuth = () => useContext(AuthContext)
+// Custom hook to use the auth context
+export const useAuth = ()=>useContext(AuthContext)

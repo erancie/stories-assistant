@@ -17,25 +17,19 @@ export default function UsersMenu() {
     const db = dbRef.current;
     const usersRef = ref(db, 'users');
     onValue(usersRef, (snapshot) => { //listen to just changes in connections? not all changes in users?
-      const connected = []
+      const connectedUsers = []
       snapshot.forEach((doc)=>{//isn't snapshot an object?
         const user = doc.val()//doesn't forEach get value - val() isn't doc the val? console this
-        if (user.connections) connected.push(user)
+        if (user.connections) connectedUsers.push(user)
       })
-      setOnlineUsers(connected)
+      setOnlineUsers(connectedUsers)
     });
   }, [])
   return (
     <>
     <div className={`lobby-menu m-2 disable-caret ${!lobbyExpanded && 'glare'}`}>
 
-    <Profile 
-            //  auth={auth} 
-            //  userData={userData} 
-            //  setUserData={setUserData} 
-            //  connectionRef={connectionRef} 
-            //  setConnectionRef={setConnectionRef} 
-             />
+    <Profile />
 
       <h3 className='menu-title p-2' onClick={()=>setLobbyExapanded((curr)=>!curr)} >Lobby</h3>
 
