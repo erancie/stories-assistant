@@ -50,16 +50,16 @@ export default function UsersMenu() {
               for (const userId in onlineUsers) {
                 const user = onlineUsers[userId]
                 users.push(
-                <div key={userId} className='user-thumb col-3 col-md-2 m-2 p-2'>
-                  <p className='user-thumb-name '>{user.displayName ? user.displayName : 'User'}</p>
-                </div>
+                  <div key={userId} className='user-thumb col-3 col-md-2 m-2 p-2'>
+                    <p className='user-thumb-name '>{user.displayName ? user.displayName : 'User'}</p>
+                  </div>
                 )
               }
               return users
-            })()}
+        })()}
       </div>
       }
-
+      
     </div>
     </>
   )

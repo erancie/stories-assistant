@@ -21,7 +21,8 @@ function Session({  sessionElRef,
                     userOwnedSessions,
                     createSession,
                     activeSessionUsers,
-                    setActiveSessionUsers
+                    setActiveSessionUsers,
+                    leaveSession
                   }) {  
 
   const dbRef = useRef(getDatabase()); 
@@ -228,24 +229,7 @@ function Session({  sessionElRef,
   }
 
 
-  const leaveSession=(sessionId)=>{
-    const updates = {};
-    updates['/sessions/' + sessionId + '/activeSessionUsers/' + userData.uid] = null
-    update(ref(dbRef.current), updates
-    //   ['/sessions/' + sessionId + '/activeSessionUsers/' + userData.uid] : null,
-    // }
-    )
-    .then(() => {
-      setCurrentSession(null)
-      console.log('left session')
-    })
-    .then(() => {
-      console.log('current session null')
-    })
-    .catch((error) => {
-      console.log('failed to join session')
-    });
-  }
+
 
   // const displaySessionUsers=()=>{
   //   const sessionUsers = []

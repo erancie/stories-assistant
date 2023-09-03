@@ -1,0 +1,11 @@
+.graphic-panel {
+  /* height: 500px; */
+  border: 1px solid white;
+  border-radius: 5px;
+  /* background: rgb(73, 73, 73); */
+}
+.graphic {
+  height: 200px;
+  border: 1px solid grey;
+  background: #ffffff24;
+}

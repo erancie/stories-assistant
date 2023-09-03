@@ -4,9 +4,9 @@ import { useAuth } from '../Context/AuthContext';
 
 
 export default function SessionsMenu({ 
-  // auth, 
-                                      //  userData, 
+                                       joinSession,
                                        sessionElRef,
+                                       currentSession,
                                        setCurrentSession, 
                                        userOwnedSessions, 
                                        setUserOwnedSessions,
@@ -52,23 +52,7 @@ export default function SessionsMenu({
     //   Means making more requests to db but for less data each time. - Is this more efficient?
   }, [userData])
 
-  // joinSession
-  const joinSession = (sessionId)=> {
-    update(ref(dbRef.current), {
-      ['/sessions/' + sessionId + '/activeSessionUsers/' + auth.currentUser.uid] : auth.currentUser.displayName,
-      // ['/sessions/' + sessionId + '/activeSessionUsers/' + auth.currentUser.uid + '/displayName'] : auth.currentUser.displayName,
-    })
-    .then(() => {
-      setCurrentSession(sessionId)
-      console.log('session joined')
-    })
-    .then(() => {
-      console.log('current session set')
-    })
-    .catch((error) => {
-      console.log('failed to join session')
-    });
-  }
+
 
 
 
@@ -161,7 +145,8 @@ export default function SessionsMenu({
                     className='session-thumb col-10 col-sm-5 col-md-3 col-lg-2 p-3 ps-4 px-sm-3 pb-0 '
                     onClick={()=>{
                       joinSession(sessionId)
-                        sessionElRef.current.scrollIntoView({behavior: 'smooth'})
+                      // joinSession(currentSession, sessionId)
+                      sessionElRef.current.scrollIntoView({behavior: 'smooth'})
                     }} >
                 <p>{session.title}</p>
               </div>
@@ -185,7 +170,9 @@ export default function SessionsMenu({
               <div key={sessionId} 
                     className='session-thumb col-10 col-sm-5 col-md-3 col-lg-2 p-3 ps-4 px-sm-3 pb-0 '
                     onClick={()=>{
+                      // leaveSession()
                       joinSession(sessionId)
+                      // joinSession(currentSession, sessionId)
                       sessionElRef.current.scrollIntoView({behavior: 'smooth'})
                     }} >
                 <p>{session && session.title}</p>
