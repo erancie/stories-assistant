@@ -32,7 +32,7 @@ export default function Profile() {
       };
 
       return () => { 
-        off(ref(db, `users/${auth.currentUser.uid}/displayName`), 'value', updateDisplayNameFromDB);
+        off(ref(db, `users/${auth.currentUser?.uid}/displayName`), 'value', updateDisplayNameFromDB);
       };
     }
   }, [auth]);

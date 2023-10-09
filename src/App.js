@@ -136,28 +136,33 @@ export default function App() {
 
             <AuthButtons />
 
-            <UsersMenu />
+            {userData ? <>
+                <UsersMenu />
 
-            <SessionsMenu leaveSession={leaveSession}
+                <SessionsMenu leaveSession={leaveSession}
+                              currentSession={currentSession}
+                              setCurrentSession={setCurrentSession} 
+                              userOwnedSessions={userOwnedSessions}
+                              setUserOwnedSessions={setUserOwnedSessions} 
+                              sessionElRef={sessionElRef}
+                              createSession={createSession} 
+                              joinSession={joinSession}
+                              />
+    
+                {/* <GraphicPanel /> */}
+    
+                <Session leaveSession={leaveSession}
+                          activeSessionUsers={activeSessionUsers}
+                          setActiveSessionUsers={setActiveSessionUsers}
                           currentSession={currentSession}
                           setCurrentSession={setCurrentSession} 
-                          userOwnedSessions={userOwnedSessions}
-                          setUserOwnedSessions={setUserOwnedSessions} 
-                          sessionElRef={sessionElRef}
-                          createSession={createSession} 
-                          joinSession={joinSession}
-                          />
+                          userOwnedSessions={userOwnedSessions} 
+                          sessionElRef={sessionElRef} 
+                          createSession={createSession} />
+          </>
+          : 'Landing'
+          }
 
-            {/* <GraphicPanel /> */}
-
-            <Session leaveSession={leaveSession}
-                     activeSessionUsers={activeSessionUsers}
-                     setActiveSessionUsers={setActiveSessionUsers}
-                     currentSession={currentSession}
-                     setCurrentSession={setCurrentSession} 
-                     userOwnedSessions={userOwnedSessions} 
-                     sessionElRef={sessionElRef} 
-                     createSession={createSession} />
           </div>
 
         </div>
