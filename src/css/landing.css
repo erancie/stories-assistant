@@ -1,0 +1,74 @@
+.landing-header {
+  color: #86c0c7;
+  color: var(--utility);
+  color: #ffffff;
+  width: 86%;
+  max-width: 800px;
+  margin: auto;
+  margin-top: 6rem;
+  margin-bottom: 5rem;
+  font-size: 2rem;
+}
+.decoration {
+  color: rgb(229, 193, 61);
+}
+.decoration-2 {
+  color: rgb(73, 177, 177);
+}
+.decoration-3 {
+  color: rgb(152, 128, 229);
+}
+.landing-auth {
+  /* background: #6b849f0e; */
+  max-width: 360px;
+  border-radius: 25px;
+
+}
+
+/* ///TOGGLE FORM BUTTON CLASSES */
+.landing-button {
+  border: none;
+}
+.landing-button:hover {
+  background: none;
+  color: #cbd2b1;
+  opacity: 1;
+}
+/* //scrap these ^^ - copy props from button classes  - put in new classes - login-button-landing signup-button-landing */
+
+.login-button-landing {
+
+} 
+.signup-button-landing {
+
+}
+
+
+
+.landing-buttons {
+  /* max-width: 400px; */
+  /* transform: translateY(-20px); */
+  /* transform: translateY(20px); */
+}
+.form-container {
+  height: 280px;
+}
+.landing-info {
+  margin-top: 5rem;
+  color: var(--mute-blue);
+  color: #7b838b
+}
+@media (min-width: 768px) { 
+
+}
+@media (min-width: 992px) { 
+  .landing-header {
+    margin-top: 12rem;
+    margin-bottom: 9rem;
+    font-size: 3rem;
+
+  }
+}
+@media (min-width: 1200px) { 
+
+}

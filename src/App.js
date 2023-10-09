@@ -13,6 +13,7 @@ import SessionsMenu from './Components/SessionsMenu';
 import Header from './Components/Header';
 import AuthButtons from './Components/AuthButtons';
 import GraphicPanel from './Components/GraphicPanel';
+import Landing from './Components/Landing';
 
 export default function App() {
 
@@ -160,7 +161,8 @@ export default function App() {
                           sessionElRef={sessionElRef} 
                           createSession={createSession} />
           </>
-          : 'Landing'
+          : 
+              <Landing />
           }
 
           </div>

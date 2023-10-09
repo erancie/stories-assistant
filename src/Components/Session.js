@@ -326,7 +326,7 @@ function Session({  sessionElRef,
           </div>
 
           <textarea
-            placeholder={ `Speak or type to start making somehing cool with Clive!` }
+            placeholder={ `Use the microphone to speak or just type. \n\nThen press the thought bubble to give Clive something to think about.` }
             className='text' 
             type="text" 
             name='text' 
@@ -347,35 +347,17 @@ function Session({  sessionElRef,
             {starters.map((starter, name)=>{
               return <div className='starter-item col-4' key={starter.name}
                           onClick={(e)=>{ 
-
                             createSession( starter.name, starter.prompt)
                             .then((sessionId)=> {
-
-                              console.log('session created')
                               sessionElRef.current.scrollIntoView({behavior: 'smooth'});
-
-                              //not setting here      
-                              console.log('SETTING TEXT to session/sessionId/text')        
-                              console.log('SessionId')        
-                              console.log(sessionId)    //undefined
                               return Promise.all([
-                                sessionId,
-                                //  set(ref(dbRef.current, `sessions/${currentSession}/text`), starter.prompt)
-                                 set(ref(dbRef.current, `sessions/${sessionId}/text`), starter.prompt)
+                                  sessionId,
+                                  set(ref(dbRef.current, `sessions/${sessionId}/text`), starter.prompt)
                                 ])
                             })
-
-                            .then(([sessionId, setResponse])=>{
-                              console.log('setResponse')
-                              console.log(setResponse)
-                              console.log('starter.prompt')
-                              console.log(starter.prompt)
-                              // return getAnswer(starter.prompt, currentSession) 
+                            .then(([sessionId])=>{
+                              console.log('text set to -'+sessionId)
                               return getAnswer(starter.prompt, sessionId) 
-                            })
-
-                            .then(()=>{
-                                                                                                                  
                             }).catch((e)=>{
                               console.log(e) 
                             })

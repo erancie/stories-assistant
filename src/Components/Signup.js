@@ -77,7 +77,7 @@ const Signup =({ setUserData, setShowSignUp })=> {
                         setEmailSignup('')
                         setPasswordSignup('') 
                         setNameSignup('') 
-                        setShowSignUp(false)
+                        setShowSignUp&&setShowSignUp(false);
                         }} >
         Sign Up
       </button>
