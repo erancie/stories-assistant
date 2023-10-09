@@ -35,7 +35,6 @@ function Session({  sessionElRef,
   const [previousText, setPreviousText] = useState('');
   
 
-
   //Speech rec. setup 
   useEffect(()=>{
     //recognition
@@ -77,7 +76,7 @@ function Session({  sessionElRef,
   }, [isListening])
 
   //Clive Completion
-  async function getAnswer(prompt, currentSession) {
+  async function getAnswer(prompt, sessionId) {
     try {
       setIsThinking(true)
       const requestBody = { prompt }; 
@@ -87,9 +86,13 @@ function Session({  sessionElRef,
       }
       let response = await axios.post( postURL, requestBody );
       const result = response.data.result;
+      console.log('prompt')
+      console.log(prompt)
       setPreviousText(prompt);
       const newText = prompt + ' ' + result;
-      set(ref(dbRef.current, `sessions/${currentSession}/text`), newText);
+      console.log("prompt + ' ' + result")
+      console.log(prompt + ' ' + result)
+      set(ref(dbRef.current, `sessions/${sessionId}/text`), newText);
       setIsThinking(false)
     } 
     catch (error) {
@@ -143,7 +146,7 @@ function Session({  sessionElRef,
     };
   }, [currentSession]);
 
-  //Check if seeeison is owned by current user
+  //Check if session is owned by current user
   const isSessionOwned = useCallback(()=> {
     let isSessionOwned;
     for (let key in userOwnedSessions) {
@@ -190,7 +193,7 @@ function Session({  sessionElRef,
     set(ref(dbRef.current, `sessions/${currentSession}/title`), e.target.value);
   }, [currentSession])
 
- 
+  
 
   const starters = [
     {
@@ -343,31 +346,38 @@ function Session({  sessionElRef,
           <div className='starters row p-4 px-5'>
             {starters.map((starter, name)=>{
               return <div className='starter-item col-4' key={starter.name}
-                          onClick={(e)=>{ //Disable if not logged in --> prompt to log in
-                            createSession( starter.name, '')
-                            .then(([ sessionId, updated ])=> {
+                          onClick={(e)=>{ 
+
+                            createSession( starter.name, starter.prompt)
+                            .then((sessionId)=> {
+
+                              console.log('session created')
                               sessionElRef.current.scrollIntoView({behavior: 'smooth'});
-                              // console.log('session created from starter')
-                              // console.log('currentSession')
-                              // console.log(currentSession) // null ??? why doesn't this not update from createSession method?
-                                                              // shoudn't have to pass in sessionId from createSession promise 
-                                                              // or require sesisonId param in setAnswer
-                              // console.log('sessionId')
-                              // console.log(sessionId) 
-                              // return set(ref(dbRef.current, `sessions/${currentSession}/text`), starter.prompt)
-                              return Promise.all([sessionId, set(ref(dbRef.current, `sessions/${sessionId}/text`), starter.prompt)])
+
+                              //not setting here      
+                              console.log('SETTING TEXT to session/sessionId/text')        
+                              console.log('SessionId')        
+                              console.log(sessionId)    //undefined
+                              return Promise.all([
+                                sessionId,
+                                //  set(ref(dbRef.current, `sessions/${currentSession}/text`), starter.prompt)
+                                 set(ref(dbRef.current, `sessions/${sessionId}/text`), starter.prompt)
+                                ])
                             })
-                            .then(([sessionId])=>{
-                              // console.log('text set from starter')
-                              // console.log('text')
-                              // console.log(text) 
-                              return getAnswer(starter.prompt, sessionId)
-                              // return getAnswer(text, sessionId) //doesn't work. --> doesn't detect from db in time?
+
+                            .then(([sessionId, setResponse])=>{
+                              console.log('setResponse')
+                              console.log(setResponse)
+                              console.log('starter.prompt')
+                              console.log(starter.prompt)
+                              // return getAnswer(starter.prompt, currentSession) 
+                              return getAnswer(starter.prompt, sessionId) 
                             })
+
                             .then(()=>{
-                              // console.log('answer received')
+                                                                                                                  
                             }).catch((e)=>{
-                              console.log('error setting session text from starter')
+                              console.log(e) 
                             })
                           }}
                      >

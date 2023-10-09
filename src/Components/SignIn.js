@@ -47,7 +47,7 @@ const SignIn = ({ setUserData, setShowSignIn })=> {
 
       <input className='password-signin-input col-lg-10'
               placeholder={`Password`}
-              type="text" 
+              type="password" 
               name='password-signin-input' 
               onChange={(e)=>setPasswordSignIn(e.target.value)}
               value={ passwordSignIn }

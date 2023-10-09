@@ -3,26 +3,31 @@
 
 // NEXT 
 
+      //change engine for intelligent responses - review GPT API
+
+      //Landing Page - if logged out
+      //If looged in - App
+
       //Fix: clive is hanging left on signed out
+      //fix clive left on walkthrough when logged out
+
+
+      //BUG: Both users in session. if one leaves via tappng new session thumb 
+          // then active session users shows user who left. should show remaining user
+      
+      //Render Prompt component when user error
+          
+
+
+  
+// UPCOMING 
+
 
       //move all global data to centralised redux store 
         // session(s) data
         // auth/user(s) data
 
-      //fix clive left on walkthrough when logged out
-
-      // Session - Always have 3-4 lines space after type, listen, think. 
-
-      //add public/private status to session 
-          //Sessions.sessionId.visibility = 'public' || 'private'
-
-      //Track joined sessions for logged in user in db
-          // User Joins Session -
-          // push/set   currentSession/sessionId 
-          //   to
-          // Users.userId.currentSessions = { sessionId : true, sessionId : true,  … }
-
-      // Session - Show Joined Users 
+      // SESSION PRIVELIGES 
 
       // Send Session Invite - popup on click user icon 
         //if user is in currentSession invite otherUser to sessionId
@@ -31,17 +36,37 @@
       // Accept Session Invite - popup
         //if invites then show popup - accept button - setCurrentSession(sessionId)
 
+      // creator can edit by default
+
+      // visitors can/cannot edit
+
+      // func to allow/disallow editing session
+
+      //UI
+
+      // Session - Always have 3-4 lines space after type, listen, think. 
+
       // make mic icon animate on listening
-
-
-
-
-// UPCOMING 
-
 
       // Input Validation    (start w/ signin/up comps)
           //- litte input popup if invalid before submit
           //- redirect w/ popup on firebase error after submit
+
+
+//OPTIONS:
+
+      //add public/private status to session 
+          //Sessions.sessionId.visibility = 'public' || 'private'
+
+      //IF User can have multiple current or joined sessions? (simpler if just 1)
+      //Track current joined sessions for logged in user in db
+          // User Joins Session - set sessionId 
+          // Users.userId.currentSessions = { sessionId : true, sessionId : true,  … }
+      
+      //Track past joined sessions for user
+          // Users.userId.pastSessions = { sessionId : true, sessionId : true,  … }
+
+      //Track all past users for each Session
 
 // FIX
 

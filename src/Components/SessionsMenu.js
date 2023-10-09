@@ -8,18 +8,17 @@ export default function SessionsMenu({
                                        sessionElRef,
                                        currentSession,
                                        setCurrentSession, 
-                                       userOwnedSessions, 
+                                       userOwnedSessions, //redux
                                        setUserOwnedSessions,
                                        createSession }) {
 
-  const { auth, userData } = useAuth() 
-
-
   const dbRef = useRef(getDatabase()); 
-  const [publicSessions, setPublicSessions] = useState()  
   const [showCreateSession, setShowCreateSession] = useState(false);
   const [newSessionTitle, setNewSessionTitle] = useState('');
   const [sessionsExpanded, setSessionsExpanded] = useState(true);
+
+  const { auth, userData } = useAuth() //redux
+  const [publicSessions, setPublicSessions] = useState() //redux
 
   // Listen to Public Sessions
   useEffect(()=>{ 
@@ -51,8 +50,6 @@ export default function SessionsMenu({
     // Req specific session data on specific actions - Not all data on all/many actions
     //   Means making more requests to db but for less data each time. - Is this more efficient?
   }, [userData])
-
-
 
 
 

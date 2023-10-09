@@ -5,7 +5,21 @@
   /* background: rgb(73, 73, 73); */
 }
 .graphic {
-  height: 200px;
+  overflow: hidden;
   border: 1px solid grey;
   background: #ffffff24;
 }
+
+/* fixed or % widths for images? */
+
+/* Make 3-4 main container ratios? */
+
+
+.graphic img {
+  /* height: 160px; */
+  /* width: 120px; */
+}
+/* .panel-image {
+  margin: 0 auto;
+  padding: 0;
+} */
