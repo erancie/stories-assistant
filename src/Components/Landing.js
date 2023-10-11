@@ -6,13 +6,13 @@ export default function Landing() {
   const [isSignup, setIsSignup] = useState(true)
   return (
     <div className='landing'>
+      
       <h1 className='landing-header '>Clever 
         <span className='decoration'> Clive</span>. Your  
         <span className='decoration-2'> AI assistant</span> for
-        <span className='decoration-3'> Colaborating</span> with others.</h1>
+        <span className='decoration-3'> Colaborating</span> with others.
+      </h1>
       
-
-
       <div className='landing-auth popup-style-neu m-auto my-5 '>
 
         <div className='row landing-buttons m-auto px-5'>
@@ -33,8 +33,6 @@ export default function Landing() {
         </div>
 
       </div>
-
-
 
       <h1 className='landing-info ' >In Development</h1>
     </div>

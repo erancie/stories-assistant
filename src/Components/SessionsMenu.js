@@ -109,14 +109,20 @@ export default function SessionsMenu({
           <div className='create-session-button m-4 my-2 p-2' 
                onClick={()=>{
                   if (auth.currentUser){
-                    createSession( newSessionTitle, ''); 
+                    if (window.gtag) {
+                      window.gtag("event", "create-session", {
+                        event_category: "session",
+                        event_label: "create session button - sessions menu"
+                      })
+                    }
+                    createSession( newSessionTitle, '')
                     setNewSessionTitle('');
                     setShowCreateSession(false);
                     sessionElRef.current.scrollIntoView({behavior: 'smooth'});
                   } else {
                     console.log('no-one is logged in')
-                    // let anonymous user create session?
-                    // trigger notification --> 'please sign up ro log in'
+                    // let anonymous user create session? -no
+                    // trigger notification --> 'please sign up or log in'
                   }
                }}
             >

@@ -3,18 +3,26 @@
 
 // NEXT 
 
-      //change engine for intelligent responses - review GPT API
-
-      //Landing Page - if logged out
-      //If looged in - App
+      {/* make walkthrough appear on login */}
 
       //Fix: clive is hanging left on signed out
       //fix clive left on walkthrough when logged out
 
 
       //BUG: Both users in session. if one leaves via tappng new session thumb 
-          // then active session users shows user who left. should show remaining user
-      
+          // then active session users still shows user who left. should just show remaining user
+
+          // set user leaving session on disconnect / on inactive
+
+          
+
+      //change engine for intelligent responses - review GPT API
+
+
+      //Landing Page - if logged out
+      //If looged in - App
+
+
       //Render Prompt component when user error
           
 
@@ -70,7 +78,6 @@
 
 // FIX
 
-      // filter owned sessions out of public sessions
 
       // Move Delete & Leave session buttons (put in ... popup?)
 

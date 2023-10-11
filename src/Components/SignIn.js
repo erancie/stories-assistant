@@ -24,6 +24,13 @@ const SignIn = ({ setUserData, setShowSignIn })=> {
       console.log(`User Signed In ${user.uid}`)
       setIsSigningIn(false)
       setJustSignedIn(true)
+
+    })
+    .then(()=> {
+      window.gtag("event", "login", {
+        event_category: "access",
+        event_label: "login"
+      });
     })
     .catch((error) => {
       console.log( `Sign In Error`);

@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const OpenAI = require('openai-api');
+const OpenAI = require('openai');
+// const OpenAI = require('openai-api');
 const cors = require('cors');
 
 admin.initializeApp(); 
@@ -11,22 +12,27 @@ const allowedOrigins = [
 ];
 const corsMiddleware = cors({ origin: allowedOrigins }); //set allowed origins
 
+ 
+
 exports.chatgpt = functions
   .runWith({ secrets: ["OPENAI_API_KEY"]})
   .https.onRequest(
     async (req, res) => {
-      const openai = new OpenAI(process.env.OPENAI_API_KEY);
-      const engine = 'davinci';
       corsMiddleware(req, res, async () => {
         try {
-          const { inputText } = req.body;
-          const gptResponse = await openai.complete({
-            engine: engine,
-            maxTokens: 64,
-            prompt: inputText
+          const openai = new OpenAI({
+            apiKey: process.env["OPENAI_API_KEY"]
+          });  
+          // const model = 'ada'; // Completion API
+          const model = 'gpt-3.5-turbo'; //Chat API
+          const { prompt } = req.body;
+          // const responseText = await openai.completions.create({
+          const responseText = await openai.chat.completions.create({
+            model: model,
+            // prompt: prompt // Completion API
+            messages: [{ role: 'user', content: prompt }], // Chat API
           });
-          const responseText = gptResponse.data.choices[0].text;
-          res.status(200).json({ result: responseText, engine: engine });
+          res.status(200).json({ result: responseText, model: model });
     } catch (error) {
           console.error(error);
           res.status(500).json({ error: 'An error occurred.' });
@@ -34,29 +40,62 @@ exports.chatgpt = functions
       });
     }
   );
+
+
+
+
+// exports.chatgpt = functions
+//   .runWith({ secrets: ["OPENAI_API_KEY"]})
+//   .https.onRequest(
+//     async (req, res) => {
+//       const openai = new OpenAI(process.env.OPENAI_API_KEY);
+//       const engine = 'davinci';
+//       corsMiddleware(req, res, async () => {
+//         try {
+//           const { prompt } = req.body;
+//           const gptResponse = await openai.complete({
+//             engine: engine,
+//             maxTokens: 64,
+//             prompt: prompt
+//           });
+//           const responseText = gptResponse.data.choices[0].text;
+//           res.status(200).json({ result: responseText, engine: engine });
+//     } catch (error) {
+//           console.error(error);
+//           res.status(500).json({ error: 'An error occurred.' });
+//         }
+//       });
+//     }
+//   );
+
+
+
+
+
+
+
   
-exports.deleteUsers = functions
-  .runWith({ secrets: ["OPENAI_API_KEY"]})
-  .https.onRequest(
-    async (req, res) => {
+// exports.deleteUsers = functions
+//   .https.onRequest(
+//     async (req, res) => {
 
-      corsMiddleware(req, res, async () => {
-        const usersRef = admin.firestore().collection('users');
+//       corsMiddleware(req, res, async () => {
+//         const usersRef = admin.firestore().collection('users');
 
-        try {
-          const snapshot = await usersRef.get();
+//         try {
+//           const snapshot = await usersRef.get();
         
-          snapshot.forEach(async (doc) => {
-            await doc.ref.delete();
-          });
+//           snapshot.forEach(async (doc) => {
+//             await doc.ref.delete();
+//           });
         
-          console.log('Successfully deleted all users from Firestore.');
-        }
-        catch (error) {
-          console.error(error);
-          res.status(500).json({ error: 'An error occurred deleteing users.' });
-        }
-      });
-    }
-  );
+//           console.log('Successfully deleted all users from Firestore.');
+//         }
+//         catch (error) {
+//           console.error(error);
+//           res.status(500).json({ error: 'An error occurred deleteing users.' });
+//         }
+//       });
+//     }
+//   );
 

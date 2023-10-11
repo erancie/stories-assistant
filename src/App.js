@@ -1,7 +1,9 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useState, useRef, useCallback } from 'react'
-import { set, getDatabase, ref, push, onDisconnect, update, child, onValue, off } from 'firebase/database';
+import { set, on, query, remove, once, getDatabase, ref, push, onDisconnect, update, child, onValue, off, orderByChild, equalTo } from 'firebase/database';
 import { getAuth } from "firebase/auth";
+
+// import firebase from 'firebase/app'
 
 import { CliveStateProvider } from './Context/CliveStateContext';
 import { useAuth } from './Context/AuthContext';
@@ -14,6 +16,8 @@ import Header from './Components/Header';
 import AuthButtons from './Components/AuthButtons';
 import GraphicPanel from './Components/GraphicPanel';
 import Landing from './Components/Landing';
+import SEO from './Components/SEO';
+// import DB from './Components/DB';
 
 export default function App() {
 
@@ -24,23 +28,17 @@ export default function App() {
   const [currentSession, setCurrentSession] = useState() 
   const [activeSessionUsers, setActiveSessionUsers] = useState() 
 
+
   //listen to active Session users 
   useEffect(()=> {
     const db = dbRef.current;
     onValue(ref(db, 'sessions/' + currentSession + '/activeSessionUsers'), updateASU )
     function updateASU (snapshot) {
-      console.log('snapshot')
-      console.log(snapshot)
       const activeUsers = snapshot.val()
       setActiveSessionUsers(activeUsers)
-      console.log('currentSession')
-      console.log(currentSession)
-      console.log('activeSessionUsers')
-      console.log(activeUsers)
     }
     return off(ref(db, `sessions/${currentSession}/title`), 'value', updateASU);
   }, [currentSession])
-
 
 
 
@@ -129,7 +127,12 @@ export default function App() {
     <CliveStateProvider>
         <div className="App disable-caret">   
 
-          <Walkthrough />
+          {/* <DB /> */}
+
+          {/* <SEO
+            title='Clever Clive - Social AI assistant.'
+            description='A social collaboration platform powered by AI.'
+          /> */}
 
           <div className='container position-relative'>
 
@@ -138,6 +141,10 @@ export default function App() {
             <AuthButtons />
 
             {userData ? <>
+
+                {/* make walkthrough appear on login */}
+                <Walkthrough />
+
                 <UsersMenu />
 
                 <SessionsMenu leaveSession={leaveSession}
